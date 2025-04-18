@@ -1,0 +1,4 @@
+{
+    "mongoConnectionString": "mongodb+srv://Admin:Admin123@cluster0.5jemiir.mongodb.net/ITHireSmart?retryWrites=true&w=majority&appName=Cluster0"
+    ,"jwtSecret": "jwtSecretToken"
+}

@@ -79,7 +79,7 @@ const Landing = () => {
             </Button>
           </Link>
 
-            <Link to="/register" style={{ textDecoration: "none" , width: "100%" }}>
+            <Link to="/Register" style={{ textDecoration: "none" , width: "100%" }}>
               <Button
                 variant="outlined"
                 size="large"
