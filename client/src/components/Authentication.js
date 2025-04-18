@@ -1,8 +1,10 @@
 import React from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 import Ellipse from "../assets/Ellipse.png";
 import Vector from "../assets/Vector.png";
 import "../App.css";
+import { Link } from "react-router-dom";
 
 const style = {
   display: "flex",
@@ -54,10 +56,21 @@ const ButtonStyle = {
   color: "black",
   "&:hover": { bgcolor: "#f0f0f0" },
   width: "100%",
-  maxWidth: "450px",
+  maxWidth: "350px",
   borderRadius: "10px",
-  marginTop: "3%",
   fontFamily: "Poppins",
+};
+
+const ButtonStyleBlack = {
+  fontSize: { xs: "1rem", sm: "1.2rem", md: "1.5rem" },
+  bgcolor: "black",
+  color: "white",
+  "&:hover": { bgcolor: "rgba(255,255,255,0.1)" },
+  width: "100%",
+  maxWidth: "350px",
+  borderRadius: "10px",
+  fontFamily: "Poppins",
+  border: "1px solid rgba(255,255,255,0.3)",
 };
 
 const Authentication = () => {
@@ -65,10 +78,36 @@ const Authentication = () => {
     <Box
       sx={{ backgroundColor: "black", height: "100vh", position: "relative" }}
     >
+      <Box sx={style}>
+        <LockOpenIcon
+          sx={{
+            color: "white",
+            fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
+          }}
+        />
+        <Typography variant="h4" sx={{ fontFamily: "Poppins" }}>
+          Two-factor Authentication
+        </Typography>
+        <TextField
+          label="Authentication code"
+          variant="outlined"
+          sx={TextFieldStyle}
+        />
+        <Button variant="contained" sx={ButtonStyle}>
+          Verify
+        </Button>
+        <Link
+          to={"/register"}
+          style={{ textDecoration: "none", width: "100%", maxWidth: "350px" }}
+        >
+          <Button variant="contained" sx={ButtonStyleBlack}>
+            Back
+          </Button>
+        </Link>
+      </Box>
+
       <img src={Ellipse} alt="Ellipse" style={ImageStyleTopLeft} />
       <img src={Vector} alt="Vector" style={ImageStyleBottomRight} />
-      
-      <Box sx={style}></Box>
     </Box>
   );
 };

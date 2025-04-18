@@ -59,7 +59,7 @@ const ButtonStyle = {
   fontFamily: "Poppins",
 };
 
-const Landing = () => {
+const Register = () => {
   return (
     <Box
       sx={{
@@ -185,4 +185,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default Register;

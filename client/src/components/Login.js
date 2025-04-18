@@ -60,7 +60,7 @@ const ButtonStyle = {
   fontFamily: 'Poppins',
 };
 
-const Landing = () => {
+const Login = () => {
   return (
     <Box sx={{ backgroundColor: "black", height: "100vh", position: "relative" }}>
       <Box sx={style}>
@@ -83,4 +83,4 @@ const Landing = () => {
   );
 };
 
-export default Landing;
+export default Login;
