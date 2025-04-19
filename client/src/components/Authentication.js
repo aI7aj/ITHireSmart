@@ -70,7 +70,7 @@ const ButtonStyleBlack = {
   maxWidth: "350px",
   borderRadius: "10px",
   fontFamily: "Poppins",
-  border: "1px solid rgba(255,255,255,0.3)",
+  border: "1px solid #fff",
 };
 
 const Authentication = () => {
@@ -79,15 +79,18 @@ const Authentication = () => {
       sx={{ backgroundColor: "black", height: "100vh", position: "relative" }}
     >
       <Box sx={style}>
+
+      <Box sx={{ display: "flex",flexDirection: "column", alignItems: "center", gap: "10px"}}>
         <LockOpenIcon
           sx={{
             color: "white",
             fontSize: { xs: "4rem", sm: "5rem", md: "6rem" },
           }}
         />
-        <Typography variant="h4" sx={{ fontFamily: "Poppins" }}>
+        <Typography variant="h4" sx={{ fontFamily: "Poppins" , textAlign: "center" }}>
           Two-factor Authentication
         </Typography>
+       </Box>
         <TextField
           label="Authentication code"
           variant="outlined"
@@ -101,7 +104,7 @@ const Authentication = () => {
           style={{ textDecoration: "none", width: "100%", maxWidth: "350px" }}
         >
           <Button variant="contained" sx={ButtonStyleBlack}>
-            Back
+            Cancel
           </Button>
         </Link>
       </Box>
