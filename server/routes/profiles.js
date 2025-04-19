@@ -129,7 +129,7 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
-//TODO : Make a Test - Case when u make the front 
+//TODO : Make a Test when u make the front 
 router.post("/upload",auth, async (req, res) => {
   try {
     upload(req , res ,async (err)=>{
@@ -146,6 +146,93 @@ router.post("/upload",auth, async (req, res) => {
 })
 
 
+router.put("/experience", 
+  auth ,
+  check("title", "Title is required").notEmpty(),
+  check("company", "Company is required").notEmpty(),
+  check("from", "From date is required and needs to be from the past").notEmpty()
+  .custom((value , {req})=>{
+    if (new Date(value) > new Date()) {
+      throw new Error("From date must be in the past");
+    }
+    return true;
+  }),
+   async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+      return res.status(400).json({errors : errors.array()})
+    }
+    try {
+      const profile = await Profile.findOne({user:req.user.id});
+      profile.experience.unshift(req.body);
+      await profile.save();
+      return res.json(profile);
 
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send(error.message);
+    }
+})
+
+
+router.delete("/experience/:expId", auth, async (req, res) => {
+  try{
+    const profile = await Profile.findOne({user:req.user.id});
+    profile.experience = profile.experience.filter( exp => {
+      return exp._id.toString() !== req.params.expId
+    });
+    await profile.save();
+    return res.json(profile)
+  }catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
+});
+
+
+
+router.put("/education", 
+  auth ,
+  check("school", "school is required").notEmpty(),
+  check("degree", "degree is required").notEmpty(),
+  check("fieldofstudy", "fieldofstudy is required").notEmpty(),
+  check("from", "From date is required and needs to be from the past").notEmpty()
+  .custom((value , {req})=>{
+    if (new Date(value) > new Date()) {
+      throw new Error("From date must be in the past");
+    }
+    return true;
+  }),
+   async (req, res) => {
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+      return res.status(400).json({errors : errors.array()})
+    }
+    try {
+      const profile = await Profile.findOne({user:req.user.id});
+      profile.education.unshift(req.body);
+      await profile.save();
+      return res.json(profile);
+
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).send(error.message);
+    }
+})
+
+
+router.delete("/education/:eduId", auth, async (req, res) => {
+  try{
+    const profile = await Profile.findOne({user:req.user.id});
+    profile.education = profile.education.filter( edu => {
+      return edu._id.toString() !== req.params.eduId
+    });
+    await profile.save();
+    return res.json(profile)
+  }catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
+});
 
 export default router;
