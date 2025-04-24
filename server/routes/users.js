@@ -29,13 +29,22 @@ router.post(
   check("lastName", "Last name is required").notEmpty(),
   check("email", "Please include a valid email").isEmail(),
   check("location", "Location is required").notEmpty(),
-  check("dateOfBirth", "Date of birth is required").notEmpty(),
-  check("mobileNumber", "Mobile number must be exactly 10 digits")
-    .isLength({ min: 10, max: 10 })
-    .isNumeric(),
-  check("password", "Password must be strong").matches(
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
-  ),
+
+  check("dateOfBirth").custom((value, { req }) => {
+    if (req.body.role === "company") return true;
+    if (!value) throw new Error("Date of birth is required");
+    return true;
+  }),
+
+  check("mobileNumber").custom((value, { req }) => {
+    if (req.body.role === "company") return true;
+    if (!value) throw new Error("Mobile number is required");
+    if (!/^\d{10}$/.test(value)) {
+      throw new Error("Mobile number must be exactly 10 digits");
+    }
+    return true;
+  }),
+
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -49,6 +58,7 @@ router.post(
       dateOfBirth,
       mobileNumber,
       password,
+      role
     } = req.body;
 
     try {
@@ -67,6 +77,7 @@ router.post(
         mobileNumber,
         password,
         dateOfcreation: Date.now(),
+        role
       });
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
@@ -74,6 +85,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          role : user.role
         },
       };
       jwt.sign(

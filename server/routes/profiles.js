@@ -145,7 +145,6 @@ router.post("/upload",auth, async (req, res) => {
   }
 })
 
-
 router.put("/experience", 
   auth ,
   check("title", "Title is required").notEmpty(),
@@ -174,7 +173,6 @@ router.put("/experience",
     }
 })
 
-
 router.delete("/experience/:expId", auth, async (req, res) => {
   try{
     const profile = await Profile.findOne({user:req.user.id});
@@ -188,8 +186,6 @@ router.delete("/experience/:expId", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
-
-
 
 router.put("/education", 
   auth ,
@@ -219,7 +215,6 @@ router.put("/education",
       res.status(500).send(error.message);
     }
 })
-
 
 router.delete("/education/:eduId", auth, async (req, res) => {
   try{

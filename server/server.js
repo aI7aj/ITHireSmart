@@ -2,12 +2,18 @@ import express from "express";
 import connectDB from "./config/db.js";
 import userRoutes from './routes/users.js';
 import profileRoutes from './routes/profiles.js';
+import jobRoutes from './routes/jobs.js';
+import trainingRoutes from './routes/training.js';
+
+
 
 const app = express();
 
 app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
+app.use("/api/jobs", jobRoutes);
+app.use("/api/training", trainingRoutes);
 
 
 connectDB();
