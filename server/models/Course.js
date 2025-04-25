@@ -1,23 +1,52 @@
 import mongoose, { Schema } from "mongoose";
 
-const CourseSchema = new mongoose.Schema({
-    user:{
-        type : Schema.Types.ObjectId,
+const CourseSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    text:{
-        type: String,
-        required: true
+    courseTitle: {
+      type: String,
+      required: true,
     },
-    name:{
-        type: Strin
+    instructorName: {
+      type: String,
     },
-    date:{
-        type: Date,
-        default: Date.now
+    location: {
+      type: String,
+      default: "Online",
+    },
+    courseType: {
+      type: String,
+      enum: ["Online", "company"],  
+    },
+    startAt: {
+      type: Date,
+      required: true,
+    },
+    endAt: {
+      type: Date,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    capacity: {
+      type: Number,
+    },
+    studentsEnrolled: {
+      type: Number,
+      default: 0,
+    },
+    topics: {
+      type: [String],
+      required: true,
     }
-})
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model("Course", CourseSchema);
-
-
-//idk what to do cuz the courses from API like udemy

@@ -13,6 +13,11 @@ const router = express.Router();
 5- PUT/jobs/:jobId
 */
 
+
+// @route   POST /api/postJobs
+// @desc    Create new Job
+// @access  Private (company only)
+
 router.post(
   "/postJobs",
   auth,
@@ -85,6 +90,9 @@ router.post(
     }
   }
 );
+// @route   GET /api/Jobs
+// @desc    get all Jobs
+// @access  Private (company only)
 
 router.get("/", auth, async (req, res) => {
   try {
@@ -96,6 +104,9 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
+// @route   GET /api/Jobs
+// @desc    get a job by id
+// @access  Private (company only)
 router.get("/:jobId", auth, async (req, res) => {
   try {
     const job = await Job.findById(req.params.jobId);
@@ -109,6 +120,9 @@ router.get("/:jobId", auth, async (req, res) => {
   }
 });
 
+// @route   DELETE /api/jobId
+// @desc    delete a job by id
+// @access  Private (company only)
 router.delete("/:jobId", auth, async (req, res) => {
   try {
     const job = await Job.findById(req.params.jobId);
@@ -123,6 +137,9 @@ router.delete("/:jobId", auth, async (req, res) => {
   }
 });
 
+// @route   PUT /api/jobId
+// @desc    edit a job by id
+// @access  Private (company only)
 router.put("/:jobId", auth, async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {

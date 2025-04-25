@@ -123,7 +123,7 @@ router.put("/:trainingId", auth, async (req, res) => {
       return res.status(404).json({ msg: "Training not found" });
     }
 
-    // Update fields
+    
     training.trainingTitle = req.body.trainingTitle;
     training.companyName = req.body.companyName;
     training.location = req.body.location;

@@ -4,7 +4,7 @@ import userRoutes from './routes/users.js';
 import profileRoutes from './routes/profiles.js';
 import jobRoutes from './routes/jobs.js';
 import trainingRoutes from './routes/training.js';
-
+import courseRoutes from './routes/course.js';
 
 
 const app = express();
@@ -14,6 +14,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/jobs", jobRoutes);
 app.use("/api/training", trainingRoutes);
+app.use("/api/course", courseRoutes);
 
 
 connectDB();
