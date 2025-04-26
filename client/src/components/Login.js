@@ -72,10 +72,11 @@ const Login = () => {
         <TextField id="outlined-basic" label="Email" variant="outlined" sx={TextFieldStyle} />
         <TextField id="outlined-basic" label="Password" variant="outlined" sx={TextFieldStyle} />
 
+
         <Button variant="contained" fullWidth size="large" sx={ButtonStyle}>
           Login
         </Button>
-
+        
         <img src={Ellipse} alt="Ellipse" style={ImageStyleTopLeft} />
         <img src={Vector} alt="Vector" style={ImageStyleBottomRight} />
       </Box>
