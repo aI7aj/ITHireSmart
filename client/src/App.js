@@ -6,20 +6,24 @@ import Register from "./components/Register";
 import Authentication from "./components/Authentication";
 import Home from "./components/Home";
 import { Fragment } from "react";
+import store from "./redux/store";
+import { Provider } from "react-redux";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Fragment>
-        <Routes>
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/Register" element={<Register />} />
-          <Route path="/Authentication" element={<Authentication />} />
-          <Route path="/Home" element={<Home />} />
-        </Routes>
-      </Fragment>
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <Fragment>
+          <Routes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/Register" element={<Register />} />
+            <Route path="/Authentication" element={<Authentication />} />
+            <Route path="/Home" element={<Home />} />
+          </Routes>
+        </Fragment>
+      </BrowserRouter>
+    </Provider>
   );
 }
 
