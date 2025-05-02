@@ -6,24 +6,33 @@ import Register from "./components/Register";
 import Authentication from "./components/Authentication";
 import Home from "./components/Home";
 import { Fragment } from "react";
-import store from "./redux/store";
-import { Provider } from "react-redux";
+import { registerUser } from "./API";
+
 
 function App() {
+  const handleRegister = async (values) => {
+    try {
+      const response = await registerUser(values);
+      // console.log("Backend response:", response.data);
+      return response.data;
+    } catch (error) {
+      // console.error("Registration error:", error);
+      return { errors: [{ param: "email", msg: "This email is existing please choose another email" }] };
+    }
+  };
+  
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        <Fragment>
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/Register" element={<Register />} />
-            <Route path="/Authentication" element={<Authentication />} />
-            <Route path="/Home" element={<Home />} />
-          </Routes>
-        </Fragment>
-      </BrowserRouter>
-    </Provider>
+    <BrowserRouter>
+      <Fragment>
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/Register" element={<Register register={handleRegister} />} />
+          <Route path="/Authentication" element={<Authentication />} />
+          <Route path="/Home" element={<Home />} />
+        </Routes>
+      </Fragment>
+    </BrowserRouter>
   );
 }
 
