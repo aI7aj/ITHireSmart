@@ -137,6 +137,7 @@ const Register = ({ register }) => {
 
             if ((res && res.token) || (res && res.success)) {
               navigate("/Authentication");
+              console.log("Registration successful");
               return;
             }
 

@@ -35,7 +35,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "admin", "company"],
     default: "user",
-  },
+  }
 });
 
 export default mongoose.model("User", userSchema);

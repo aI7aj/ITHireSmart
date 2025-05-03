@@ -118,7 +118,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password } = req.body;
+    const { email, password  } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -138,6 +138,7 @@ router.post(
       const payload = {
         user: {
           id: user.id,
+          role: user.role,
         },
       };
       jwt.sign(
