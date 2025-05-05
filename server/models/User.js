@@ -20,35 +20,22 @@ const userSchema = new mongoose.Schema({
   },
   dateOfBirth: {
     type: Date,
-    required: true,
-  },
-  dateOfBirth: {
-    type: Date,
-    required: function () {
-      return this.role !== "company";
-    },
+    required: true
   },
   mobileNumber: {
     type: String,
-    required: function () {
-      return this.role !== "company";
-    },
+    required: true
   },
   password: {
     type: String,
     required: true,
     minlength: 8,
-  }
-  ,
+  },
   role: {
     type: String,
-    enum: ["user", "admin","company"],
+    enum: ["user", "admin", "company"],
     default: "user",
-  },
+  }
 });
 
-
 export default mongoose.model("User", userSchema);
-
-
-

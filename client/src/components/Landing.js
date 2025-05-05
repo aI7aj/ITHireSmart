@@ -51,7 +51,7 @@ const Landing = () => {
         >
           <Typography
             variant="h2"
-            sx={{ fontSize: { xs: "2.5rem", sm: "3rem", md: "4rem" }, textAlign: 'center' }}
+            sx={{ color: "black",padding: "0 20px", fontSize: { xs: "2.5rem", sm: "3rem", md: "4rem" }, textAlign: 'center', background:"white" }}
           >
             IT HireSmart
           </Typography>
