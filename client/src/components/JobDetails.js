@@ -7,7 +7,6 @@ import {
   Box,
   Button,
   Chip,
-  Divider,
   Avatar,
 } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";

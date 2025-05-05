@@ -34,6 +34,7 @@ const ImageStyleBottomRight = {
 };
 const TextFieldStyle = {
   width: "100%",
+  mb:2,
   maxWidth: "400px",
   height: "50px",
   borderRadius: "15px",
@@ -128,6 +129,7 @@ const Login = ({login}) => {
                 helperText={<ErrorMessage name="email"/>}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                
               />
               <Field
                 name="password"

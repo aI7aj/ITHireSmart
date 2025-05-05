@@ -9,7 +9,7 @@ import { Fragment } from "react";
 import { registerUser, loginUser } from "./API";
 import Navbar from "./components/Navbar";
 import JobDetails from "./components/JobDetails";
-
+import NotFoundPage from "./components/NotFound404";
 function App() {
   const location = useLocation();
   const handleRegister = async (values) => {
@@ -69,6 +69,7 @@ function App() {
         <Route path="/Authentication" element={<Authentication />} />
         <Route path="/FindJob" element={<FindJob />} />
         <Route path="/job/:id" element={<JobDetails />} />
+        <Route path="/404" element={<NotFoundPage />} />
       </Routes>
     </Fragment>
   );

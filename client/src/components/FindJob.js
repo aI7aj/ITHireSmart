@@ -13,8 +13,26 @@ import {
 } from "@mui/material";
 import { getJobs } from "../API";
 import { useNavigate } from "react-router-dom";
+import { Snackbar, Alert } from "@mui/material";
+
 function FindJob() {
-  
+  const getRandomLightColor = () => {
+    const lightColors = [
+      "#FFE1CB",
+      "#D5F6ED",
+      "#ECEFF5",
+      "#E3DCFA",
+      "#D5F6ED",
+      "#D8BFD8",
+      "#ADD8E6",
+      "#F0E68C",
+      "#E0EEE0",
+    ];
+    const randomIndex = Math.floor(Math.random() * lightColors.length);
+    return lightColors[randomIndex];
+  };
+
+  const [errorOpen, setErrorOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const jobsPerPage = 6;
@@ -26,6 +44,7 @@ function FindJob() {
         setJobs(response.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
+        navigate("/404");
       }
     };
 
@@ -37,11 +56,17 @@ function FindJob() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") return;
+    setErrorOpen(false);
+  };
+
   const startIndex = (page - 1) * jobsPerPage;
   const endIndex = startIndex + jobsPerPage;
   const paginatedJobs = jobs.slice(startIndex, endIndex);
   const totalPages = Math.ceil(jobs.length / jobsPerPage);
   const navigate = useNavigate();
+
   return (
     <Box
       sx={{
@@ -120,217 +145,221 @@ function FindJob() {
               margin: "0 auto",
             }}
           >
-            {paginatedJobs.map((job) => (
-              <Box
-                key={job._id}
-                sx={{
-                  flex: "1 1 300px",
-                  maxWidth: "32%",
-                  minWidth: "280px",
-                  boxSizing: "border-box",
+            {paginatedJobs.map((job) => {
+              const randomColor = getRandomLightColor();
 
-                  display: "flex",
-                }}
-              >
-                <Card
+              return (
+                <Box
+                  key={job._id}
                   sx={{
-                    width: "100%",
-                    borderRadius: "16px",
-                    border: "2px solid #ECECEC",
-                    boxShadow: "0 2px 8px 0 rgba(0,0,0,0.04)",
-                    background: "#fff",
-                    p: 2,
-                    position: "relative",
+                    flex: "1 1 300px",
+                    maxWidth: "32%",
+                    minWidth: "280px",
+                    boxSizing: "border-box",
                     display: "flex",
-                    flexDirection: "column",
                   }}
                 >
-                  {/* Inner Card */}
-                  <Box
+                  <Card
                     sx={{
                       width: "100%",
                       borderRadius: "16px",
-                      background: "#FFF6D7",
+                      border: "2px solid #ECECEC",
+                      boxShadow: "0 2px 8px 0 rgba(0,0,0,0.04)",
+                      background: "#fff",
                       p: 2,
-                      minHeight: 180,
-                      boxSizing: "border-box",
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
                     }}
                   >
-                    {/* Company logo and name */}
+                    {/* Inner Card */}
                     <Box
-                      sx={{ display: "flex", alignItems: "center", mb: 1.2 }}
+                      sx={{
+                        width: "100%",
+                        borderRadius: "16px",
+                        background: randomColor,
+                        p: 2,
+                        minHeight: 180,
+                        boxSizing: "border-box",
+                      }}
                     >
-                      <Box sx={{ mr: 1 }}>
-                        <img
-                          src={
-                            job.companyLogo ||
-                            "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-                          }
-                          alt="Company Logo"
-                          style={{
-                            width: "28px",
-                            height: "28px",
-                            borderRadius: "50%",
-                            objectFit: "cover",
+                      {/* Company logo and name */}
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", mb: 1.2 }}
+                      >
+                        <Box sx={{ mr: 1 }}>
+                          <img
+                            src={
+                              job.companyLogo ||
+                              "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                            }
+                            alt="Company Logo"
+                            style={{
+                              width: "28px",
+                              height: "28px",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </Box>
+                        <Typography
+                          variant="subtitle2"
+                          sx={{
+                            color: "#888",
+                            fontFamily: "DM Sans, Poppins, Arial",
+                            fontSize: "15px",
+                            fontWeight: 500,
+                            textTransform: "capitalize",
+                            letterSpacing: 0.1,
                           }}
-                        />
+                        >
+                          {job.company || job.companyName}
+                        </Typography>
                       </Box>
+                      {/* Job Title */}
                       <Typography
-                        variant="subtitle2"
+                        variant="h6"
                         sx={{
-                          color: "#888",
-                          fontFamily: "DM Sans, Poppins, Arial",
-                          fontSize: "15px",
-                          fontWeight: 500,
+                          fontWeight: 700,
+                          mb: 1.2,
+                          color: "#171923",
+                          fontSize: "19px",
+                          fontFamily: "Poppins, DM Sans, Arial",
                           textTransform: "capitalize",
+                          lineHeight: 1.2,
                           letterSpacing: 0.1,
                         }}
                       >
-                        {job.company || job.companyName}
+                        {job.title || job.jobTitle}
                       </Typography>
-                    </Box>
-                    {/* Job Title */}
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                        mb: 1.2,
-                        color: "#171923",
-                        fontSize: "19px",
-                        fontFamily: "Poppins, DM Sans, Arial",
-                        textTransform: "capitalize",
-                        lineHeight: 1.2,
-                        letterSpacing: 0.1,
-                      }}
-                    >
-                      {job.title || job.jobTitle}
-                    </Typography>
-                    {/* Job tags */}
-                    <Box
-                      sx={{
-                        display: "flex",
-                        gap: 1,
-                        mb: 1.2,
-                        flexWrap: "wrap",
-                      }}
-                    >
+                      {/* Job tags */}
                       <Box
                         sx={{
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: "20px",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: "#333",
-                          border: "1px solid #D9D9D9",
-                          background: "#fff",
-                          letterSpacing: 0.2,
+                          display: "flex",
+                          gap: 0.5,
+                          mb: 1.2,
+                          flexWrap: "wrap",
                         }}
                       >
-                        {job.jobType || "Full Time"}
+                        <Box
+                          sx={{
+                            px: 2,
+                            py: 0.5,
+                            borderRadius: "20px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "#333",
+                            border: "1px solid #655F5F",
+                            letterSpacing: 0.2,
+                            width: "40%",
+                            textAlign: "start"
+
+                          }}
+                        >
+                          {job.jobType || "Full Time"}
+                        </Box>
+                        <Box
+                          sx={{
+                            px: 2,
+                            py: 0.5,
+                            borderRadius: "20px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "#333",
+                            border: "1px solid #655F5F",
+                            letterSpacing: 0.2,
+                            width: "40%",
+                            textAlign: "start"
+                          }}
+                        >
+                          {job.locationType || "Remote"}
+                        </Box>
+                        <Box
+                          sx={{
+                            px: 2,
+                            py: 0.5,
+                            borderRadius: "20px",
+                            fontSize: 13,
+                            fontWeight: 500,
+                            color: "#333",
+                            border: "1px solid #655F5F",
+                            letterSpacing: 0.2,
+                            textAlign: "start"
+
+                          }}
+                        >
+                          {job.experienceLevel || "Senior Level"}
+                        </Box>
+                      </Box>
+                    </Box>
+                    {/* Salary and location */}
+                    <Box sx={{ width: "100%", px: 0.5, pt: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: 700,
+                            color: "#222",
+                            fontSize: "22px",
+                            mr: 0.5,
+                          }}
+                        >
+                          {job.salary ? `$${job.salary}k` : "$2.5k"}
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            color: "#888",
+                            fontWeight: 500,
+                            fontSize: "13px",
+                            mt: "4px",
+                          }}
+                        >
+                          /{job.salaryPeriod || "Monthly"}
+                        </Typography>
                       </Box>
                       <Box
                         sx={{
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: "20px",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: "#333",
-                          border: "1px solid #D9D9D9",
-                          background: "#fff",
-                          letterSpacing: 0.2,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
                         }}
                       >
-                        {job.locationType || "Remote"}
+                        <Typography
+                          variant="body2"
+                          sx={{
+                            fontSize: "20px",
+                            color: "#888",
+                            fontWeight: 100,
+                          }}
+                        >
+                          {job.location || "California, CA"}
+                        </Typography>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          sx={{
+                            bgcolor: "#171923",
+                            color: "#fff",
+                            borderRadius: "20px",
+                            textTransform: "none",
+                            fontWeight: 600,
+                            px: 3,
+                            fontSize: "15px",
+                            boxShadow: "none",
+                            letterSpacing: 0.2,
+                            "&:hover": { bgcolor: "#444" },
+                          }}
+                          onClick={() => navigate(`/job/${job._id}`)}
+                        >
+                          Details
+                        </Button>
                       </Box>
-                      <Box
-                        sx={{
-                          px: 2,
-                          py: 0.5,
-                          borderRadius: "20px",
-                          fontSize: 13,
-                          fontWeight: 500,
-                          color: "#333",
-                          border: "1px solid #D9D9D9",
-                          background: "#fff",
-                          letterSpacing: 0.2,
-                        }}
-                      >
-                        {job.experienceLevel || "Senior Level"}
-                      </Box>
                     </Box>
-                  </Box>
-                  {/* Salary and location */}
-                  <Box sx={{ width: "100%", px: 2.5, pb: 2, pt: 0 }}>
-                    <Box
-                      sx={{ display: "flex", alignItems: "center", mb: 0.5 }}
-                    >
-                      <Typography
-                        variant="subtitle1"
-                        sx={{
-                          fontWeight: 700,
-                          color: "#222",
-                          fontSize: "22px",
-                          mr: 0.5,
-                        }}
-                      >
-                        {job.salary ? `$${job.salary}k` : "$2.5k"}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          color: "#888",
-                          fontWeight: 500,
-                          fontSize: "13px",
-                          mt: "4px",
-                        }}
-                      >
-                        /{job.salaryPeriod || "Monthly"}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Typography
-                        variant="body2"
-                        sx={{
-                          fontSize: "15px",
-                          color: "#888",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {job.location || "California, CA"}
-                      </Typography>
-                      <Button
-                        size="small"
-                        variant="contained"
-                        sx={{
-                          bgcolor: "#171923",
-                          color: "#fff",
-                          borderRadius: "20px",
-                          textTransform: "none",
-                          fontWeight: 600,
-                          px: 3,
-                          fontSize: "15px",
-                          boxShadow: "none",
-                          letterSpacing: 0.2,
-                          "&:hover": { bgcolor: "#444" },
-                          
-                        }}
-                        onClick={() => navigate(`/job/${job._id}`)}
-                      >
-                        Details
-                      </Button>
-                    </Box>
-                  </Box>
-                </Card>
-              </Box>
-            ))}
+                  </Card>
+                </Box>
+              );
+            })}
           </Box>
           {/* Pagination */}
           <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
@@ -344,6 +373,11 @@ function FindJob() {
           </Box>
         </Box>
       </Box>
+      <Snackbar open={errorOpen} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+          Failed to load jobs. Please Login try again later.
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
