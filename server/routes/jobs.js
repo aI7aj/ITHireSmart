@@ -21,10 +21,14 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
+<<<<<<< HEAD
   //checkRole("company"),
+=======
+>>>>>>> 56ecb73ebdc438c3f214ef1b3bd841cde28d2887
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
+  check("salary", "Salary is required").notEmpty(),
   check("from", "From date is required and needs to be from the past")
     .notEmpty()
     .custom((value, { req }) => {
@@ -48,7 +52,10 @@ router.post(
     .withMessage(
       "Job type must be one of: full-time, part-time, internship, freelance"
     ),
-  check("experienceLevel")
+    check("workType")
+   .isIn(["Remote", "On-site'", "Hybrid"])
+   .withMessage("Work type must be one of: Remote, On-site, Hybrid")
+  ,check("experienceLevel")
     .optional()
     .isIn(["entry", "mid", "senior"])
     .withMessage("Experience level must be one of: entry, mid, senior"),
@@ -81,6 +88,8 @@ router.post(
         Requirements: req.body.Requirements,
         Responsibilities: req.body.Responsibilities,
         experienceLevel: req.body.experienceLevel,
+        salary: req.body.salary,
+        workType: req.body.workType
       });
       await job.save();
       return res.json(job);
@@ -107,7 +116,7 @@ router.get("/",  async (req, res) => {
 
 // @route   GET /api/jobs/search?keyword=developer
 // @desc    Search jobs by title or company name (case-insensitive)
-// @access  Public (for users search)
+// @access  Public (for users search)=
 router.get("/search", async (req, res) => {
   const keyword = req.query.keyword || "";
   try {
@@ -188,6 +197,8 @@ router.put("/:jobId", auth, async (req, res) => {
     job.Requirements = req.body.Requirements;
     job.Responsibilities = req.body.Responsibilities;
     job.experienceLevel = req.body.experienceLevel;
+    job.salary = req.body.salary;
+    job.workType = req.body.workType;
     await job.save();
     res.json(job);
   } catch (error) {

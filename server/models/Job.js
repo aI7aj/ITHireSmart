@@ -17,8 +17,12 @@ const jobSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    salary: {
+      type: String,
+    },
     salaryPeriod: {
       type: String,
+      required: true,
     },
     date: {
       type: Date,
@@ -26,13 +30,19 @@ const jobSchema = new mongoose.Schema(
     },
     jobType: {
       type: String,
+      required: true,
     },
     jobDescription: {
       type: String,
       required: true,
     },
+    workType: {
+      type: String,
+      required: true,
+    },
     Requirements: {
       type: [String],
+      required: true
     },
     Responsibilities: {
       type: [String],
