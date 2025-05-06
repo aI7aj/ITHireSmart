@@ -21,7 +21,7 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
-  checkRole("company"),
+  //checkRole("company"),
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
@@ -94,7 +94,7 @@ router.post(
 // @desc    get all Jobs
 // @access  Private (company only)
 
-router.get("/", auth, async (req, res) => {
+router.get("/",  async (req, res) => {
   try {
     let jobsPosts = await Job.find().sort({ date: -1 });
     res.json(jobsPosts);
@@ -103,6 +103,30 @@ router.get("/", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
+// @route   GET /api/jobs/search?keyword=developer
+// @desc    Search jobs by title or company name (case-insensitive)
+// @access  Public (for users search)
+router.get("/search", async (req, res) => {
+  const keyword = req.query.keyword || "";
+  try {
+    const regex = new RegExp(keyword, "i"); // case-insensitive and flexible
+    const jobs = await Job.find({
+      $or: [
+        { jobTitle: regex },
+        { companyName: regex },
+        { location: regex }
+      ],
+    }).sort({ date: -1 });
+    res.json(jobs);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 
 // @route   GET /api/Jobs
 // @desc    get a job by id
@@ -171,6 +195,10 @@ router.put("/:jobId", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
+
+
 
 // ! Ask someone about this
 // router.put("/experience/:jobId", auth, async (req, res) => {
