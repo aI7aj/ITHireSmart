@@ -14,7 +14,7 @@ import {
 import { getJobs } from "../API";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
-
+import CloudUploadOutlinedIcon from "@mui/icons-material/CloudUploadOutlined";
 function FindJob() {
   const getRandomLightColor = () => {
     const lightColors = [
@@ -36,20 +36,30 @@ function FindJob() {
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
   const jobsPerPage = 6;
+  const navigate = useNavigate();
+
+  const [filters, setFilters] = useState({
+    keyword: "",
+    location: "",
+    remoteOnly: false,
+    fullTime: false,
+    partTime: false,
+  });
+  const [filteredJobs, setFilteredJobs] = useState([]);
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await getJobs();
         setJobs(response.data);
+        setFilteredJobs(response.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         navigate("/404");
       }
     };
-
     fetchJobs();
-  }, []);
+  }, [navigate]);
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -61,11 +71,44 @@ function FindJob() {
     setErrorOpen(false);
   };
 
+  const handleFilterChange = (e) => {
+    const { name, value, checked, type } = e.target;
+    setFilters((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
+  };
+
+  const applyFilters = () => {
+    let filtered = [...jobs];
+    const { location, remoteOnly, fullTime, partTime } = filters;
+
+    if (location !== "") {
+      filtered = filtered.filter((job) =>
+        job.location && job.location.toLowerCase().includes(location.toLowerCase())
+      );
+    }
+
+    if (remoteOnly) {
+      filtered = filtered.filter((job) => job.locationType === "Remote");
+    }
+
+    if (fullTime) {
+      filtered = filtered.filter((job) => job.jobType === "Full Time");
+    }
+
+    if (partTime) {
+      filtered = filtered.filter((job) => job.jobType === "Part Time");
+    }
+
+    setFilteredJobs(filtered);
+    setPage(1);
+  };
+
   const startIndex = (page - 1) * jobsPerPage;
   const endIndex = startIndex + jobsPerPage;
-  const paginatedJobs = jobs.slice(startIndex, endIndex);
-  const totalPages = Math.ceil(jobs.length / jobsPerPage);
-  const navigate = useNavigate();
+  const paginatedJobs = filteredJobs.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
 
   return (
     <Box
@@ -78,53 +121,82 @@ function FindJob() {
     >
       <Box sx={{ display: "flex", alignItems: "flex-start", gap: 3 }}>
         {/* Sidebar */}
-        <Box
-          sx={{
-            width: { xs: "100%", md: "23%" },
-            minWidth: 240,
-            maxWidth: 320,
-          }}
-        >
-          <Card sx={{ p: 1.5, borderRadius: "12px" }}>
-            <Typography
-              variant="subtitle1"
-              gutterBottom
-              sx={{ fontSize: "1rem" }}
-            >
-              Search Filters
-            </Typography>
-            <TextField label="Keyword" fullWidth margin="dense" size="small" />
+        <Box style={{ width: "100%", maxWidth: 320 }}>
+          <Card style={{ padding: 16, borderRadius: 12, background: "red" }}>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+              <CloudUploadOutlinedIcon style={{ fontSize: 48, color: "#fff" }} />
+            </div>
+            <TextField
+              label="Keyword"
+              fullWidth
+              size="small"
+              name="keyword"
+              value={filters.keyword}
+              onChange={handleFilterChange}
+              style={{ marginBottom: 12 }}
+            />
             <TextField
               label="Location"
               fullWidth
-              margin="dense"
               size="small"
               select
-              defaultValue=""
+              name="location"
+              value={filters.location}
+              onChange={handleFilterChange}
+              style={{ marginBottom: 12 }}
             >
               <MenuItem value="">All</MenuItem>
-              <MenuItem value="new york">New York</MenuItem>
-              <MenuItem value="san francisco">San Francisco</MenuItem>
+              <MenuItem value="ramallah">Ramallah</MenuItem>
+              <MenuItem value="nablus">Nablus</MenuItem>
+              <MenuItem value="hebron">Hebron</MenuItem>
+              <MenuItem value="jenin">Jenin</MenuItem>
+              <MenuItem value="tulkarm">Tulkarm</MenuItem>
+              <MenuItem value="qalqilya">Qalqilya</MenuItem>
+              <MenuItem value="jericho">Jericho</MenuItem>
+              <MenuItem value="bethlehem">Bethlehem</MenuItem>
+              <MenuItem value="salfit">Salfit</MenuItem>
             </TextField>
-            <FormGroup sx={{ mt: 1 }}>
+            <div>
               <FormControlLabel
-                control={<Checkbox size="small" />}
+                control={
+                  <Checkbox
+                    size="small"
+                    name="remoteOnly"
+                    checked={filters.remoteOnly}
+                    onChange={handleFilterChange}
+                  />
+                }
                 label="Remote Only"
               />
               <FormControlLabel
-                control={<Checkbox size="small" />}
+                control={
+                  <Checkbox
+                    size="small"
+                    name="fullTime"
+                    checked={filters.fullTime}
+                    onChange={handleFilterChange}
+                  />
+                }
                 label="Full Time"
               />
               <FormControlLabel
-                control={<Checkbox size="small" />}
+                control={
+                  <Checkbox
+                    size="small"
+                    name="partTime"
+                    checked={filters.partTime}
+                    onChange={handleFilterChange}
+                  />
+                }
                 label="Part Time"
               />
-            </FormGroup>
+            </div>
             <Button
               variant="contained"
               color="primary"
               fullWidth
-              sx={{ mt: 1.5, fontSize: "0.9rem", py: 1 }}
+              style={{ marginTop: 16 }}
+              onClick={applyFilters}
             >
               Apply Filters
             </Button>
@@ -252,8 +324,7 @@ function FindJob() {
                             border: "1px solid #655F5F",
                             letterSpacing: 0.2,
                             width: "40%",
-                            textAlign: "start"
-
+                            textAlign: "start",
                           }}
                         >
                           {job.jobType || "Full Time"}
@@ -269,7 +340,7 @@ function FindJob() {
                             border: "1px solid #655F5F",
                             letterSpacing: 0.2,
                             width: "40%",
-                            textAlign: "start"
+                            textAlign: "start",
                           }}
                         >
                           {job.locationType || "Remote"}
@@ -284,8 +355,7 @@ function FindJob() {
                             color: "#333",
                             border: "1px solid #655F5F",
                             letterSpacing: 0.2,
-                            textAlign: "start"
-
+                            textAlign: "start",
                           }}
                         >
                           {job.experienceLevel || "Senior Level"}
