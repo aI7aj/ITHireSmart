@@ -21,10 +21,14 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
-  checkRole("company"),
+<<<<<<< HEAD
+  //checkRole("company"),
+=======
+>>>>>>> 56ecb73ebdc438c3f214ef1b3bd841cde28d2887
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
+  check("salary", "Salary is required").notEmpty(),
   check("from", "From date is required and needs to be from the past")
     .notEmpty()
     .custom((value, { req }) => {
@@ -48,7 +52,10 @@ router.post(
     .withMessage(
       "Job type must be one of: full-time, part-time, internship, freelance"
     ),
-  check("experienceLevel")
+    check("workType")
+   .isIn(["Remote", "On-site'", "Hybrid"])
+   .withMessage("Work type must be one of: Remote, On-site, Hybrid")
+  ,check("experienceLevel")
     .optional()
     .isIn(["entry", "mid", "senior"])
     .withMessage("Experience level must be one of: entry, mid, senior"),
@@ -81,6 +88,8 @@ router.post(
         Requirements: req.body.Requirements,
         Responsibilities: req.body.Responsibilities,
         experienceLevel: req.body.experienceLevel,
+        salary: req.body.salary,
+        workType: req.body.workType
       });
       await job.save();
       return res.json(job);
@@ -94,7 +103,7 @@ router.post(
 // @desc    get all Jobs
 // @access  Private (company only)
 
-router.get("/", auth, async (req, res) => {
+router.get("/",  async (req, res) => {
   try {
     let jobsPosts = await Job.find().sort({ date: -1 });
     res.json(jobsPosts);
@@ -103,6 +112,30 @@ router.get("/", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
+// @route   GET /api/jobs/search?keyword=developer
+// @desc    Search jobs by title or company name (case-insensitive)
+// @access  Public (for users search)=
+router.get("/search", async (req, res) => {
+  const keyword = req.query.keyword || "";
+  try {
+    const regex = new RegExp(keyword, "i"); // case-insensitive and flexible
+    const jobs = await Job.find({
+      $or: [
+        { jobTitle: regex },
+        { companyName: regex },
+        { location: regex }
+      ],
+    }).sort({ date: -1 });
+    res.json(jobs);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Server Error");
+  }
+});
+
+
 
 // @route   GET /api/Jobs
 // @desc    get a job by id
@@ -164,6 +197,8 @@ router.put("/:jobId", auth, async (req, res) => {
     job.Requirements = req.body.Requirements;
     job.Responsibilities = req.body.Responsibilities;
     job.experienceLevel = req.body.experienceLevel;
+    job.salary = req.body.salary;
+    job.workType = req.body.workType;
     await job.save();
     res.json(job);
   } catch (error) {
@@ -171,6 +206,10 @@ router.put("/:jobId", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
+
+
 
 // ! Ask someone about this
 // router.put("/experience/:jobId", auth, async (req, res) => {

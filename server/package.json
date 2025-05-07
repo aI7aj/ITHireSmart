@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+<<<<<<< HEAD
     "start": "nodemon server.js"
     ,
     "dev": "concurrently \"npm run server\" \"npm run client\""
@@ -10,6 +11,12 @@
 
     ,"server":"nodemon server.js"
 
+=======
+    "start": "nodemon server.js",
+    "server": "nodemon server.js",
+    "client": "npm start --prefix ../client",
+    "dev": "concurrently \"npm:server\" \"npm:client\""
+>>>>>>> f40da9a875165ee5b6fb921b37298023bc4ca117
   },
   "keywords": [],
   "type": "module",
@@ -17,15 +24,22 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@redux-devtools/extension": "^3.3.0",
+    "alert": "^6.0.2",
     "bcryptjs": "^3.0.2",
-    "concurrently": "^9.1.2",
     "config": "^3.3.12",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
+    "formik": "^2.4.6",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "multer": "^1.4.5-lts.2",
-    "nodemon": "^3.1.9",
-    "normalize-url": "^8.0.1"
+    "normalize-url": "^8.0.1",
+    "yup": "^1.6.1"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2",
+    "nodemon": "^3.1.10"
   }
 }
