@@ -19,3 +19,4 @@ export const updateProfile = (id, values) => API.put(`/profiles/${id}`, values);
 export const getJobs = () => API.get('/jobs');
 export const addJob = (jobData) => API.post('/jobs', jobData);
 export const getJobById = (id) => API.get(`/jobs/${id}`);
+export const udemy = (search) => API.get(`/course?search=${search}`);
