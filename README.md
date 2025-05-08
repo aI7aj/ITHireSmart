@@ -17,7 +17,7 @@ Connect companies with the best candidates easily 🤝
 Our mission is to empower students, graduates, and companies with smart, data-driven decisions. 🚀
 
 🛠️ Built With
-Python 🐍 (for AI and Backend)
+Python 🐍 (for AI)
 
 React.js ⚛️ (for Frontend)
 
@@ -25,7 +25,6 @@ Node.js 🌐
 
 MongoDB 🍃 (Database)
 
-AWS ☁️ (Cloud Hosting)
 
 🎯 Key Features
 ✅ AI-driven career recommendations
