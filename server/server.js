@@ -5,9 +5,9 @@ import profileRoutes from './routes/profiles.js';
 import jobRoutes from './routes/jobs.js';
 import trainingRoutes from './routes/training.js';
 import courseRoutes from './routes/course.js';
-import udemyRoutes from './routes/udemy.js';
 import cors from 'cors';
-
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express();
 
@@ -16,9 +16,9 @@ app.use(cors());
 app.use("/api/users", userRoutes);
 app.use("/api/profiles", profileRoutes);
 app.use("/api/jobs", jobRoutes);
-app.use("/api/training", trainingRoutes);
+app.use("/api/training", trainingRoutes);   
 app.use("/api/course", courseRoutes);
-app.use("/api/course", udemyRoutes);
+
 
 connectDB();
 
