@@ -9,7 +9,6 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
-
 const style = {
   display: "flex",
   justifyContent: "center",
@@ -79,18 +78,56 @@ import * as Yup from "yup";
 
 */
 
-
 const Register = ({ register }) => {
   const navigate = useNavigate();
 
   const validationSchema = Yup.object({
-    firstName: Yup.string().required("First name is required"),
-    lastName: Yup.string().required("Last name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    location: Yup.string().required("Location is required"),
-    mobileNumber: Yup.string().required("Mobile number is required").min(10, "Mobile number must be at least 10 digits"),
-    dateOfBirth: Yup.string().required("Date of birth is required"),
-    password: Yup.string().required("Password is required"),
+    firstName: Yup.string()
+      .matches(
+        /^[A-Za-z\u0600-\u06FF\s]+$/,
+        "First name must contain only letters"
+      )
+      .min(2, "First name must be at least 2 characters")
+      .required("First name is required"),
+
+    lastName: Yup.string()
+      .matches(
+        /^[A-Za-z\u0600-\u06FF\s]+$/,
+        "Last name must contain only letters"
+      )
+      .min(2, "Last name must be at least 2 characters")
+      .required("Last name is required"),
+
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+
+    location: Yup.string()
+      .min(2, "Location must be at least 2 characters")
+      .required("Location is required"),
+
+    mobileNumber: Yup.string()
+      .matches(/^\d{10,10}$/, "Mobile number must be between 10")
+      .required("Mobile number is required"), 
+
+    dateOfBirth: Yup.date()
+      .max(
+        new Date(Date.now() - 13 * 365 * 24 * 60 * 60 * 1000),
+        "You must be at least 13 years old"
+      )
+      .required("Date of birth is required"),
+
+    password: Yup.string()
+      .required("Password is required")
+      .min(8, "Password must be at least 8 characters")
+      .matches(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .matches(/[a-z]/, "Password must contain at least one lowercase letter")
+      .matches(/[0-9]/, "Password must contain at least one digit")
+      .matches(
+        /[@$!%*?&#^]/,
+        "Password must contain at least one special character"
+      ),
+
     password2: Yup.string()
       .oneOf([Yup.ref("password")], "Passwords do not match")
       .required("Confirm password is required"),
@@ -119,12 +156,15 @@ const Register = ({ register }) => {
         onSubmit={async (values, { setSubmitting, setFieldError }) => {
           try {
             // Ensure mobileNumber is sent as a string
-            const res = await register({ ...values, mobileNumber: String(values.mobileNumber) });
+            const res = await register({
+              ...values,
+              mobileNumber: String(values.mobileNumber),
+            });
             // console.log("Backend response:", res);
 
             if (res && Array.isArray(res.errors)) {
               let emailError = false;
-              res.errors.forEach(err => {
+              res.errors.forEach((err) => {
                 setFieldError(err.param, err.msg);
                 if (err.param === "email") {
                   emailError = true;
@@ -143,13 +183,23 @@ const Register = ({ register }) => {
 
             setFieldError("email", "Registration failed. Please try again.");
           } catch (error) {
-            setFieldError("email", "An error occurred during registration. Please try again.");
+            setFieldError(
+              "email",
+              "An error occurred during registration. Please try again."
+            );
           } finally {
             setSubmitting(false);
           }
         }}
       >
-        {({ errors, touched, handleChange, handleBlur, values, setFieldError }) => (
+        {({
+          errors,
+          touched,
+          handleChange,
+          handleBlur,
+          values,
+          setFieldError,
+        }) => (
           <Form>
             <Box sx={style}>
               <Typography
@@ -178,7 +228,7 @@ const Register = ({ register }) => {
                         fullWidth
                         error={touched.firstName && Boolean(errors.firstName)}
                         helperText={<ErrorMessage name="firstName" />}
-                      />  
+                      />
                     </Grid>
                     <Grid>
                       <Field
@@ -190,7 +240,7 @@ const Register = ({ register }) => {
                         fullWidth
                         error={touched.email && Boolean(errors.email)}
                         helperText={<ErrorMessage name="email" />}
-                        onChange={e => {
+                        onChange={(e) => {
                           handleChange(e);
                           setFieldError("email", ""); // Clear email error on change
                         }}

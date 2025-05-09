@@ -16,20 +16,26 @@ function App() {
   const handleRegister = async (values) => {
     try {
       const response = await registerUser(values);
-      // console.log("Backend response:", response.data);
-      return response.data;
+      return response.data; 
     } catch (error) {
-      // console.error("Registration error:", error);
+      
+      if (error.response && error.response.data && error.response.data.errors) {
+        return {
+          errors: error.response.data.errors, 
+        };
+      }
+  
       return {
         errors: [
           {
-            param: "email",
-            msg: "This email is existing please choose another email",
+            param: "general",
+            msg: "An unexpected error occurred. Please try again later.",
           },
         ],
       };
     }
   };
+  
 
   const handleLogin = async (values) => {
     try {
