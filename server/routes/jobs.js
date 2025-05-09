@@ -21,6 +21,7 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
+  //checkRole("company"),
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
@@ -46,11 +47,11 @@ router.post(
     .optional()
     .isIn(["full-time", "part-time", "internship", "freelance"])
     .withMessage(
-      "Job type must be one of: full-time, part-time, internship, freelance"
+      "Job type must be one of: full-time, part-time"
     ),
     check("workType")
-   .isIn(["Remote", "On-site'", "Hybrid"])
-   .withMessage("Work type must be one of: Remote, On-site, Hybrid")
+   .isIn(["Remote", "onsite", "Hybrid"])
+   .withMessage("Work type must be one of: Remote, onsite, Hybrid")
   ,check("experienceLevel")
     .optional()
     .isIn(["entry", "mid", "senior"])

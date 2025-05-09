@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    trim:true,
+    minlength:10,
+    maxlength:100,
   },
   location: {
     type: String,
@@ -36,6 +39,18 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin", "company"],
     default: "user",
   }
+  ,profilepic:{
+    type:Object,
+    default:{
+      url:"https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png",
+      publicid:null
+    }
+  },
+  bio:String,
+  
+  
+},{
+  timestamps :true,
 });
 
 export default mongoose.model("User", userSchema);

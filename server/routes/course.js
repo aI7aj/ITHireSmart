@@ -12,7 +12,7 @@ const router = express.Router();
 router.post(
   "/postCourse",
   auth,
-  checkRole("company"),
+  // checkRole("company"),
   check("courseTitle", "Course title is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
   check("startAt", "Start date is required")

@@ -10,6 +10,7 @@ import { registerUser, loginUser } from "./API";
 import Navbar from "./components/Navbar";
 import JobDetails from "./components/JobDetails";
 import NotFoundPage from "./components/NotFound404";
+import Courses from "./components/Courses";
 function App() {
   const location = useLocation();
   const handleRegister = async (values) => {
@@ -19,6 +20,9 @@ function App() {
       return response.data;
     } catch (error) {
       // console.error("Registration error:", error);
+      if(error.response && error.response.data && error.response.data.errors){
+        return error.response.data;
+      }
       return {
         errors: [
           {
@@ -70,6 +74,7 @@ function App() {
         <Route path="/FindJob" element={<FindJob />} />
         <Route path="/job/:id" element={<JobDetails />} />
         <Route path="/404" element={<NotFoundPage />} />
+        <Route path="/courses" element={<Courses />} />
       </Routes>
     </Fragment>
   );
