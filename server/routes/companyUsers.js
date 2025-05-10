@@ -35,4 +35,15 @@ router.put("/verify/:id", async (req, res) => {
     }
 });
 
+// get all companies for admin dashboard
+router.get("/", async (req, res) => {
+    try {
+        const companies = await Company.find();
+        res.json(companies);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
 export default router;
