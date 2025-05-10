@@ -3,7 +3,7 @@ import Company from "../models/Company.js";
 
 const router = express.Router();
 
-// regestir a new company 
+// Register a new company (open to all)
 router.post("/register", async (req, res) => {
     try {
         const company = new Company(req.body);
@@ -14,7 +14,7 @@ router.post("/register", async (req, res) => {
     }
 });
 
-//  the admin verifiy the company 
+// Admin approves or denies a company
 router.put("/verify/:id", async (req, res) => {
     const { status } = req.body;
 
@@ -34,16 +34,5 @@ router.put("/verify/:id", async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
-// get all companies for admin dashboard
-router.get("/", async (req, res) => {
-    try {
-        const companies = await Company.find();
-        res.json(companies);
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 
 export default router;

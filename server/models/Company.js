@@ -8,17 +8,14 @@ const companySchema = new mongoose.Schema({
     companyNumbers: { type: String, required: true },
     location: { type: String, required: true },
     companyWebsite: { type: String, required: true },
-
-    // Contact person details for admin to verify
     contactName: { type: String, required: true },
     contactPosition: { type: String, required: true },
     contactPhoneNumber: { type: String, required: true },
-
     status: {
         type: String,
         enum: ["pending", "approved", "denied"],
         default: "pending"
-    },
-});
+    }
+}, { timestamps: true });
 
 export default mongoose.model("Company", companySchema);
