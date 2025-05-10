@@ -5,12 +5,12 @@ import {check} from "express-validator";
   check("firstName")
   .notEmpty().withMessage("First name is required")
   .bail()
-  .isLength( {min:4,max:15, }).withMessage("First name must be between 4 and 15 characters"),
+  .isLength( {min:3,max:15, }).withMessage("First name must be between 4 and 15 characters"),
 
   check("lastName")
   .notEmpty().withMessage("Last name is required")
   .bail()
-  .isLength({ min:4,max:15,}).withMessage("Last name must be between 4 and 15 characters"),
+  .isLength({ min:3,max:15,}).withMessage("Last name must be between 4 and 15 characters"),
 
   check("password")
   .notEmpty()
