@@ -37,11 +37,11 @@ const Navbar = () => {
               color: "inherit",
               textDecoration: "none",
               flexGrow: 0,
-              fontFamily: "Poppins",
+              fontFamily: "Geist",
               fontWeight: 600,
             }}
           >
-            IT HireSmart
+            ITHireSmart
           </Typography>
 
           {/* Desktop Navigation*/}

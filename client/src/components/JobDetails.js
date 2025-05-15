@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getJobById } from "../API";
 import {
   Card,
+  CircularProgress,
   Typography,
   Box,
   Button,
@@ -34,7 +35,25 @@ function JobDetails() {
   }, [id]);
 
   if (!job) {
-    return <Typography>Loading job details...</Typography>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "70vh",
+        }}
+      >
+        <CircularProgress size={60} thickness={5} color="primary" />
+        <Typography
+          variant="h6"
+          sx={{ marginTop: 2, fontFamily: "Poppins", color: "#555" }}
+        >
+          Loading job details...
+        </Typography>
+      </Box>
+    );
   }
 
   return (

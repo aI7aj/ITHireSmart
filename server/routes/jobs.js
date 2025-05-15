@@ -21,10 +21,7 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
-<<<<<<< HEAD
-  //checkRole("company"),
-=======
->>>>>>> 56ecb73ebdc438c3f214ef1b3bd841cde28d2887
+  checkRole("company"),
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
