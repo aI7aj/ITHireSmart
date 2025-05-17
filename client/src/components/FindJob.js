@@ -25,25 +25,11 @@ import WorkIcon from "@mui/icons-material/Work";
 import AddIcon from "@mui/icons-material/Add";
 function FindJob() {
   const getRandomLightColor = (idx) => {
-    const colors = [
-      "#FEF2F2",
-      "#ECFDF5",
-      "#F0FDF4",
-      "#FCF3FA",
-      "#FEFCE8",
-      "#EFF6FF",
-    ];
+    const colors = ["#EFF5F5"];
     return colors[idx % colors.length];
   };
   const getCardTextColor = (idx) => {
-    const darkerColors = [
-      "#e11d48",
-      "#16a34a",
-      "#0d9488",
-      "#9333ea",
-      " #d97706 ",
-      "#2563eb",
-    ];
+    const darkerColors = ["black"];
     return darkerColors[idx % darkerColors.length];
   };
 
@@ -225,7 +211,7 @@ function FindJob() {
                 justifyContent: "space-between",
                 mb: 2,
                 fontFamily: "Geist",
-                backgroundImage: "linear-gradient(to right, #7c3aed, #4338ca)",
+                background: "black",
                 mx: -2,
                 mt: -2,
                 px: 2,
@@ -253,84 +239,82 @@ function FindJob() {
               />
             </Box>
 
-            <Box sx={{ display: "flex", mb: 1, gap: 1 }}>
-              <LocationOnOutlinedIcon sx={{ color: "#7C3AED" }} />
-              <Typography>Location</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LocationOnOutlinedIcon sx={{ fontSize: 30 }} />
+              <TextField
+                label="Location"
+                fullWidth
+                size="small"
+                select
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                sx={{
+                  borderRadius: "16px",
+                  mb: 1.5,
+                  color: "black",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    "& fieldset": { borderColor: "black" },
+                    "&:hover fieldset": { borderColor: "black" },
+                    "&.Mui-focused fieldset": { borderColor: "black" },
+                    fontFamily: "Geist",
+                  },
+                  "& .MuiInputLabel-root": { color: "black" },
+                  "& .MuiInputBase-input": { color: "black" },
+                }}
+                InputLabelProps={{ style: { color: "black" } }}
+                InputProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "black" } }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="ramallah">Ramallah</MenuItem>
+                <MenuItem value="nablus">Nablus</MenuItem>
+                <MenuItem value="hebron">Hebron</MenuItem>
+                <MenuItem value="jenin">Jenin</MenuItem>
+                <MenuItem value="tulkarm">Tulkarm</MenuItem>
+                <MenuItem value="qalqilya">Qalqilya</MenuItem>
+                <MenuItem value="jericho">Jericho</MenuItem>
+                <MenuItem value="bethlehem">Bethlehem</MenuItem>
+                <MenuItem value="salfit">Salfit</MenuItem>
+                <MenuItem value="gaza">Gaza</MenuItem>
+              </TextField>
             </Box>
-            <TextField
-              label="Location"
-              fullWidth
-              size="small"
-              select
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              sx={{
-                borderRadius: "16px",
-                mb: 1.5,
-                color: "black",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  "& fieldset": { borderColor: "black" },
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                  fontFamily: "Geist",
-                },
-                "& .MuiInputLabel-root": { color: "black" },
-                "& .MuiInputBase-input": { color: "black" },
-              }}
-              InputLabelProps={{ style: { color: "black" } }}
-              InputProps={{ style: { color: "black" } }}
-              SelectProps={{ style: { color: "black" } }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="ramallah">Ramallah</MenuItem>
-              <MenuItem value="nablus">Nablus</MenuItem>
-              <MenuItem value="hebron">Hebron</MenuItem>
-              <MenuItem value="jenin">Jenin</MenuItem>
-              <MenuItem value="tulkarm">Tulkarm</MenuItem>
-              <MenuItem value="qalqilya">Qalqilya</MenuItem>
-              <MenuItem value="jericho">Jericho</MenuItem>
-              <MenuItem value="bethlehem">Bethlehem</MenuItem>
-              <MenuItem value="salfit">Salfit</MenuItem>
-              <MenuItem value="gaza">Gaza</MenuItem>
-            </TextField>
 
-            <Box sx={{ display: "flex", mb: 1, gap: 1 }}>
-              <WorkspacePremiumIcon sx={{ color: "#7C3AED" }} />
-              <Typography>Experience Level</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1, gap: 1 }}>
+              <WorkspacePremiumIcon sx={{ fontSize: 30 }} />
+              <TextField
+                label="Experience Level"
+                fullWidth
+                size="small"
+                select
+                name="experienceLevel"
+                value={filters.experienceLevel || ""}
+                onChange={handleFilterChange}
+                sx={{
+                  borderRadius: "16px",
+                  mb: 1.5,
+                  color: "black",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    "& fieldset": { borderColor: "black" },
+                    "&:hover fieldset": { borderColor: "black" },
+                    "&.Mui-focused fieldset": { borderColor: "black" },
+                    fontFamily: "Geist",
+                  },
+                  "& .MuiInputLabel-root": { color: "black" },
+                  "& .MuiInputBase-input": { color: "black" },
+                }}
+                InputLabelProps={{ style: { color: "black" } }}
+                InputProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "black" } }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="entry">Entry</MenuItem>
+                <MenuItem value="mid">Mid</MenuItem>
+                <MenuItem value="senior">Senior</MenuItem>
+              </TextField>
             </Box>
-            <TextField
-              label="Experience Level"
-              fullWidth
-              size="small"
-              select
-              name="experienceLevel"
-              value={filters.experienceLevel || ""}
-              onChange={handleFilterChange}
-              sx={{
-                borderRadius: "16px",
-                mb: 1.5,
-                color: "black",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  "& fieldset": { borderColor: "black" },
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                  fontFamily: "Geist",
-                },
-                "& .MuiInputLabel-root": { color: "black" },
-                "& .MuiInputBase-input": { color: "black" },
-              }}
-              InputLabelProps={{ style: { color: "black" } }}
-              InputProps={{ style: { color: "black" } }}
-              SelectProps={{ style: { color: "black" } }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="entry">Entry</MenuItem>
-              <MenuItem value="mid">Mid</MenuItem>
-              <MenuItem value="senior">Senior</MenuItem>
-            </TextField>
 
             <Box
               p={2}
@@ -339,14 +323,14 @@ function FindJob() {
             >
               <Divider sx={{ my: 1 }} />
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <AccessTimeIcon sx={{ color: "#7C3AED" }} />
+                <AccessTimeIcon />
                 <Typography variant="subtitle1">Job Type</Typography>
               </Box>
 
               <FormGroup>
                 <Box
                   sx={{
-                    background: "#f7fafd",
+                    background: "#F7F7F7FF",
                     borderRadius: "12px",
                     mb: 1.2,
                     px: 2,
@@ -375,7 +359,7 @@ function FindJob() {
                 </Box>
                 <Box
                   sx={{
-                    background: "#f7fafd",
+                    background: "#F7F7F7FF",
                     borderRadius: "12px",
                     mb: 1.2,
                     px: 2,
@@ -407,13 +391,13 @@ function FindJob() {
               <Divider sx={{ my: 2 }} />
 
               <Box sx={{ display: "flex", gap: 1 }}>
-                <WorkIcon sx={{ color: "#7C3AED" }} />
+                <WorkIcon />
                 <Typography variant="subtitle1">Work Type</Typography>
               </Box>
               <FormGroup>
                 <Box
                   sx={{
-                    background: "#f7fafd",
+                    background: "#F7F7F7FF",
                     borderRadius: "12px",
                     mb: 1.2,
                     px: 2,
@@ -442,7 +426,7 @@ function FindJob() {
                 </Box>
                 <Box
                   sx={{
-                    background: "#f7fafd",
+                    background: "#F7F7F7FF",
                     borderRadius: "12px",
                     mb: 1,
                     px: 2,
@@ -471,7 +455,7 @@ function FindJob() {
                 </Box>
                 <Box
                   sx={{
-                    background: "#f7fafd",
+                    background: "#F7F7F7FF",
                     borderRadius: "12px",
                     mb: 1.2,
                     px: 2,
@@ -507,11 +491,11 @@ function FindJob() {
                 sx={{
                   mt: 3,
                   fontFamily: "Geist",
-                  background: "linear-gradient(to right, #7c3aed, #4338ca)",
+                  background: "black",
                   color: "#fff",
                   boxShadow: "none",
                   "&:hover": {
-                    background: "linear-gradient(to right, #6d28d9, #3730a3)",
+                    background: "#2E2E2FFF",
                   },
                 }}
                 onClick={applyFilters}
@@ -529,21 +513,21 @@ function FindJob() {
               sx={{
                 display: "flex",
                 alignItems: "center",
-                bgcolor: "#F4F2FF",
+                bgcolor: "#F7F7F7FF",
                 color: "#7C3AED",
                 px: 1.5,
                 py: 0.5,
                 borderRadius: "20px",
                 fontWeight: 600,
                 fontSize: 18,
-                border: "1px solid #ddd6fe",
+                border: "1px solid #F3C623",
                 minWidth: 48,
                 justifyContent: "center",
                 fontFamily: "Geist",
               }}
             >
-              <BoltIcon sx={{ fontSize: 20, color: "#7C3AED" }} />
-              <span style={{ fontWeight: 500, fontSize: 14 }}>
+              <BoltIcon sx={{ fontSize: 20, color: "#F3C623" }} />
+              <span style={{ fontWeight: 500, fontSize: 14, color: "#F3C623" }}>
                 {jobs.length}
               </span>
               <Typography
@@ -558,7 +542,16 @@ function FindJob() {
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
-                sx={{ backgroundColor: "black", mt: 2 }}
+                sx={{
+                  mt: 3,
+                  fontFamily: "Geist",
+                  background: "black",
+                  color: "#fff",
+                  boxShadow: "none",
+                  "&:hover": {
+                    background: "black",
+                  },
+                }}
                 onClick={() => navigate("/post-job")}
               >
                 Post a Job
@@ -825,13 +818,13 @@ function FindJob() {
               shape="rounded"
               sx={{
                 "& .MuiPaginationItem-root": {
-                  color: "#4F46E5",
+                  color: "black",
                   borderColor: "#E0E7FF",
                   "&.Mui-selected": {
-                    backgroundColor: "#4F46E5",
+                    backgroundColor: "gray",
                     color: "#fff",
                     "&:hover": {
-                      backgroundColor: "#4338CA",
+                      backgroundColor: "#DFDFDF",
                     },
                   },
                 },

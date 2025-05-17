@@ -12,11 +12,7 @@ import {
   Stack,
   Avatar,
 } from "@mui/material";
-import {
-  AutoFixHighOutlined as AutoFixHighOutlinedIcon,
-  School as SchoolIcon,
-  Bolt as BoltIcon,
-} from "@mui/icons-material";
+import { School as SchoolIcon, Bolt as BoltIcon } from "@mui/icons-material";
 import { getCourses } from "../API";
 
 const COURSES_PER_PAGE = 6;
@@ -65,18 +61,7 @@ function Courses() {
     ];
     return colors[idx % colors.length];
   };
-  const getCardTextColor = (idx) => {
-    const darkerColors = [
-      "#e11d48",
-      "#16a34a",
-      "#0d9488",
-      "#9333ea",
-      " #d97706 ",
-      "#2563eb",
-    ];
-    return darkerColors[idx % darkerColors.length];
-  };
-  
+
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       {/* Header Section */}
@@ -85,9 +70,6 @@ function Courses() {
           <Typography variant="h4" fontWeight="700" color="text.primary">
             Recommended Courses
           </Typography>
-          <AutoFixHighOutlinedIcon
-            sx={{ color: "#6366F1", ml: 1, fontSize: 32 }}
-          />
         </Box>
         <Typography variant="body1" color="text.secondary">
           Handpicked learning opportunities to boost your career and skills.
@@ -101,29 +83,30 @@ function Courses() {
           sx={{
             display: "flex",
             alignItems: "center",
-            bgcolor: "#F5F3FF",
-            color: "#6366F1",
+            bgcolor: "#F7F7F7FF",
+            color: "#7C3AED",
             px: 1.5,
             py: 0.5,
             borderRadius: "20px",
             fontWeight: 600,
             fontSize: 18,
-            border: "1px solid #E0E7FF",
+            border: "1px solid #F3C623",
             minWidth: 48,
             justifyContent: "center",
+            fontFamily: "Geist",
           }}
         >
-          <BoltIcon sx={{ fontSize: 20, color: "#6366F1" }} />
-          <span style={{ fontWeight: 600, fontSize: 14 }}>
+          <BoltIcon sx={{ fontSize: 20, color: "#F3C623" }} />
+          <span style={{ fontWeight: 500, fontSize: 14, color: "#F3C623" }}>
             {courses.length}
           </span>
+          <Typography
+            variant="subtitle1"
+            sx={{ fontWeight: 500, color: "#222", fontSize: 20, ml: 1 }}
+          >
+            Number of Courses
+          </Typography>
         </Box>
-        <Typography
-          variant="subtitle1"
-          sx={{ fontWeight: 500, color: "black", fontSize: 20, ml: 1 }}
-        >
-          Number of Courses
-        </Typography>
       </Box>
 
       {/* Content Section */}
@@ -186,7 +169,7 @@ function Courses() {
                   sx={{
                     width: "100%",
                     borderRadius: "16px",
-                    background: getCardColor(idx),
+                    background: "#EFF5F5",
                     p: 2,
                     minHeight: 180,
                     boxSizing: "border-box",
@@ -223,7 +206,7 @@ function Courses() {
                     variant="h6"
                     fontWeight={700}
                     mb={2}
-                    sx={{ mt: 1, color: getCardTextColor(idx) }}
+                    sx={{ mt: 1, color: "black" }}
                   >
                     {course.courseTitle}
                   </Typography>
@@ -236,12 +219,12 @@ function Courses() {
                           size="small"
                           sx={{
                             bgcolor: "#fff",
-                            color: getCardTextColor(idx),
+                            color: "black",
                             fontWeight: 600,
                             borderRadius: "16px",
                             px: 1.5,
                             fontSize: 14,
-                            border: `1px solid ${getCardTextColor(idx)}`,
+                            border: `1px solid black`,
                           }}
                         />
                       ))}
@@ -262,8 +245,7 @@ function Courses() {
                       size="small"
                       variant="contained"
                       sx={{
-                        backgroundImage:
-                          "linear-gradient(to right, #7c3aed, #4338ca)",
+                        background: "black",
                         color: "#fff",
                         width: "100%",
                         borderRadius: "20px",

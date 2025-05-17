@@ -35,7 +35,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["user", "admin", "company"],
     default: "user",
-  }
+  },
+  /* Using AI to get This Info  */
+  education:        [String],
+  experience:       [String],
+  trainingCourses:  [String],
+  skills:           [String],
+  languages:        [String]
 });
 
 export default mongoose.model("User", userSchema);

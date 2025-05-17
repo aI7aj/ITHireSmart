@@ -16,6 +16,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useNavigate } from "react-router-dom";
+import { applyJob } from "../API";
 function JobDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -200,6 +201,17 @@ function JobDetails() {
             variant="contained"
             color="primary"
             fullWidth
+            onClick={async () => {
+              try {
+                await applyJob(id);
+                alert("Applied Successfully");
+                navigate("/FindJob");
+              } catch (error) {
+                console.log(error);
+                alert("Something went wrong");
+                navigate("/FindJob");
+              }
+            }}
             sx={{
               bgcolor: "#171923",
               color: "#fff",

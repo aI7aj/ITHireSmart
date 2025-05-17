@@ -79,6 +79,11 @@ const Login = ({ login }) => {
           const res = await login(values);
           if (res && res.token) {
             localStorage.setItem("role", res.role);
+            localStorage.setItem("firstName", res.firstName);
+            localStorage.setItem("lastName", res.lastName);
+            localStorage.setItem("email", res.email);
+            localStorage.setItem("userId", res.id);
+            
             navigator("/FindJob");
             console.log("Login successful");
           } else if (res && res.errors && Array.isArray(res.errors)) {

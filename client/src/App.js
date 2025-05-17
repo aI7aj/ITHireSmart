@@ -11,20 +11,22 @@ import Navbar from "./components/Navbar";
 import JobDetails from "./components/JobDetails";
 import NotFoundPage from "./components/NotFound404";
 import Courses from "./components/Courses";
+import PostJob from "./components/post-job";
+import UploadCvPage from "./components/UploadCvPage";
+import CompanyDashboard from "./components/Company Dashboard";
 function App() {
   const location = useLocation();
   const handleRegister = async (values) => {
     try {
       const response = await registerUser(values);
-      return response.data; 
+      return response.data;
     } catch (error) {
-      
       if (error.response && error.response.data && error.response.data.errors) {
         return {
-          errors: error.response.data.errors, 
+          errors: error.response.data.errors,
         };
       }
-  
+
       return {
         errors: [
           {
@@ -35,7 +37,6 @@ function App() {
       };
     }
   };
-  
 
   const handleLogin = async (values) => {
     try {
@@ -51,7 +52,6 @@ function App() {
     }
   };
 
-   
   const showNavbar =
     location.pathname !== "/login" &&
     location.pathname !== "/Login" &&
@@ -65,7 +65,7 @@ function App() {
     <Fragment>
       {showNavbar && <Navbar />}
       <Routes>
-      <Route path="*" element={<div>Page Not Found</div>} />
+        <Route path="*" element={<div>Page Not Found</div>} />
         <Route path="/Navbar" element={<Navbar />} />
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login login={handleLogin} />} />
@@ -78,6 +78,9 @@ function App() {
         <Route path="/job/:id" element={<JobDetails />} />
         <Route path="/404" element={<NotFoundPage />} />
         <Route path="/courses" element={<Courses />} />
+        <Route path="/post-job" element={<PostJob />} />
+        <Route path="/UploadCvPage" element={<UploadCvPage />} />
+        <Route path="/CompanyDashboard" element={<CompanyDashboard />} />
       </Routes>
     </Fragment>
   );

@@ -42,14 +42,20 @@ const jobSchema = new mongoose.Schema(
     },
     Requirements: {
       type: [String],
-      required: true
+      required: true,
     },
     Responsibilities: {
       type: [String],
     },
     experienceLevel: {
       type: String,
-    }
+    },
+    applicants: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        appliedAt: { type: Date, default: Date.now },
+      },
+    ],
   },
   { timestamps: true }
 );

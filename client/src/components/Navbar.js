@@ -1,113 +1,221 @@
-import React, { useState } from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
+import { useState, useEffect } from "react";
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Avatar,
+  Button,
+  Tooltip,
+  MenuItem,
+  useMediaQuery,
+} from "@mui/material";
+import { styled, alpha, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
+import { motion } from "framer-motion";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import SettingsIcon from "@mui/icons-material/Settings";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { Link } from "react-router-dom";
-import {getProfile} from "../API";
+
+// === Styled Components ===
+const StyledAppBar = styled(AppBar)({
+  background: "black",
+  boxShadow: "0 4px 30px rgba(0,0,0,0.1)",
+  backdropFilter: "blur(10px)",
+  borderBottom: "1px solid rgba(255,255,255,0.05)",
+});
+
+const NavButton = styled(Button)({
+  color: "white",
+  margin: "0 8px",
+  fontWeight: 500,
+  position: "relative",
+  "&:after": {
+    content: '""',
+    position: "absolute",
+    width: 0,
+    height: "2px",
+    bottom: "6px",
+    left: "50%",
+    background: "white",
+    transition: "all 0.3s ease",
+    transform: "translateX(-50%)",
+  },
+  "&:hover": {
+    backgroundColor: "transparent",
+    "&:after": { width: "60%" },
+  },
+});
+
+const Logo = styled(Typography)({
+  fontWeight: 700,
+  letterSpacing: "-0.5px",
+  background: "linear-gradient(90deg, #fff 0%, #e0e7ff 100%)",
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
+  textDecoration: "none",
+});
+
+const StyledMenu = styled(Menu)({
+  "& .MuiPaper-root": {
+    backgroundColor: "#4338ca",
+    color: "white",
+    borderRadius: 12,
+    boxShadow: "0 10px 25px rgba(0,0,0,0.2)",
+    border: "1px solid rgba(255,255,255,0.05)",
+    marginTop: 8,
+  },
+});
+
+const StyledMenuItem = styled(MenuItem)({
+  padding: "10px 20px",
+  fontSize: "14px",
+  display: "flex",
+  alignItems: "center",
+  gap: "10px",
+  transition: "0.2s ease",
+  "&:hover": { backgroundColor: alpha("#fff", 0.05) },
+});
+
+const UserAvatar = styled(Avatar)({
+  border: "2px solid rgba(255,255,255,0.2)",
+  transition: "all 0.3s ease",
+  "&:hover": { borderColor: "rgba(255,255,255,0.5)" },
+});
+
+// === Component ===
 const Navbar = () => {
-  const [navMenuAnchor, setNavMenuAnchor] = useState(null);
-  const [userMenuAnchor, setUserMenuAnchor] = useState(null);
+  const [navAnchor, setNavAnchor] = useState(null);
+  const [userAnchor, setUserAnchor] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
-  const openNavMenu = (event) => setNavMenuAnchor(event.currentTarget);
-  const closeNavMenu = () => setNavMenuAnchor(null);
+  const navItems = [
+    { name: "Find Job", path: "/FindJob" },
+    { name: "Courses", path: "/Courses" },
+    { name: "Hiring", path: "/Hiring" },
+    { name: "FAQ", path: "/faq" },
+  ];
 
-  const openUserMenu = (event) => setUserMenuAnchor(event.currentTarget);
-  const closeUserMenu = () => setUserMenuAnchor(null);
+  const userItems = [
+    { name: "Profile", icon: <AccountCircleIcon fontSize="small" /> },
+    { name: "Settings", icon: <SettingsIcon fontSize="small" /> },
+    { name: "Logout", icon: <LogoutIcon fontSize="small" /> },
+  ];
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const renderLinks = () =>
+    navItems.map((item, i) => (
+      <motion.div
+        key={item.name}
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: i * 0.1 }}
+      >
+        <Link to={item.path} style={{ textDecoration: "none" }}>
+          <NavButton>{item.name}</NavButton>
+        </Link>
+      </motion.div>
+    ));
 
   return (
-    <AppBar position="static" sx={{ background: "#000" }}>
+    <StyledAppBar
+      position="sticky"
+      sx={{ py: scrolled ? 0.5 : 1, transition: "0.3s ease" }}
+    >
       <Container maxWidth="xl">
-        <Toolbar>
+        <Toolbar sx={{ justifyContent: "space-between" }}>
           {/* Logo */}
-          <Typography
-            variant="h6"
-            component={Link}
-            to="/FindJob"
-            sx={{
-              mr: 2,
-              color: "inherit",
-              textDecoration: "none",
-              flexGrow: 0,
-              fontFamily: "Geist",
-              fontWeight: 600,
-            }}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
           >
-            ITHireSmart
-          </Typography>
+            <Link to="/FindJob" style={{ textDecoration: "none" }}>
+              <Logo variant="h5" component="span">
+                ITHireSmart
+              </Logo>
+            </Link>
+          </motion.div>
 
-          {/* Desktop Navigation*/}
-          <Box sx={{ display: { xs: "none", md: "flex" }, flexGrow: 0 }}>
-            <Button component={Link} to="/FindJob" sx={{ color: "white" }}>
-              FindJob
-            </Button>
-            <Button component={Link} to="/Courses" sx={{ color: "white" }}>
-              Courses
-            </Button>
-            <Button component={Link} to="/Hiring" sx={{ color: "white" }}>
-              Hiring
-            </Button>
-            <Button component={Link} to="/faq" sx={{ color: "white" }}>
-              FAQ
-            </Button>
-          </Box>
-
-          {/* Spacer to push avatar to the right */}
-          <Box sx={{ flexGrow: 1 }} />
+          {/* Desktop Navigation */}
+          {!isMobile && (
+            <Box sx={{ display: "flex", gap: 1 }}>{renderLinks()}</Box>
+          )}
 
           {/* Mobile Navigation */}
-          <Box sx={{ display: { xs: "flex", md: "none" }, flexGrow: 0 }}>
-            <IconButton color="inherit" onClick={openNavMenu}>
-              <MenuIcon />
-            </IconButton>
-            <Menu
-              anchorEl={navMenuAnchor}
-              open={Boolean(navMenuAnchor)}
-              onClose={closeNavMenu}
-            >
-              <MenuItem onClick={closeNavMenu} component={Link} to="/FindJob">
-                FindJob
-              </MenuItem>
-              <MenuItem onClick={closeNavMenu} component={Link} to="/Courses">
-                Courses
-              </MenuItem>
-              <MenuItem onClick={closeNavMenu} component={Link} to="/Hiring">
-                Hiring
-              </MenuItem>
-              <MenuItem onClick={closeNavMenu} component={Link} to="/faq">
-                FAQ
-              </MenuItem>
-            </Menu>
-          </Box>
-
-          {/* User Avatar and Menu */}
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={openUserMenu} sx={{ p: 0 }}>
-                <Avatar src="" alt="User" />
+          {isMobile && (
+            <>
+              <IconButton
+                onClick={(e) => setNavAnchor(e.currentTarget)}
+                color="inherit"
+              >
+                <MenuIcon />
               </IconButton>
-            </Tooltip>
-            <Menu
-              anchorEl={userMenuAnchor}
-              open={Boolean(userMenuAnchor)}
-              onClose={closeUserMenu}
+              <StyledMenu
+                anchorEl={navAnchor}
+                open={Boolean(navAnchor)}
+                onClose={() => setNavAnchor(null)}
+                anchorOrigin={{ vertical: "bottom", horizontal: "left" }}
+                transformOrigin={{ vertical: "top", horizontal: "left" }}
+              >
+                {navItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                    onClick={() => setNavAnchor(null)}
+                  >
+                    <StyledMenuItem>
+                      {item.name}
+                    </StyledMenuItem>
+                  </Link>
+                ))}
+              </StyledMenu>
+            </>
+          )}
+
+          {/* User Avatar & Menu */}
+          <Box>
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Tooltip title="Account settings">
+                <IconButton
+                  onClick={(e) => setUserAnchor(e.currentTarget)}
+                  sx={{ p: 0.5 }}
+                >
+                  <UserAvatar alt="User" src="" />
+                </IconButton>
+              </Tooltip>
+            </motion.div>
+            <StyledMenu
+              anchorEl={userAnchor}
+              open={Boolean(userAnchor)}
+              onClose={() => setUserAnchor(null)}
+              anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
             >
-              <MenuItem onClick={closeUserMenu}>Profile</MenuItem>
-              <MenuItem onClick={closeUserMenu}>Settings</MenuItem>
-              <MenuItem onClick={closeUserMenu}>Logout</MenuItem>
-            </Menu>
+              {userItems.map((item) => (
+                <StyledMenuItem
+                  key={item.name}
+                  onClick={() => setUserAnchor(null)}
+                >
+                  {item.icon} {item.name}
+                </StyledMenuItem>
+              ))}
+            </StyledMenu>
           </Box>
         </Toolbar>
       </Container>
-    </AppBar>
+    </StyledAppBar>
   );
 };
 
