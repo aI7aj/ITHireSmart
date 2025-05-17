@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   Card,
+  CircularProgress,
   Button,
   Typography,
   Box,
@@ -19,21 +20,17 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import BoltIcon from "@mui/icons-material/Bolt";
 import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
 import WorkspacePremiumIcon from "@mui/icons-material/WorkspacePremium";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import WorkIcon from "@mui/icons-material/Work";
+import AddIcon from "@mui/icons-material/Add";
 function FindJob() {
-  const getRandomLightColor = () => {
-    const lightColors = [
-      "#FFE1CB",
-      "#D5F6ED",
-      "#ECEFF5",
-      "#E3DCFA",
-      "#D5F6ED",
-      "#D8BFD8",
-      "#ADD8E6",
-      "#F0E68C",
-      "#E0EEE0",
-    ];
-    const randomIndex = Math.floor(Math.random() * lightColors.length);
-    return lightColors[randomIndex];
+  const getRandomLightColor = (idx) => {
+    const colors = ["#EFF5F5"];
+    return colors[idx % colors.length];
+  };
+  const getCardTextColor = (idx) => {
+    const darkerColors = ["black"];
+    return darkerColors[idx % darkerColors.length];
   };
 
   const [errorOpen, setErrorOpen] = useState(false);
@@ -41,7 +38,6 @@ function FindJob() {
   const [page, setPage] = useState(1);
   const jobsPerPage = 6;
   const navigate = useNavigate();
-
   const [filters, setFilters] = useState({
     keyword: "",
     location: "",
@@ -50,11 +46,17 @@ function FindJob() {
     jobTypes: [],
   });
   const [filteredJobs, setFilteredJobs] = useState([]);
+  const [userRole, setRole] = useState("");
 
   useEffect(() => {
     const fetchJobs = async () => {
       try {
         const response = await getJobs();
+        const userRole = localStorage.getItem("role");
+        console.log("User role:", userRole);
+        if (userRole) {
+          setRole(userRole);
+        }
         setJobs(response.data);
         setFilteredJobs(response.data);
       } catch (error) {
@@ -64,6 +66,28 @@ function FindJob() {
     };
     fetchJobs();
   }, [navigate]);
+
+  if (!jobs.length === 0) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "70vh",
+        }}
+      >
+        <CircularProgress size={60} thickness={5} color="primary" />
+        <Typography
+          variant="h6"
+          sx={{ marginTop: 2, fontFamily: "Poppins", color: "#555" }}
+        >
+          Loading jobs ....
+        </Typography>
+      </Box>
+    );
+  }
 
   const handlePageChange = (event, value) => {
     setPage(value);
@@ -149,6 +173,7 @@ function FindJob() {
         minHeight: "100vh",
         px: { xs: 1, sm: 2, md: 6 },
         py: { xs: 2, md: 4 },
+        fontFamily: "Geist",
       }}
     >
       <Box
@@ -157,16 +182,19 @@ function FindJob() {
           flexDirection: { xs: "column", md: "row" },
           alignItems: { xs: "stretch", md: "flex-start" },
           gap: { xs: 2, md: 3 },
+          fontFamily: "Geist",
         }}
       >
         {/* Sidebar */}
+
         <Box
           sx={{
             width: { xs: "100%", md: 320 },
             maxWidth: 400,
-            marginTop: { xs: 0, md: 8.4 },
+            marginTop: { xs: 0, md: 7.7 },
             mb: { xs: 2, md: 0 },
             alignSelf: { xs: "auto", md: "flex-start" },
+            fontFamily: "Geist",
           }}
         >
           <Card
@@ -174,167 +202,302 @@ function FindJob() {
               p: 2,
               borderRadius: 5,
               background: "",
+              fontFamily: "Geist",
             }}
           >
             <Box
-              sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                mb: 2,
+                fontFamily: "Geist",
+                background: "black",
+                mx: -2,
+                mt: -2,
+                px: 2,
+                py: 1.5,
+              }}
             >
               <Typography
                 variant="h6"
                 sx={{
-                  fontWeight: 700,
-                  color: "black",
+                  fontWeight: 600,
+                  color: "#fff",
+                  fontFamily: "Geist",
                 }}
               >
                 Filters
               </Typography>
-              <FilterAltIcon sx={{ fontSize: 28, color: "black" }} />
+              <FilterAltIcon
+                sx={{
+                  fontSize: 38,
+                  color: "#fff",
+                  bgcolor: "#fff3",
+                  borderRadius: "50%",
+                  p: 0.5,
+                }}
+              />
             </Box>
-            <Box sx={{ display: "flex", mb: 2 }}>
-              <LocationOnOutlinedIcon sx={{ color: "#7C3AED" }} />
-              <Typography>Location</Typography>
-            </Box>
-            <TextField
-              label="Location"
-              fullWidth
-              size="small"
-              select
-              name="location"
-              value={filters.location}
-              onChange={handleFilterChange}
-              sx={{
-                borderRadius: "16px",
-                mb: 1.5,
-                color: "black",
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: "12px",
-                  "& fieldset": { borderColor: "black" },
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                },
-                "& .MuiInputLabel-root": { color: "black" },
-                "& .MuiInputBase-input": { color: "black" },
-              }}
-              InputLabelProps={{ style: { color: "black" } }}
-              InputProps={{ style: { color: "black" } }}
-              SelectProps={{ style: { color: "black" } }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="ramallah">Ramallah</MenuItem>
-              <MenuItem value="nablus">Nablus</MenuItem>
-              <MenuItem value="hebron">Hebron</MenuItem>
-              <MenuItem value="jenin">Jenin</MenuItem>
-              <MenuItem value="tulkarm">Tulkarm</MenuItem>
-              <MenuItem value="qalqilya">Qalqilya</MenuItem>
-              <MenuItem value="jericho">Jericho</MenuItem>
-              <MenuItem value="bethlehem">Bethlehem</MenuItem>
-              <MenuItem value="salfit">Salfit</MenuItem>
-            </TextField>
-            <Box sx={{ display: "flex", mb: 2 }}>
-              <WorkspacePremiumIcon sx={{ color: "#7C3AED" }} />
-              <Typography>Experience Level</Typography>
-            </Box>
-            <TextField
-              label="Experience Level"
-              fullWidth
-              size="small"
-              select
-              name="experienceLevel"
-              value={filters.experienceLevel || ""}
-              onChange={handleFilterChange}
-              sx={{
-                mb: 1.5,
-                color: "black",
-                "& .MuiOutlinedInput-root": {
-                  "& fieldset": { borderColor: "black" },
-                  "&:hover fieldset": { borderColor: "black" },
-                  "&.Mui-focused fieldset": { borderColor: "black" },
-                },
-                "& .MuiInputLabel-root": { color: "black" },
-                "& .MuiInputBase-input": { color: "black" },
-              }}
-              InputLabelProps={{ style: { color: "black" } }}
-              InputProps={{ style: { color: "black" } }}
-              SelectProps={{ style: { color: "black" } }}
-            >
-              <MenuItem value="">All</MenuItem>
-              <MenuItem value="entry">Entry</MenuItem>
-              <MenuItem value="mid">Mid</MenuItem>
-              <MenuItem value="senior">Senior</MenuItem>
-            </TextField>
 
-            <Box p={2} width={300} sx={{ borderRight: "1px solid #ddd" }}>
-              <Divider sx={{ my: 2 }} />
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <LocationOnOutlinedIcon sx={{ fontSize: 30 }} />
+              <TextField
+                label="Location"
+                fullWidth
+                size="small"
+                select
+                name="location"
+                value={filters.location}
+                onChange={handleFilterChange}
+                sx={{
+                  borderRadius: "16px",
+                  mb: 1.5,
+                  color: "black",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    "& fieldset": { borderColor: "black" },
+                    "&:hover fieldset": { borderColor: "black" },
+                    "&.Mui-focused fieldset": { borderColor: "black" },
+                    fontFamily: "Geist",
+                  },
+                  "& .MuiInputLabel-root": { color: "black" },
+                  "& .MuiInputBase-input": { color: "black" },
+                }}
+                InputLabelProps={{ style: { color: "black" } }}
+                InputProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "black" } }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="ramallah">Ramallah</MenuItem>
+                <MenuItem value="nablus">Nablus</MenuItem>
+                <MenuItem value="hebron">Hebron</MenuItem>
+                <MenuItem value="jenin">Jenin</MenuItem>
+                <MenuItem value="tulkarm">Tulkarm</MenuItem>
+                <MenuItem value="qalqilya">Qalqilya</MenuItem>
+                <MenuItem value="jericho">Jericho</MenuItem>
+                <MenuItem value="bethlehem">Bethlehem</MenuItem>
+                <MenuItem value="salfit">Salfit</MenuItem>
+                <MenuItem value="gaza">Gaza</MenuItem>
+              </TextField>
+            </Box>
 
-              <Typography variant="subtitle1">Job Type</Typography>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 1, gap: 1 }}>
+              <WorkspacePremiumIcon sx={{ fontSize: 30 }} />
+              <TextField
+                label="Experience Level"
+                fullWidth
+                size="small"
+                select
+                name="experienceLevel"
+                value={filters.experienceLevel || ""}
+                onChange={handleFilterChange}
+                sx={{
+                  borderRadius: "16px",
+                  mb: 1.5,
+                  color: "black",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    "& fieldset": { borderColor: "black" },
+                    "&:hover fieldset": { borderColor: "black" },
+                    "&.Mui-focused fieldset": { borderColor: "black" },
+                    fontFamily: "Geist",
+                  },
+                  "& .MuiInputLabel-root": { color: "black" },
+                  "& .MuiInputBase-input": { color: "black" },
+                }}
+                InputLabelProps={{ style: { color: "black" } }}
+                InputProps={{ style: { color: "black" } }}
+                SelectProps={{ style: { color: "black" } }}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="entry">Entry</MenuItem>
+                <MenuItem value="mid">Mid</MenuItem>
+                <MenuItem value="senior">Senior</MenuItem>
+              </TextField>
+            </Box>
+
+            <Box
+              p={2}
+              width={300}
+              sx={{ borderRight: "1px solid #ddd", fontFamily: "Geist" }}
+            >
+              <Divider sx={{ my: 1 }} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <AccessTimeIcon />
+                <Typography variant="subtitle1">Job Type</Typography>
+              </Box>
+
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={filters.jobTypes.includes("full-time")}
-                      onChange={() =>
-                        handleMultiSelect("jobTypes", "full-time")
-                      }
-                    />
-                  }
-                  label="Full-time"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={filters.jobTypes.includes("part-time")}
-                      onChange={() =>
-                        handleMultiSelect("jobTypes", "part-time")
-                      }
-                    />
-                  }
-                  label="Part-time"
-                />
+                <Box
+                  sx={{
+                    background: "#F7F7F7FF",
+                    borderRadius: "12px",
+                    mb: 1.2,
+                    px: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={filters.jobTypes.includes("full-time")}
+                        onChange={() =>
+                          handleMultiSelect("jobTypes", "full-time")
+                        }
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#334155", fontWeight: 500 }}>
+                        Full Time
+                      </Typography>
+                    }
+                    sx={{ flex: 1, m: 0 }}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    background: "#F7F7F7FF",
+                    borderRadius: "12px",
+                    mb: 1.2,
+                    px: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={filters.jobTypes.includes("part-time")}
+                        onChange={() =>
+                          handleMultiSelect("jobTypes", "part-time")
+                        }
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#334155", fontWeight: 500 }}>
+                        Part Time
+                      </Typography>
+                    }
+                    sx={{ flex: 1, m: 0 }}
+                  />
+                </Box>
               </FormGroup>
 
               <Divider sx={{ my: 2 }} />
 
-              <Typography variant="subtitle1">Work Type</Typography>
+              <Box sx={{ display: "flex", gap: 1 }}>
+                <WorkIcon />
+                <Typography variant="subtitle1">Work Type</Typography>
+              </Box>
               <FormGroup>
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={filters.workTypes.includes("Remote")}
-                      onChange={() => handleMultiSelect("workTypes", "Remote")}
-                    />
-                  }
-                  label="Remote"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={filters.workTypes.includes("onsite")}
-                      onChange={() => handleMultiSelect("workTypes", "onsite")}
-                    />
-                  }
-                  label="Onsite"
-                />
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      size="small"
-                      checked={filters.workTypes.includes("Hybrid")}
-                      onChange={() => handleMultiSelect("workTypes", "Hybrid")}
-                    />
-                  }
-                  label="Hybrid"
-                />
+                <Box
+                  sx={{
+                    background: "#F7F7F7FF",
+                    borderRadius: "12px",
+                    mb: 1.2,
+                    px: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={filters.workTypes.includes("Remote")}
+                        onChange={() =>
+                          handleMultiSelect("workTypes", "Remote")
+                        }
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#334155", fontWeight: 500 }}>
+                        Remote
+                      </Typography>
+                    }
+                    sx={{ flex: 1, m: 0 }}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    background: "#F7F7F7FF",
+                    borderRadius: "12px",
+                    mb: 1,
+                    px: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={filters.workTypes.includes("onsite")}
+                        onChange={() =>
+                          handleMultiSelect("workTypes", "onsite")
+                        }
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#334155", fontWeight: 500 }}>
+                        On-site
+                      </Typography>
+                    }
+                    sx={{ flex: 1, m: 0 }}
+                  />
+                </Box>
+                <Box
+                  sx={{
+                    background: "#F7F7F7FF",
+                    borderRadius: "12px",
+                    mb: 1.2,
+                    px: 2,
+                    py: 1,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        size="small"
+                        checked={filters.workTypes.includes("Hybrid")}
+                        onChange={() =>
+                          handleMultiSelect("workTypes", "Hybrid")
+                        }
+                      />
+                    }
+                    label={
+                      <Typography sx={{ color: "#334155", fontWeight: 500 }}>
+                        Hybrid
+                      </Typography>
+                    }
+                    sx={{ flex: 1, m: 0 }}
+                  />
+                </Box>
               </FormGroup>
 
               <Button
                 variant="contained"
                 color="primary"
                 fullWidth
-                sx={{ mt: 3 }}
+                sx={{
+                  mt: 3,
+                  fontFamily: "Geist",
+                  background: "black",
+                  color: "#fff",
+                  boxShadow: "none",
+                  "&:hover": {
+                    background: "#2E2E2FFF",
+                  },
+                }}
                 onClick={applyFilters}
               >
                 Apply Filters
@@ -345,35 +508,57 @@ function FindJob() {
 
         {/* Main Content */}
         <Box sx={{ flex: 1, minWidth: 0 }}>
-          <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+          <Box sx={{ display: "flex", alignItems: "center", mb: 3, gap: 80 }}>
             <Box
               sx={{
                 display: "flex",
                 alignItems: "center",
-                bgcolor: "#F4F2FF",
+                bgcolor: "#F7F7F7FF",
                 color: "#7C3AED",
                 px: 1.5,
                 py: 0.5,
                 borderRadius: "20px",
                 fontWeight: 600,
                 fontSize: 18,
-                border: "1px solid #ddd6fe",
+                border: "1px solid #F3C623",
                 minWidth: 48,
                 justifyContent: "center",
+                fontFamily: "Geist",
               }}
             >
-              <BoltIcon sx={{ fontSize: 20, color: "#7C3AED" }} />
-              <span style={{ fontWeight: 600, fontSize: 14 }}>
+              <BoltIcon sx={{ fontSize: 20, color: "#F3C623" }} />
+              <span style={{ fontWeight: 500, fontSize: 14, color: "#F3C623" }}>
                 {jobs.length}
               </span>
+              <Typography
+                variant="subtitle1"
+                sx={{ fontWeight: 500, color: "#222", fontSize: 20, ml: 1 }}
+              >
+                Available positions
+              </Typography>
             </Box>
-            <Typography
-              variant="subtitle1"
-              sx={{ fontWeight: 500, color: "#222", fontSize: 20, ml: 1 }}
-            >
-              Available positions
-            </Typography>
+
+            {userRole === "company" && (
+              <Button
+                variant="contained"
+                startIcon={<AddIcon />}
+                sx={{
+                  mt: 3,
+                  fontFamily: "Geist",
+                  background: "black",
+                  color: "#fff",
+                  boxShadow: "none",
+                  "&:hover": {
+                    background: "black",
+                  },
+                }}
+                onClick={() => navigate("/post-job")}
+              >
+                Post a Job
+              </Button>
+            )}
           </Box>
+
           <Box
             sx={{
               display: "flex",
@@ -383,10 +568,11 @@ function FindJob() {
               margin: "0 auto",
               overflowX: { xs: "auto", md: "visible" },
               justifyContent: { xs: "center", md: "flex-start" },
+              fontFamily: "Geist",
             }}
           >
-            {paginatedJobs.map((job) => {
-              const randomColor = getRandomLightColor();
+            {paginatedJobs.map((job, idx) => {
+              const randomColor = getRandomLightColor(idx);
 
               return (
                 <Box
@@ -397,6 +583,7 @@ function FindJob() {
                     minWidth: "260px",
                     boxSizing: "border-box",
                     display: "flex",
+                    fontFamily: "Geist",
                   }}
                 >
                   <Card
@@ -406,21 +593,23 @@ function FindJob() {
                       border: "2px solid #ECECEC",
                       boxShadow: "0 2px 8px 0 rgba(0,0,0,0.04)",
                       background: "#fff",
-                      p: 2,
                       position: "relative",
                       display: "flex",
                       flexDirection: "column",
+                      fontFamily: "Geist",
                     }}
                   >
                     {/* Inner Card */}
+
                     <Box
                       sx={{
                         width: "100%",
-                        borderRadius: "16px",
+                        borderRadius: "16px 16px 0 0",
                         background: randomColor,
                         p: 2,
                         minHeight: 180,
                         boxSizing: "border-box",
+                        fontFamily: "Geist",
                       }}
                     >
                       {/* Company logo and name */}
@@ -439,22 +628,35 @@ function FindJob() {
                               height: "28px",
                               borderRadius: "50%",
                               objectFit: "cover",
+                              fontFamily: "Geist",
                             }}
                           />
                         </Box>
-                        <Typography
-                          variant="subtitle2"
-                          sx={{
-                            color: "#888",
-                            fontFamily: "DM Sans, Poppins, Arial",
-                            fontSize: "15px",
-                            fontWeight: 500,
-                            textTransform: "capitalize",
-                            letterSpacing: 0.1,
-                          }}
-                        >
-                          {job.company || job.companyName}
-                        </Typography>
+                        <Box>
+                          <Typography
+                            variant="subtitle2"
+                            sx={{
+                              color: "#334155",
+                              fontFamily: "DM Sans, Poppins, Arial",
+                              fontSize: "15px",
+                              fontWeight: 500,
+                              textTransform: "capitalize",
+                              letterSpacing: 0.1,
+                            }}
+                          >
+                            {job.company || job.companyName}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              fontSize: "14px",
+                              color: "#888",
+                              fontWeight: 100,
+                            }}
+                          >
+                            {job.location || "California, CA"}
+                          </Typography>
+                        </Box>
                       </Box>
                       {/* Job Title */}
                       <Typography
@@ -462,7 +664,7 @@ function FindJob() {
                         sx={{
                           fontWeight: 700,
                           mb: 1.2,
-                          color: "#171923",
+                          color: getCardTextColor(idx),
                           fontSize: "19px",
                           fontFamily: "Poppins, DM Sans, Arial",
                           textTransform: "capitalize",
@@ -488,11 +690,12 @@ function FindJob() {
                             borderRadius: "20px",
                             fontSize: 13,
                             fontWeight: 500,
-                            color: "#333",
-                            border: "1px solid #655F5F",
+                            color: getCardTextColor(idx),
+                            border: `1px solid ${getCardTextColor(idx)}`,
                             letterSpacing: 0.2,
-                            width: "40%",
+                            alignContent: "center",
                             textAlign: "start",
+                            fontFamily: "Geist",
                           }}
                         >
                           {job.jobType || "Full Time"}
@@ -504,11 +707,12 @@ function FindJob() {
                             borderRadius: "20px",
                             fontSize: 13,
                             fontWeight: 500,
-                            color: "#333",
-                            border: "1px solid #655F5F",
+                            color: getCardTextColor(idx),
+                            border: `1px solid ${getCardTextColor(idx)}`,
                             letterSpacing: 0.2,
-                            width: "40%",
+                            alignContent: "center",
                             textAlign: "start",
+                            fontFamily: "Geist",
                           }}
                         >
                           {job.workType || "Remote"}
@@ -520,78 +724,83 @@ function FindJob() {
                             borderRadius: "20px",
                             fontSize: 13,
                             fontWeight: 500,
-                            color: "#333",
-                            border: "1px solid #655F5F",
+                            color: getCardTextColor(idx),
+                            border: `1px solid ${getCardTextColor(idx)}`,
                             letterSpacing: 0.2,
                             textAlign: "start",
+                            alignContent: "center",
+                            fontFamily: "Geist",
                           }}
                         >
                           {job.experienceLevel || "Senior Level"}
                         </Box>
                       </Box>
                     </Box>
-                    {/* Salary and location */}
-                    <Box sx={{ width: "100%", px: 0.5, pt: 1 }}>
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 700,
-                            color: "#222",
-                            fontSize: "22px",
-                            mr: 0.5,
-                          }}
-                        >
-                          {job.salary ? `$${job.salary}k` : "$2.5k"}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: "#888",
-                            fontWeight: 500,
-                            fontSize: "13px",
-                            mt: "4px",
-                          }}
-                        >
-                          /{job.salaryPeriod || "Monthly"}
-                        </Typography>
-                      </Box>
+
+                    <Box sx={{ p: 2, fontFamily: "Geist" }}>
+                      {/* Salary and Button */}
                       <Box
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
+                          width: "100%",
+                          px: 0.5,
+                          pt: 1,
+                          fontFamily: "Geist",
                         }}
                       >
-                        <Typography
-                          variant="body2"
+                        <Box
                           sx={{
-                            fontSize: "20px",
-                            color: "#888",
-                            fontWeight: 100,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            fontFamily: "Geist",
                           }}
                         >
-                          {job.location || "California, CA"}
-                        </Typography>
-                        <Button
-                          size="small"
-                          variant="contained"
-                          sx={{
-                            bgcolor: "#171923",
-                            color: "#fff",
-                            borderRadius: "20px",
-                            textTransform: "none",
-                            fontWeight: 600,
-                            px: 3,
-                            fontSize: "15px",
-                            boxShadow: "none",
-                            letterSpacing: 0.2,
-                            "&:hover": { bgcolor: "#444" },
-                          }}
-                          onClick={() => navigate(`/job/${job._id}`)}
-                        >
-                          Details
-                        </Button>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              fontFamily: "Geist",
+                            }}
+                          >
+                            <Typography
+                              variant="subtitle1"
+                              sx={{
+                                fontWeight: 700,
+                                color: "#222",
+                                fontSize: "24px",
+                                mr: 0.5,
+                                fontFamily: "Geist",
+                              }}
+                            >
+                              {job.salary ? `$${job.salary}k` : "$2.5k"}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: "#888",
+                                fontWeight: 500,
+                                fontSize: "13px",
+                                mt: "4px",
+                                fontFamily: "Geist",
+                              }}
+                            >
+                              /{job.salaryPeriod || "Monthly"}
+                            </Typography>
+                          </Box>
+                          <Button
+                            size="small"
+                            variant="contained"
+                            sx={{
+                              bgcolor: getCardTextColor(idx),
+                              color: "#fff",
+                              borderRadius: "14px",
+                              fontFamily: "Geist",
+                            }}
+                            onClick={() => navigate(`/job/${job._id}`)}
+                          >
+                            Details
+                          </Button>
+                        </Box>
                       </Box>
                     </Box>
                   </Card>
@@ -607,6 +816,19 @@ function FindJob() {
               onChange={handlePageChange}
               variant="outlined"
               shape="rounded"
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "black",
+                  borderColor: "#E0E7FF",
+                  "&.Mui-selected": {
+                    backgroundColor: "gray",
+                    color: "#fff",
+                    "&:hover": {
+                      backgroundColor: "#DFDFDF",
+                    },
+                  },
+                },
+              }}
             />
           </Box>
         </Box>

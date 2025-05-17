@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { getJobById } from "../API";
 import {
   Card,
+  CircularProgress,
   Typography,
   Box,
   Button,
@@ -15,6 +16,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useNavigate } from "react-router-dom";
+import { applyJob } from "../API";
 function JobDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
@@ -34,7 +36,25 @@ function JobDetails() {
   }, [id]);
 
   if (!job) {
-    return <Typography>Loading job details...</Typography>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "70vh",
+        }}
+      >
+        <CircularProgress size={60} thickness={5} color="primary" />
+        <Typography
+          variant="h6"
+          sx={{ marginTop: 2, fontFamily: "Poppins", color: "#555" }}
+        >
+          Loading job details...
+        </Typography>
+      </Box>
+    );
   }
 
   return (
@@ -181,6 +201,17 @@ function JobDetails() {
             variant="contained"
             color="primary"
             fullWidth
+            onClick={async () => {
+              try {
+                await applyJob(id);
+                alert("Applied Successfully");
+                navigate("/FindJob");
+              } catch (error) {
+                console.log(error);
+                alert("Something went wrong");
+                navigate("/FindJob");
+              }
+            }}
             sx={{
               bgcolor: "#171923",
               color: "#fff",

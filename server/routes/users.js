@@ -5,8 +5,10 @@ import bcrypt from "bcryptjs";
 import jwt, { decode } from "jsonwebtoken";
 import config from "config";
 import auth from "../middleware/auth.js";
+
 import {registerValidator} from "../middleware/registervalidate.js"
 import validaterror from "../middleware/validationresult.js";
+
 const router = express.Router();
 
 /********************************** 
@@ -47,7 +49,7 @@ router.post(
           .status(400)
           .json({ errors: [{ param: "email", msg: "Email already exists" }] });
       }
-      
+
       user = new User({
         firstName,
         lastName,
@@ -109,7 +111,7 @@ router.post(
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password  } = req.body;
+    const { email, password } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -140,7 +142,14 @@ router.post(
           if (err) {
             throw err;
           } else {
-            res.json({ token });
+            res.json({
+              token,
+              id: user.id,
+              email: user.email,
+              role: user.role,
+              firstName: user.firstName,
+              lastName: user.lastName,
+            });
           }
         }
       );

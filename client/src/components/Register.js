@@ -242,7 +242,7 @@ const Register = ({ register }) => {
                         helperText={<ErrorMessage name="email" />}
                         onChange={(e) => {
                           handleChange(e);
-                          setFieldError("email", ""); // Clear email error on change
+                          setFieldError("email", "");
                         }}
                         onBlur={handleBlur}
                       />

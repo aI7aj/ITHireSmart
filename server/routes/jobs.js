@@ -13,7 +13,6 @@ const router = express.Router();
 5- PUT/jobs/:jobId
 */
 
-
 // @route   POST /api/postJobs
 // @desc    Create new Job
 // @access  Private (company only)
@@ -21,7 +20,11 @@ const router = express.Router();
 router.post(
   "/postJobs",
   auth,
+
+  checkRole("company"),
+
   //checkRole("company"),
+
   check("jobTitle", "Title is required").notEmpty(),
   check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
@@ -46,13 +49,11 @@ router.post(
   check("jobType")
     .optional()
     .isIn(["full-time", "part-time", "internship", "freelance"])
-    .withMessage(
-      "Job type must be one of: full-time, part-time"
-    ),
-    check("workType")
-   .isIn(["Remote", "onsite", "Hybrid"])
-   .withMessage("Work type must be one of: Remote, onsite, Hybrid")
-  ,check("experienceLevel")
+    .withMessage("Job type must be one of: full-time, part-time"),
+  check("workType")
+    .isIn(["Remote", "onsite", "Hybrid"])
+    .withMessage("Work type must be one of: Remote, onsite, Hybrid"),
+  check("experienceLevel")
     .optional()
     .isIn(["entry", "mid", "senior"])
     .withMessage("Experience level must be one of: entry, mid, senior"),
@@ -86,7 +87,7 @@ router.post(
         Responsibilities: req.body.Responsibilities,
         experienceLevel: req.body.experienceLevel,
         salary: req.body.salary,
-        workType: req.body.workType
+        workType: req.body.workType,
       });
       await job.save();
       return res.json(job);
@@ -100,7 +101,7 @@ router.post(
 // @desc    get all Jobs
 // @access  Private (company only)
 
-router.get("/",  async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     let jobsPosts = await Job.find().sort({ date: -1 });
     res.json(jobsPosts);
@@ -110,7 +111,6 @@ router.get("/",  async (req, res) => {
   }
 });
 
-
 // @route   GET /api/jobs/search?keyword=developer
 // @desc    Search jobs by title or company name (case-insensitive)
 // @access  Public (for users search)=
@@ -119,11 +119,7 @@ router.get("/search", async (req, res) => {
   try {
     const regex = new RegExp(keyword, "i"); // case-insensitive and flexible
     const jobs = await Job.find({
-      $or: [
-        { jobTitle: regex },
-        { companyName: regex },
-        { location: regex }
-      ],
+      $or: [{ jobTitle: regex }, { companyName: regex }, { location: regex }],
     }).sort({ date: -1 });
     res.json(jobs);
   } catch (error) {
@@ -131,8 +127,6 @@ router.get("/search", async (req, res) => {
     res.status(500).send("Server Error");
   }
 });
-
-
 
 // @route   GET /api/Jobs
 // @desc    get a job by id
@@ -204,27 +198,42 @@ router.put("/:jobId", auth, async (req, res) => {
   }
 });
 
+router.post("/apply/:jobId", auth, async (req, res) => {
+  try {
+    const job = await Job.findById(req.params.jobId);
+    if (!job) {
+      return res.status(404).json({ msg: "Job not found" });
+    }
+    if (job.applicants.some((applicant) => applicant.equals(req.user.id))) {
+      return res
+        .status(400)
+        .json({ msg: "You have already applied to this job" });
+    }
 
+    job.applicants.push({
+      userId: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      applicationDate: new Date(),
+    });
+    await job.save();
+    res.json({ msg: "Application submitted successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
+});
 
-
-
-// ! Ask someone about this
-// router.put("/experience/:jobId", auth, async (req, res) => {
-//   try {
-//     const job = await Job.findById(req.params.jobId);
-//     if(!job){
-//       return res.status(404).json({msg: "Job not found"});
-//     }
-//     job.experienceLevel = req.body.experienceLevel;
-
-//     await job.save();
-//     res.json(job);
-//   } catch (error) {
-//     console.error(error.message);
-//     res.status(500).send(error.message);
-//   }
-// });
-
-
+router.get("/companyJobs/:userId", async (req, res) => {
+  try {
+    const jobs = await Job.find({ user: req.params.userId }).sort({
+      date: -1,
+    });
+    res.json(jobs);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
+});
 
 export default router;

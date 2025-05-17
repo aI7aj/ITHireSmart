@@ -3,7 +3,7 @@ import { Box, TextField, Typography, Button } from "@mui/material";
 import Ellipse from "../assets/Ellipse.png";
 import Vector from "../assets/Vector.png";
 import "../App.css";
-import { Formik,Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
@@ -34,7 +34,7 @@ const ImageStyleBottomRight = {
 };
 const TextFieldStyle = {
   width: "100%",
-  mb:2,
+  mb: 2,
   maxWidth: "400px",
   height: "50px",
   borderRadius: "15px",
@@ -60,7 +60,7 @@ const ButtonStyle = {
   fontFamily: "Poppins",
 };
 
-const Login = ({login}) => {
+const Login = ({ login }) => {
   const navigator = useNavigate();
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -78,11 +78,20 @@ const Login = ({login}) => {
         try {
           const res = await login(values);
           if (res && res.token) {
+            localStorage.setItem("role", res.role);
+            localStorage.setItem("firstName", res.firstName);
+            localStorage.setItem("lastName", res.lastName);
+            localStorage.setItem("email", res.email);
+            localStorage.setItem("userId", res.id);
+            
             navigator("/FindJob");
             console.log("Login successful");
           } else if (res && res.errors && Array.isArray(res.errors)) {
             res.errors.forEach((error) => {
-              setFieldError(error.param || "email", error.msg || "Login failed");
+              setFieldError(
+                error.param || "email",
+                error.msg || "Login failed"
+              );
             });
           } else if (res && res.msg) {
             setFieldError("email", res.msg);
@@ -126,21 +135,19 @@ const Login = ({login}) => {
                 variant="outlined"
                 sx={TextFieldStyle}
                 error={touched.email && Boolean(errors.email)}
-                helperText={<ErrorMessage name="email"/>}
+                helperText={<ErrorMessage name="email" />}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                
               />
               <Field
                 name="password"
                 as={TextField}
                 type="password"
-                
                 label="Password"
                 variant="outlined"
                 sx={TextFieldStyle}
                 error={touched.password && Boolean(errors.password)}
-                helperText={<ErrorMessage name="password"/>}
+                helperText={<ErrorMessage name="password" />}
                 onChange={handleChange}
                 onBlur={handleBlur}
               />
