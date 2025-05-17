@@ -6,41 +6,31 @@ import jwt, { decode } from "jsonwebtoken";
 import config from "config";
 import auth from "../middleware/auth.js";
 
+import {registerValidator} from "../middleware/registervalidate.js"
+import validaterror from "../middleware/validationresult.js";
+
 const router = express.Router();
 
-/*
+/********************************** 
 get the request body
 validate the request body
 check if the user already exists , yes --> error // no --> create the user
 Encrypt the password
 save data in DB
 using JWT send back the response --> user id 
-*/
 
-/*
-Path : POST /api/users/register
-Desc : Register a new user
-Public
-*/
+
+@Desc : Register a new user
+@router : POST /api/users/register
+@access public
+@method POST
+*************************************/
 
 router.post(
   "/register",
-  check("firstName", "First name is required").notEmpty(),
-  check("lastName", "Last name is required").notEmpty(),
-  check("email", "Please include a valid email").isEmail(),
-  check("location", "Location is required").notEmpty(),
-  check("dateOfBirth", "Date of birth is required").notEmpty(),
-  check("mobileNumber", "Mobile number is required").notEmpty(),
-  check("mobileNumber", "Mobile number must be numeric").isNumeric(),
-  check("mobileNumber", "Mobile number must be at least 10 digits").isLength({
-    min: 10,
-  }),
-
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
+  registerValidator
+  ,validaterror
+  ,async (req, res) => {
     const {
       firstName,
       lastName,
@@ -53,7 +43,6 @@ router.post(
     } = req.body;
 
     try {
-      const { email } = req.body;
       let user = await User.findOne({ email });
       if (user) {
         return res
@@ -101,9 +90,14 @@ router.post(
 );
 
 /*
-Path : POST /api/users/login
+Path : 
 Desc : Login a user
 Public
+
+@desc : Register a new user
+@router : POST /api/users/login
+@access public
+@method POST
 */
 
 router.post(
