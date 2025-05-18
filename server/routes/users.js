@@ -90,15 +90,13 @@ router.post(
   }
 );
 
-/*
-Path : 
-Desc : Login a user
-Public
 
-@desc : Register a new user
+
+/*
+@Desc : login user
 @router : POST /api/users/login
 @access public
-@method POST
+@method  POST
 */
 
 router.post(
