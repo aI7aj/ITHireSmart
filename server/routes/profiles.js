@@ -4,7 +4,8 @@ import { check, validationResult } from "express-validator";
 import Profile from "../models/Profile.js";
 import User from "../models/User.js";
 import upload from "../utils/index.js";
-
+import { request } from "http";
+import {validateobjectid} from "../middleware/validateobjectid.js";
 
 const router = express.Router();
 
@@ -65,6 +66,20 @@ router.post(
   }
 );
 
+// uploud photo 
+
+async function uploudphoto (newphoto){
+try {
+  const {data}=await request.post('/profile-photo-uploud',newphoto);
+
+} catch (error) {
+  
+}
+
+
+}
+
+
 router.get("/me", auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id }).populate(
@@ -82,6 +97,8 @@ router.get("/me", auth, async (req, res) => {
   }
 });
 
+
+// return all users profile
 router.get("/", auth, async (req, res) => {
   try {
     const profiles = await Profile.find().populate("user", [
@@ -95,7 +112,7 @@ router.get("/", auth, async (req, res) => {
   }
 });
 
-router.get("/user/:userId", auth, async (req, res) => {
+router.get("/user/:userId", auth,validateobjectid, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.params.userId }).populate(
       "user",
@@ -173,7 +190,7 @@ router.put("/experience",
     }
 })
 
-router.delete("/experience/:expId", auth, async (req, res) => {
+router.delete("/experience/:expId", auth,validateobjectid, async (req, res) => {
   try{
     const profile = await Profile.findOne({user:req.user.id});
     profile.experience = profile.experience.filter( exp => {
@@ -216,7 +233,7 @@ router.put("/education",
     }
 })
 
-router.delete("/education/:eduId", auth, async (req, res) => {
+router.delete("/education/:eduId", auth,validateobjectid, async (req, res) => {
   try{
     const profile = await Profile.findOne({user:req.user.id});
     profile.education = profile.education.filter( edu => {
@@ -229,5 +246,7 @@ router.delete("/education/:eduId", auth, async (req, res) => {
     res.status(500).send(error.message);
   }
 });
+
+
 
 export default router;

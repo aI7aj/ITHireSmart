@@ -50,6 +50,8 @@ router.post(
           .json({ errors: [{ param: "email", msg: "Email already exists" }] });
       }
 
+      const salt = await bcrypt.genSalt(10);
+      const hashedpass=await bcrypt.hash(password, salt);
       user = new User({
         firstName,
         lastName,
@@ -57,12 +59,11 @@ router.post(
         location,
         dateOfBirth,
         mobileNumber,
-        password,
+        password:hashedpass,
         dateOfcreation: Date.now(),
         role,
       });
-      const salt = await bcrypt.genSalt(10);
-      user.password = await bcrypt.hash(password, salt);
+      
       await user.save();
       const payload = {
         user: {
@@ -149,6 +150,7 @@ router.post(
               role: user.role,
               firstName: user.firstName,
               lastName: user.lastName,
+              profilepic:user.profilepic,
             });
           }
         }
