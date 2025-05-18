@@ -4,6 +4,7 @@ import auth from "../../middleware/auth.js";
 import * as handlers from "../users/usershandlers.js"
 import {registerValidator} from "../../middleware/registervalidate.js"
 import validaterror from "../../middleware/validationresult.js";
+import checkRole from "../../middleware/checkRole.js";
 
 const router = express.Router();
 
@@ -56,5 +57,16 @@ router.route("/myprofile")
 **/
 router.route("/editinfo")
 .patch(auth,handlers.editInfo)
+
+
+
+/***
+@Path : GET /api/users/getcount
+@Desc : returns the infoemation count
+@access : Private(only admin)
+**/
+router.route("/getcount")
+.get(auth,checkRole("admin"),handlers.getcount)
+
 
 export default router;

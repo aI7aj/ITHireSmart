@@ -1,8 +1,12 @@
 import jwt, { decode } from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import User from "../../models/User.js"
+import Company from "../../models/Company.js"
+import Training from "../../models/Training.js"
+import Course from "../../models/Course.js"
+import Job from "../../models/Job.js"
+
 import config from "config";
-import validaterror from "../../middleware/validationresult.js";
 import { check, validationResult } from "express-validator";
 import Joi  from "joi"; 
 
@@ -171,4 +175,34 @@ export async function editInfo(req,res){
 
 
     
+}
+
+
+export async function getcount(req, res) {
+  try {
+    const [
+      usercount,
+      companycount,
+      jobcount,
+      traincount,
+      coursecount
+    ] = await Promise.all([
+      User.countDocuments(),
+      Company.countDocuments(),
+      Job.countDocuments(),
+      Training.countDocuments(),
+      Course.countDocuments()
+    ]);
+
+    return res.status(200).json({
+      usercount,
+      companycount,
+      jobcount,
+      traincount,
+      coursecount
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: "fetch failed" });
+  }
 }
