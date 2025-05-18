@@ -1,6 +1,6 @@
 import express from "express";
 import connectDB from "./config/db.js";
-import userRoutes from './routes/users.js';
+import userRoutes from './routes/users/usersRouts.js';
 import profileRoutes from './routes/profiles.js';
 import jobRoutes from './routes/jobs.js';
 import trainingRoutes from './routes/training.js';

@@ -9,6 +9,9 @@ import postCourseValidators from "../../middleware/coursepostvalidater.js"
 
 
 router.use(auth);
+
+
+
 // @route   GET /api/courses
 // @desc    Get all courses
 // @access  Private
