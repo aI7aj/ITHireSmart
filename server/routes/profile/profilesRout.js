@@ -1,7 +1,6 @@
 import express from "express";
 import auth from "../../middleware/auth.js";
 import { check } from "express-validator";
-import { request } from "http";
 import {validateobjectid} from "../../middleware/validateobjectid.js";
 import * as handlers from "../profile/profilesHandlers.js"
 const router = express.Router();

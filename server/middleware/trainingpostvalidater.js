@@ -1,3 +1,5 @@
+import checkRole from "../middleware/checkRole.js";
+import { check} from "express-validator";
 
 
 const trainingpostvalidater = [

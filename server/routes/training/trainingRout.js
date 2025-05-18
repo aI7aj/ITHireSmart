@@ -1,8 +1,6 @@
 import express from "express";
-import { check, validationResult } from "express-validator";
 import auth from "../../middleware/auth.js";
 import checkRole from "../../middleware/checkRole.js";
-import Training from "../../models/Training.js";
 import trainingpostvalidater from "../../middleware/trainingpostvalidater.js"
 import * as handlers from "../training/trainingHandlers.js"
 const router = express.Router();
