@@ -254,3 +254,18 @@ catch (error) {
     
   }
 
+
+  export async function getphoto(req,res){
+    try{
+    const user =await User.findById(req.user.id)
+    if(!user){
+      res.status(400).json({msg:"user not found"})
+    }else{
+    res.status(200).json({url :user.profilepic.url});
+
+
+    }
+  }catch{
+    res.status(500).json({ message: "Server error" });
+  }
+  }
