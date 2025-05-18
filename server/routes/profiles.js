@@ -116,7 +116,7 @@ router.get("/user/:userId", auth,validateobjectid, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.params.userId }).populate(
       "user",
-      ["firstName lastName"]
+      ["firstName","lastName"]
     );
 
     if (!profile) {
@@ -146,21 +146,6 @@ router.delete("/", auth, async (req, res) => {
   }
 });
 
-//TODO : Make a Test when u make the front 
-router.post("/upload",auth, async (req, res) => {
-  try {
-    upload(req , res ,async (err)=>{
-      if(err){
-        res.status(500).send(`Server Error : ${err}`);
-      }else{
-        res.status(200).send(req.uesr.id)
-      }
-    })    
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send(error.message);
-  }
-})
 
 router.put("/experience", 
   auth ,
