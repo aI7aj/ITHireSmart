@@ -18,7 +18,7 @@ const __dirname = path.dirname(__filename);
 
 
 export async function register(req, res){
-    const {
+    let {
       firstName,
       lastName,
       email,
@@ -28,7 +28,7 @@ export async function register(req, res){
       password,
       role,
     } = req.body;
-
+    email=email.toLowerCase();
     try {
       let user = await User.findOne({ email });
       if (user) {
@@ -82,8 +82,8 @@ export async function login(req, res){
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password } = req.body;
-
+    let { email, password } = req.body;
+    email=email.toLowerCase();
     try {
       let user = await User.findOne({ email });
       if (!user) {
