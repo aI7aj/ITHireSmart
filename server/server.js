@@ -3,7 +3,7 @@ import connectDB from "./config/db.js";
 import userRoutes from './routes/users/usersRouts.js';
 import profileRoutes from './routes/profile/profilesRout.js';
 import jobRoutes from './routes/jobs/jobsRout.js';
-import trainingRoutes from './routes/training.js';
+import trainingRoutes from './routes/training/trainingRout.js';
 import courseRoutes from './routes/course/courseRoutes.js';
 import companyRoutes from './routes/company/companyRouts.js';
 import cors from 'cors';
