@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt, { decode } from "jsonwebtoken";
 import config from "config";
 import auth from "../middleware/auth.js";
+import crypto from "crypto"; // to create verify token 
 
 
 const router = express.Router();
@@ -61,6 +62,8 @@ router.post(
           .status(400)
           .json({ errors: [{ param: "email", msg: "Email already exists" }] });
       }
+      // email verification token
+      const verificationToken = crypto.randomBytes(32).toString("hex");
       
       user = new User({
         firstName,
@@ -72,34 +75,98 @@ router.post(
         password,
         dateOfcreation: Date.now(),
         role,
+        emailVerified: false,
+        emailVerificationToken: verificationToken,
+        emailVerificationExpires: Date.now() + 3600000,
       });
+
+      // Hash the password
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(password, salt);
+
       await user.save();
-      const payload = {
-        user: {
-          id: user.id,
-          role: user.role,
-        },
-      };
-      jwt.sign(
-        payload,
-        config.get("jwtSecret"),
-        { expiresIn: "5days" },
-        (err, token) => {
-          if (err) {
-            throw err;
-          } else {
-            res.json({ token });
-          }
-        }
-      );
+
+      const verificationLink = `http://localhost:5000/verify/${verificationToken}`;
+      console.log("email Verification Link:", verificationLink);
+
+      res.status(201).json({ message: "User registered. Please check your email to verify your account." });
+      // const payload = {
+      //   user: {
+      //     id: user.id,
+      //     role: user.role,
+      //   },
+      // };
+      // jwt.sign(
+      //   payload,
+      //   config.get("jwtSecret"),
+      //   { expiresIn: "5days" },
+      //   (err, token) => {
+      //     if (err) {
+      //       throw err;
+      //     } else {
+      //       res.json({ token });
+      //     }
+      //   }
+      // );
     } catch (error) {
       console.error(error.message);
       res.status(500).send(error.message);
     }
   }
 );
+
+
+/*
+path -->  GET /api/users/verify/:token
+desc --> verify user email using the token
+public * 
+*/
+
+router.get("/verify/:token", async (req, res) => {
+  try {
+    const user = await User.findOne({
+      emailVerificationToken: req.params.token,
+      emailVerificationExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).send("Invalid or expired token.");
+    }
+
+    user.emailVerified = true;
+    user.emailVerificationToken = undefined;
+    user.emailVerificationExpires = undefined;
+
+    await user.save();
+
+    const payload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: "5days" },
+      (err, token) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).send("Token generation failed.");
+        }
+
+      }
+    );
+  
+    res.json({ message: "Email successfully verified!", token });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});
+
 
 /*
 Path : POST /api/users/login
