@@ -5,10 +5,15 @@ import Company from "../../models/Company.js"
 import Training from "../../models/Training.js"
 import Course from "../../models/Course.js"
 import Job from "../../models/Job.js"
-
 import config from "config";
-import { check, validationResult } from "express-validator";
+import {validationResult } from "express-validator";
 import Joi  from "joi"; 
+import path from "path"
+import { fileURLToPath } from "url";
+import * as cloudinarys from "../../utils/cloudinary.js"
+import fs from "fs"
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 
 
@@ -206,3 +211,46 @@ export async function getcount(req, res) {
     return res.status(500).json({ msg: "fetch failed" });
   }
 }
+
+
+
+export async function uploadphoto(req,res){
+  if(!req.file){
+    return res.status(404).json({msg:"error upload photo"})
+  }
+try{
+  const filepath=path.join(__dirname,`../../images/${req.file.filename}`);
+  
+  const result= await cloudinarys.cloudinaryUpload(filepath);
+
+
+  const user= await User.findById(req.user.id);
+
+  if(user.profilepic.publicid!==null){
+    await cloudinarys.cloudinaryremove(user.profilepic.publicid);
+  }
+
+  user.profilepic={
+    url:result.secure_url,
+    publicid:result.public_id,
+  }
+
+  await user.save();
+   res.status(200).json({
+    
+    msg:"photo updated seccessfully",
+    url:result.secure_url,
+    publicid:result.public_id,
+
+  });
+   fs.unlinkSync(filepath);
+
+ }
+ 
+catch (error) {
+  console.error(error); 
+  res.status(545).json({ msg: "error upload image" });
+}
+    
+  }
+

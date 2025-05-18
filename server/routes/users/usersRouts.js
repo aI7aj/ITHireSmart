@@ -5,6 +5,7 @@ import * as handlers from "../users/usershandlers.js"
 import {registerValidator} from "../../middleware/registervalidate.js"
 import validaterror from "../../middleware/validationresult.js";
 import checkRole from "../../middleware/checkRole.js";
+import photoUpload from "../../middleware/photoUpload.js"
 
 const router = express.Router();
 
@@ -68,5 +69,9 @@ router.route("/editinfo")
 router.route("/getcount")
 .get(auth,checkRole("admin"),handlers.getcount)
 
+
+
+router.route("/uploadphoto")
+.post(auth,photoUpload.single("image"),handlers.uploadphoto)
 
 export default router;
