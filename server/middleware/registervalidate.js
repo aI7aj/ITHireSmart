@@ -18,7 +18,7 @@ import {check} from "express-validator";
   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/).withMessage("Password must be at least 8 characters and include uppercase, lowercase, number, and symbol"),
 
 
-  ,check("email", "Please include a valid email").isEmail().isLength({
+  check("email", "Please include a valid email").isEmail().isLength({
     min:10,
     max:50,
   }),
