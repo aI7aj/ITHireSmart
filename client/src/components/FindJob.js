@@ -13,7 +13,7 @@ import {
   Divider,
   FormGroup,
 } from "@mui/material";
-import { getJobs } from "../API";
+import { getJobs } from "../API/jobsAPI";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -53,12 +53,14 @@ function FindJob() {
       try {
         const response = await getJobs();
         const userRole = localStorage.getItem("role");
-        console.log("User role:", userRole);
+        // console.log("User role:", userRole);
+        const visibleJobs = response.data.filter((job) => !job.isHidden);
         if (userRole) {
           setRole(userRole);
         }
-        setJobs(response.data);
-        setFilteredJobs(response.data);
+        setJobs(visibleJobs);
+        setFilteredJobs(visibleJobs);
+        console.log("Jobs:", visibleJobs.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         navigate("/404");

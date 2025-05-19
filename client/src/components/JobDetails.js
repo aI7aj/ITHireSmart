@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getJobById } from "../API";
+import { getJobById } from "../API/jobsAPI";
 import {
   Card,
   CircularProgress,
@@ -9,6 +9,8 @@ import {
   Button,
   Chip,
   Avatar,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import WorkIcon from "@mui/icons-material/Work";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
@@ -16,11 +18,39 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useNavigate } from "react-router-dom";
-import { applyJob } from "../API";
+import { applyJob } from "../API/jobsAPI";
 function JobDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [job, setJob] = useState(null);
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+  const handleClose = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
+  const handleApply = async () => {
+    try {
+      await applyJob(id);
+      setSnackbar({
+        open: true,
+        message: "Applied Successfully",
+        severity: "success",
+      });
+      setTimeout(() => {
+        navigate("/FindJob");
+      }, 1500);
+    } catch (error) {
+      console.log(error);
+      const msg = error.response?.data?.msg || "Something went wrong";
+      setSnackbar({ open: true, message: msg, severity: "error" });
+      setTimeout(() => {
+        navigate("/FindJob");
+      }, 1500);
+    }
+  };
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -197,21 +227,13 @@ function JobDetails() {
         </Typography>
 
         <Box sx={{ mt: 5 }}>
+
+          
           <Button
             variant="contained"
             color="primary"
             fullWidth
-            onClick={async () => {
-              try {
-                await applyJob(id);
-                alert("Applied Successfully");
-                navigate("/FindJob");
-              } catch (error) {
-                console.log(error);
-                alert("Something went wrong");
-                navigate("/FindJob");
-              }
-            }}
+            onClick={handleApply}
             sx={{
               bgcolor: "#171923",
               color: "#fff",
@@ -225,7 +247,23 @@ function JobDetails() {
           >
             Apply Now
           </Button>
+
+
         </Box>
+        <Snackbar
+          open={snackbar.open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.severity}
+            sx={{ width: "120%" , height:"120%" }}
+          >
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
       </Box>
     </Card>
   );

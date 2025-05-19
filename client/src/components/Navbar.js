@@ -99,7 +99,9 @@ const Navbar = () => {
     { name: "Find Job", path: "/FindJob" },
     { name: "Courses", path: "/Courses" },
     { name: "Hiring", path: "/Hiring" },
-    { name: "FAQ", path: "/faq" },
+    ...(localStorage.getItem("role") === "company"
+      ? [{ name: "Dashboard", path: "/CompanyDashboard" }]
+      : []),
   ];
 
   const userItems = [
@@ -175,9 +177,7 @@ const Navbar = () => {
                     style={{ textDecoration: "none", color: "inherit" }}
                     onClick={() => setNavAnchor(null)}
                   >
-                    <StyledMenuItem>
-                      {item.name}
-                    </StyledMenuItem>
+                    <StyledMenuItem>{item.name}</StyledMenuItem>
                   </Link>
                 ))}
               </StyledMenu>
@@ -192,7 +192,6 @@ const Navbar = () => {
                   onClick={(e) => setUserAnchor(e.currentTarget)}
                   sx={{ p: 0.5 }}
                 >
-                  <UserAvatar alt="User" src="" />
                 </IconButton>
               </Tooltip>
             </motion.div>

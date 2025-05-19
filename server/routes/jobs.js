@@ -84,6 +84,7 @@ router.post(
         experienceLevel: req.body.experienceLevel,
         salary: req.body.salary,
         workType: req.body.workType,
+        isHidden: false,
       });
       await job.save();
       return res.json(job);
@@ -200,7 +201,11 @@ router.post("/apply/:jobId", auth, async (req, res) => {
     if (!job) {
       return res.status(404).json({ msg: "Job not found" });
     }
-    if (job.applicants.some((applicant) => applicant.equals(req.user.id))) {
+    if (
+      job.applicants.some(
+        (applicant) => applicant.userId.toString() === req.user.id
+      )
+    ) {
       return res
         .status(400)
         .json({ msg: "You have already applied to this job" });
@@ -232,4 +237,35 @@ router.get("/companyJobs/:userId", async (req, res) => {
   }
 });
 
+router.patch("/:id/hide", async (req, res) => {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { isHidden: true },
+      { new: true }
+    );
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.status(200).json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+router.patch("/:id/unhide", async (req, res) => {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { isHidden: false },
+      { new: true }
+    );
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.status(200).json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 export default router;
