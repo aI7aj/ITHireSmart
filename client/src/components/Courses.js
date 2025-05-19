@@ -13,7 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { School as SchoolIcon, Bolt as BoltIcon } from "@mui/icons-material";
-import { getCourses } from "../API";
+import { getCourses } from "../API/API";
 
 const COURSES_PER_PAGE = 6;
 

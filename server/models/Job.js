@@ -50,12 +50,17 @@ const jobSchema = new mongoose.Schema(
     experienceLevel: {
       type: String,
     },
+    isHidden: {
+      type: Boolean,
+      default: false,
+    },
     applicants: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         appliedAt: { type: Date, default: Date.now },
       },
     ],
+    
   },
   { timestamps: true }
 );

@@ -16,12 +16,7 @@ export const loginUser = (values) => API.post("/users/login", values);
 export const getProfile = (id) => API.get(`/profiles/${id}`);
 export const updateProfile = (id, values) => API.put(`/profiles/${id}`, values);
 
-export const getJobs = () => API.get("/jobs");
-export const addJob = (jobData) => API.post("/jobs/postJobs", jobData);
-export const getJobById = (id) => API.get(`/jobs/${id}`);
-export const getCompanyJob = (id) => API.get(`/jobs/companyJobs/${id}`);
 
-export const applyJob = (jobId) => API.post(`/jobs/apply/${jobId}`);
 
 export const getCourses = () => API.get("/course");
 export const getCourseById = (id) => API.get(`/course/${id}`);

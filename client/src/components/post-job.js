@@ -9,21 +9,22 @@ import {
   Alert,
   Snackbar,
 } from "@mui/material";
-import { addJob } from "../API";
+import { addJob } from "../API/jobsAPI";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { Formik } from "formik";
 import * as Yup from "yup";
-
+import { useNavigate } from "react-router-dom";
 const PostJob = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-
   const [initialCompany, setInitialCompany] = useState("");
-
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmCallback, setConfirmCallback] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const firstName = localStorage.getItem("firstName");
     const lastName = localStorage.getItem("lastName");
@@ -72,24 +73,34 @@ const PostJob = () => {
       }}
       validationSchema={validationSchema}
       onSubmit={async (values, { resetForm }) => {
-        const jobData = {
-          ...values,
-          Requirements: values.requirements.split(",").map((item) => item.trim()),
-          Responsibilities: values.responsibilities.split(",").map((item) => item.trim()),
-        };
+        setShowConfirm(true);
+        setConfirmCallback(() => async () => {
+          const jobData = {
+            ...values,
+            Requirements: values.requirements
+              .split(",")
+              .map((item) => item.trim()),
+            Responsibilities: values.responsibilities
+              .split(",")
+              .map((item) => item.trim()),
+          };
 
-        try {
-          await addJob(jobData);
-          setSnackbarMessage("Job posted successfully");
-          setSnackbarSeverity("success");
-          setOpenSnackbar(true);
-          resetForm();
-        } catch (error) {
-          console.error(error);
-          setSnackbarMessage("Failed to post job");
-          setSnackbarSeverity("error");
-          setOpenSnackbar(true);
-        }
+          try {
+            await addJob(jobData);
+            setSnackbarMessage("Job posted successfully");
+            setSnackbarSeverity("success");
+            setOpenSnackbar(true);
+            resetForm();
+            setTimeout(() => {
+              navigate("/FindJob");
+            }, 1500);
+          } catch (error) {
+            console.error(error);
+            setSnackbarMessage("Failed to post job");
+            setSnackbarSeverity("error");
+            setOpenSnackbar(true);
+          }
+        });
       }}
     >
       {({
@@ -119,7 +130,7 @@ const PostJob = () => {
             sx={{ color: "black", border: "1px solid black", mb: 2 }}
             onClick={handleBack}
           >
-            &#8592; Back
+            Back
           </Button>
 
           <Typography variant="h4" gutterBottom fontWeight="bold">
@@ -187,7 +198,9 @@ const PostJob = () => {
             />
           </Box>
 
-          <Box sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2, gap: 1 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", mb: 2, mt: 2, gap: 1 }}
+          >
             <BusinessCenterIcon sx={{ fontSize: 28 }} />
             <Typography variant="h6" fontWeight="bold">
               Job Details
@@ -340,6 +353,42 @@ const PostJob = () => {
           >
             Post Job
           </Button>
+          {showConfirm && (
+            <Alert
+              severity="info"
+              sx={{
+                mt: 2,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+              action={
+                <>
+                  <Button
+                    color="success"
+                    size="small"
+                    onClick={() => {
+                      if (confirmCallback) confirmCallback();
+                    }}
+                  >
+                    Confirm
+                  </Button>
+                  <Button
+                    color="error"
+                    size="small"
+                    onClick={() => {
+                      setShowConfirm(false);
+                      setConfirmCallback(null);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </>
+              }
+            >
+              Are you sure you want to post this job?
+            </Alert>
+          )}
 
           <Snackbar
             open={openSnackbar}

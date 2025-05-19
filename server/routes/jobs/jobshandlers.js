@@ -1,40 +1,39 @@
 import { validationResult } from "express-validator";
-import Job from "../../models/Job.js"
+import Job from "../../models/Job.js";
 
-
-export async function postjob (req, res){
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-    try {
-      let job = new Job({
-        user: req.user.id,
-        jobTitle: req.body.jobTitle,
-        companyName: req.body.company,
-        location: req.body.location,
-        from: req.body.from,
-        to: req.body.to,
-        current: req.body.current,
-        jobDescription: req.body.jobDescription,
-        salaryPeriod: req.body.salaryPeriod,
-        jobType: req.body.jobType,
-        Requirements: req.body.Requirements,
-        Responsibilities: req.body.Responsibilities,
-        experienceLevel: req.body.experienceLevel,
-        salary: req.body.salary,
-        workType: req.body.workType,
-      });
-      await job.save();
-      return res.json(job);
-    } catch (error) {
-      console.error(error.message);
-      res.status(500).send(error.message);
-    }
+export async function postjob(req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+  try {
+    let job = new Job({
+      user: req.user.id,
+      jobTitle: req.body.jobTitle,
+      companyName: req.body.company,
+      location: req.body.location,
+      from: req.body.from,
+      to: req.body.to,
+      current: req.body.current,
+      jobDescription: req.body.jobDescription,
+      salaryPeriod: req.body.salaryPeriod,
+      jobType: req.body.jobType,
+      Requirements: req.body.Requirements,
+      Responsibilities: req.body.Responsibilities,
+      experienceLevel: req.body.experienceLevel,
+      salary: req.body.salary,
+      workType: req.body.workType,
+      isHidden: false,
+    });
+    await job.save();
+    return res.json(job);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
 }
 
-
- export async function showalljobs(req, res){
+export async function showalljobs(req, res) {
   try {
     let jobsPosts = await Job.find().sort({ date: -1 });
     res.json(jobsPosts);
@@ -44,8 +43,7 @@ export async function postjob (req, res){
   }
 }
 
-
- export async function searchjobbykeyword (req, res){
+export async function searchjobbykeyword(req, res) {
   const keyword = req.query.keyword || "";
   try {
     const regex = new RegExp(keyword, "i"); // case-insensitive and flexible
@@ -59,8 +57,7 @@ export async function postjob (req, res){
   }
 }
 
-
- export async function searchjobbyid (req, res){
+export async function searchjobbyid(req, res) {
   try {
     const job = await Job.findById(req.params.jobId);
     if (!job) {
@@ -73,9 +70,7 @@ export async function postjob (req, res){
   }
 }
 
-
-
- export async function deletejobbyid (req, res){
+export async function deletejobbyid(req, res) {
   try {
     const job = await Job.findById(req.params.jobId);
     if (!job) {
@@ -89,8 +84,7 @@ export async function postjob (req, res){
   }
 }
 
-
- export async function editjobbyid  (req, res){
+export async function editjobbyid(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
@@ -124,14 +118,17 @@ export async function postjob (req, res){
   }
 }
 
-
- export async function jobapply (req, res){
+export async function jobapply(req, res) {
   try {
     const job = await Job.findById(req.params.jobId);
     if (!job) {
       return res.status(404).json({ msg: "Job not found" });
     }
-    if (job.applicants.some((applicant) => applicant.equals(req.user.id))) {
+    if (
+      job.applicants.some(
+        (applicant) => applicant.userId.toString() === req.user.id
+      )
+    ) {
       return res
         .status(400)
         .json({ msg: "You have already applied to this job" });
@@ -151,9 +148,7 @@ export async function postjob (req, res){
   }
 }
 
-
-
- export async function showallmyjobs (req, res){
+export async function showallmyjobs(req, res) {
   try {
     const jobs = await Job.find({ user: req.params.userId }).sort({
       date: -1,
@@ -162,5 +157,36 @@ export async function postjob (req, res){
   } catch (error) {
     console.error(error.message);
     res.status(500).send(error.message);
+  }
+}
+
+export async function hidejob(req, res) {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { isHidden: true },
+      { new: true }
+    );
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.status(200).json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+}
+export async function unhidejob(req, res) {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { isHidden: false },
+      { new: true }
+    );
+    if (!job) {
+      return res.status(404).json({ message: "Job not found" });
+    }
+    res.status(200).json(job);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 }

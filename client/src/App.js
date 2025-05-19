@@ -6,14 +6,14 @@ import Register from "./components/Register";
 import FindJob from "./components/FindJob";
 import Authentication from "./components/Authentication";
 import { Fragment } from "react";
-import { registerUser, loginUser } from "./API";
+import { registerUser, loginUser } from "./API/API";
 import Navbar from "./components/Navbar";
 import JobDetails from "./components/JobDetails";
 import NotFoundPage from "./components/NotFound404";
 import Courses from "./components/Courses";
 import PostJob from "./components/post-job";
 import UploadCvPage from "./components/UploadCvPage";
-import CompanyDashboard from "./components/Company Dashboard";
+import CompanyDashboard from "./components/CompanyDashboard";
 function App() {
   const location = useLocation();
   const handleRegister = async (values) => {
