@@ -359,11 +359,7 @@ function CompanyDashboard() {
   const isHidden = selectedJob?.isHidden;
   const handleVisible = async (jobId, currentState) => {
     try {
-      console.log(jobId, currentState);
-
       const res = currentState ? await unhideJob(jobId) : await hideJob(jobId);
-
-      console.log(jobId, currentState);
 
       if (res.status === 200) {
         setJobs((prev) =>
@@ -979,9 +975,7 @@ function CompanyDashboard() {
                             <Button
                               size="small"
                               startIcon={<EditIcon />}
-                              onClick={() =>
-                                navigate(`/company/job/${job._id}/edit`)
-                              }
+                              onClick={() => navigate(`/jobs/${job._id}/edit`)}
                             >
                               Edit
                             </Button>

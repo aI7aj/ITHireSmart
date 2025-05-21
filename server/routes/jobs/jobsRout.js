@@ -22,12 +22,12 @@ router.post("/postJobs", auth, jobPostValidater, handlers.postjob);
 // @route   GET /api/Jobs
 // @desc    get all Jobs
 // @access  Private (company only)
-router.get("/", handlers.showalljobs);
+router.get("/", auth, handlers.showalljobs);
 
 // @route   GET /api/jobs/search?keyword=developer
 // @desc    Search jobs by title or company name (case-insensitive)
 // @access  Public (for users search)=
-router.get("/search", handlers.searchjobbykeyword);
+router.get("/search", auth, handlers.searchjobbykeyword);
 
 // @route   GET /api/Jobs/:jobId
 // @desc    get a job by id
@@ -42,7 +42,7 @@ router.delete("/:jobId", auth, checkRole("company"), handlers.deletejobbyid);
 // @route   PUT /api/jobs/jobId
 // @desc    edit a job by id
 // @access  Private (company only)
-router.put("/:jobId", auth, checkRole("company"), handlers.editjobbyid);
+router.put("/:jobId/edit", auth, checkRole("company"), handlers.editjobbyid);
 
 // @route   PUT /api/jobs/apply/:jobId
 // @desc    edit a job by id
@@ -59,8 +59,14 @@ router.get(
   handlers.showallmyjobs
 );
 
+// @route   PUT /api/jobs/:id/hide
+// @desc    edit a job by id
+// @access  Private (company only)
 router.patch("/:id/hide", auth, checkRole("company"), handlers.hidejob);
 
+// @route   PUT /api/jobs/:id/unhide
+// @desc    edit a job by id
+// @access  Private (company only)
 router.patch("/:id/unhide", auth, checkRole("company"), handlers.unhidejob);
 
 export default router;

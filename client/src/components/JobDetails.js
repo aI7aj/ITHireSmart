@@ -44,11 +44,12 @@ function JobDetails() {
       }, 1500);
     } catch (error) {
       console.log(error);
-      const msg = error.response?.data?.msg || "Something went wrong";
+      const msg =
+        error.response?.data?.msg || "you are already applied for this job";
       setSnackbar({ open: true, message: msg, severity: "error" });
       setTimeout(() => {
         navigate("/FindJob");
-      }, 1500);
+      }, 2000);
     }
   };
 
@@ -222,13 +223,7 @@ function JobDetails() {
           </Typography>
         ))}
 
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-          Benefits
-        </Typography>
-
         <Box sx={{ mt: 5 }}>
-
-          
           <Button
             variant="contained"
             color="primary"
@@ -247,8 +242,6 @@ function JobDetails() {
           >
             Apply Now
           </Button>
-
-
         </Box>
         <Snackbar
           open={snackbar.open}
@@ -259,7 +252,7 @@ function JobDetails() {
           <Alert
             onClose={handleClose}
             severity={snackbar.severity}
-            sx={{ width: "120%" , height:"120%" }}
+            sx={{ width: "120%", height: "120%" }}
           >
             {snackbar.message}
           </Alert>

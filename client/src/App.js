@@ -14,6 +14,7 @@ import Courses from "./components/Courses";
 import PostJob from "./components/post-job";
 import UploadCvPage from "./components/UploadCvPage";
 import CompanyDashboard from "./components/CompanyDashboard";
+import EditJob from "./components/EditJob";
 function App() {
   const location = useLocation();
   const handleRegister = async (values) => {
@@ -27,9 +28,8 @@ function App() {
         };
       }
 
-  
       // console.error("Registration error:", error);
-      if(error.response && error.response.data && error.response.data.errors){
+      if (error.response && error.response.data && error.response.data.errors) {
         return error.response.data;
       }
 
@@ -87,6 +87,7 @@ function App() {
         <Route path="/post-job" element={<PostJob />} />
         <Route path="/UploadCvPage" element={<UploadCvPage />} />
         <Route path="/CompanyDashboard" element={<CompanyDashboard />} />
+        <Route path="/jobs/:id/edit" element={<EditJob />} />
       </Routes>
     </Fragment>
   );
