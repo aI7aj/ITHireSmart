@@ -359,11 +359,7 @@ function CompanyDashboard() {
   const isHidden = selectedJob?.isHidden;
   const handleVisible = async (jobId, currentState) => {
     try {
-      console.log(jobId, currentState);
-
       const res = currentState ? await unhideJob(jobId) : await hideJob(jobId);
-
-      console.log(jobId, currentState);
 
       if (res.status === 200) {
         setJobs((prev) =>
@@ -474,9 +470,9 @@ function CompanyDashboard() {
                 Manage your job postings and track applicant progress
               </Typography>
 
-              <Grid container spacing={3} sx={{ mt: 2 }}>
+              <Grid container spacing={3} sx={{ mt: 2 }} columns={12}>
                 {stats.map((stat, index) => (
-                  <Grid item xs={12} sm={4} key={index}>
+                  <Grid columns={{ xs: 12, sm: 4 }} key={index}>
                     <Box
                       sx={{
                         display: "flex",
@@ -654,7 +650,7 @@ function CompanyDashboard() {
             ) : (
               <Grid container spacing={3}>
                 {jobs.map((job) => (
-                  <Grid item xs={12} key={job._id}>
+                  <Grid columns={12} key={job._id}>
                     <Card
                       sx={{
                         opacity: job.isHidden ? 0.5 : 1,
@@ -702,6 +698,7 @@ function CompanyDashboard() {
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
+                                  component="span"
                                 >
                                   <Badge
                                     badgeContent={job.applicants.length}
@@ -718,6 +715,7 @@ function CompanyDashboard() {
                                     <Typography
                                       variant="body2"
                                       color="text.secondary"
+                                      component="span"
                                       sx={{ mr: 2 }}
                                     >
                                       Applicants
@@ -979,9 +977,7 @@ function CompanyDashboard() {
                             <Button
                               size="small"
                               startIcon={<EditIcon />}
-                              onClick={() =>
-                                navigate(`/company/job/${job._id}/edit`)
-                              }
+                              onClick={() => navigate(`/jobs/${job._id}/edit`)}
                             >
                               Edit
                             </Button>
