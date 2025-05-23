@@ -18,27 +18,42 @@ save data in DB
 using JWT send back the response --> user id 
 
 
-@Desc : Register a new user
+// -----------------------
+// 1) registration
+// -----------------------
+/**
 @router : POST /api/users/register
 @access public
 @method POST
 *************************************/
 router.route("/register")
-.post(registerValidator,validaterror,handlers.register)
+  .post(
+    registerValidator,
+    validaterror,
+    handlers.register
+  );
 
-
+// -----------------------
+// 2) Email Verification
+// -----------------------
 /**
-@Desc : login user
-@router : POST /api/users/login
-@access public
-@method  POST
-*/
-router.route("/login")
-.post(
-  check("email", "Please include a valid email").isEmail()
-  ,check("password", "Password must be strong").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
-  ,handlers.login
-)
+ * @route   GET /api/users/verify-email?token=...
+ * @access  Public
+ */
+router.get("/verify-email", handlers.verifyEmail);
+
+// /**
+// @Desc : login user
+// @router : POST /api/users/login
+// @access public
+// @method  POST
+// */
+// router.route("/login")
+// .post(
+//   check("email", "Please include a valid email").isEmail()
+//   ,check("password", "Password must be strong").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
+//   ,handlers.login
+// )
 
 
 /*
