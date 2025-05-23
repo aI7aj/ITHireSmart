@@ -100,8 +100,6 @@ export async function editjobbyid(req, res) {
     job.companyName = req.body.companyName;
     job.location = req.body.location;
     job.from = req.body.from;
-    job.to = req.body.to;
-    job.current = req.body.current;
     job.jobDescription = req.body.jobDescription;
     job.salaryPeriod = req.body.salaryPeriod;
     job.jobType = req.body.jobType;

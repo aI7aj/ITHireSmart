@@ -60,7 +60,6 @@ function FindJob() {
         }
         setJobs(visibleJobs);
         setFilteredJobs(visibleJobs);
-        console.log("Jobs:", visibleJobs.data);
       } catch (error) {
         console.error("Error fetching jobs:", error);
         navigate("/404");
