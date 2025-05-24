@@ -13,12 +13,18 @@ import { fileURLToPath } from "url";
 import * as cloudinarys from "../../utils/cloudinary.js"
 import fs from "fs"
 import crypto from "crypto";
-import { sendVerificationEmail } from "../../mailtrap/emails.js";
+import {
+  sendVerificationEmail,
+  sendPasswordResetEmail,
+  sendResetSuccessEmail,
+} from "../../mailtrap/emails.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-
+// -----------------------
+//  registration
+// -----------------------
 export async function register(req, res) {
   let {
     firstName,
@@ -101,8 +107,9 @@ export async function register(req, res) {
 }
 ;
 
-
-
+// -----------------------
+//  Email verification
+// -----------------------
 export async function verifyEmail(req, res) {
   const { token } = req.query;
   try {
@@ -129,10 +136,99 @@ export async function verifyEmail(req, res) {
   }
 }
 
+// -----------------------
+//  FORGOT PASSWORD
+// -----------------------
+// POST /api/users/forgot-password
+export async function forgotPassword(req, res) {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({ message: "If that email is registered, you’ll receive reset instructions." });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = resetTokenExpiresAt;
+
+    await user.save();
+
+    const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
+    await sendPasswordResetEmail(email, resetURL);
+
+  } catch (error) {
+    console.log("Error in forgotPassword ", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+}
 
 
+// -----------------------
+//  RESET PASSWORD
+// -----------------------
+// POST /api/users/reset-password?token=...
+export async function resetPassword(req, res) {
+  const { token } = req.params;
+  const { password } = req.body;
 
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpiresAt: { $gt: Date.now() }
+    });
 
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset token." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpiresAt = undefined;
+    await user.save();
+
+    await sendResetSuccessEmail(user.email);
+    res.status(200).json({ success: true, message: "Password reset link sent to your email" });
+  } catch (error) {
+    console.log("Error in forgotPassword ", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+}
+// export async function resetPassword(req, res) {
+//   const { token } = req.query;
+//   const { password: newPassword } = req.body;
+
+//   console.log("🔐 Received token:", token);
+//   console.log("🕒 Now:", new Date().toISOString());
+
+//   const user = await User.findOne({
+//     resetPasswordToken: token.trim(),
+//     resetPasswordExpiresAt: { $gt: Date.now() }
+//   });
+
+//   console.log("👤 Found user:", user);
+
+//   if (!user) {
+//     return res.status(400).json({ message: "Invalid or expired reset token." });
+//   }
+
+//   const salt = await bcrypt.genSalt(10);
+//   user.password = await bcrypt.hash(newPassword, salt);
+//   user.resetPasswordToken = undefined;
+//   user.resetPasswordExpiresAt = undefined;
+//   await user.save();
+
+//   await sendResetSuccessEmail(user.email);
+//   return res.json({ message: "Password has been reset successfully." });
+// }
+
+// -----------------------
+//  login
+// -----------------------
 export async function login(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
