@@ -1,11 +1,14 @@
-import React from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { IconButton, InputAdornment } from "@mui/material";
+import React, { useState } from "react";
 import { Box, TextField, Typography, Button } from "@mui/material";
-import Ellipse from "../assets/Ellipse.png";
-import Vector from "../assets/Vector.png";
-import "../App.css";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import Ellipse from "../../assets/Ellipse.png";
+import Vector from "../../assets/Vector.png";
+import "../../App.css";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import { FormHelperText } from "@mui/material";
 
 const style = {
   display: "flex",
@@ -34,10 +37,10 @@ const ImageStyleBottomRight = {
 };
 const TextFieldStyle = {
   width: "100%",
-  mb: 2,
   maxWidth: "400px",
   height: "50px",
   borderRadius: "15px",
+
   backgroundColor: "transparent",
   color: "#fff",
   "& label, & label.Mui-focused, & .MuiInputBase-input": { color: "#fff" },
@@ -56,11 +59,15 @@ const ButtonStyle = {
   width: "100%",
   maxWidth: "450px",
   borderRadius: "10px",
-  marginTop: "3%",
-  fontFamily: "Poppins",
+  fontFamily: "Geist",
 };
 
 const Login = ({ login }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const handleTogglePassword = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   const navigator = useNavigate();
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -83,8 +90,7 @@ const Login = ({ login }) => {
             localStorage.setItem("lastName", res.lastName);
             localStorage.setItem("email", res.email);
             localStorage.setItem("userId", res.id);
-            
-            
+
             navigator("/FindJob");
             console.log("Login successful");
           } else if (res && res.errors && Array.isArray(res.errors)) {
@@ -118,40 +124,88 @@ const Login = ({ login }) => {
             <Box sx={style}>
               <Typography
                 variant="h2"
-                sx={{ fontFamily: "Poppins", textAlign: "center" }}
+                sx={{ fontFamily: "Geist", textAlign: "center" }}
               >
                 Login
               </Typography>
               <Typography
                 variant="h6"
-                sx={{ fontFamily: "Poppins", textAlign: "center" }}
+                sx={{ fontFamily: "Geist", textAlign: "center" }}
               >
                 Please enter your Email and your Password
               </Typography>
 
-              <Field
-                name="email"
-                as={TextField}
-                label="Email"
-                variant="outlined"
-                sx={TextFieldStyle}
-                error={touched.email && Boolean(errors.email)}
-                helperText={<ErrorMessage name="email" />}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
-              <Field
-                name="password"
-                as={TextField}
-                type="password"
-                label="Password"
-                variant="outlined"
-                sx={TextFieldStyle}
-                error={touched.password && Boolean(errors.password)}
-                helperText={<ErrorMessage name="password" />}
-                onChange={handleChange}
-                onBlur={handleBlur}
-              />
+              <Box sx={{ width: "100%", maxWidth: "400px" }}>
+                <Field
+                  name="email"
+                  as={TextField}
+                  label="Email"
+                  variant="outlined"
+                  sx={TextFieldStyle}
+                  error={touched.email && Boolean(errors.email)}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                />
+                {touched.email && errors.email && (
+                  <FormHelperText sx={{ color: "red", mt: 1 }}>
+                    {errors.email}
+                  </FormHelperText>
+                )}
+              </Box>
+
+              <Box
+                sx={{
+                  width: "100%",
+                  maxWidth: "400px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 1.5,
+                }}
+              >
+                <Field
+                  name="password"
+                  as={TextField}
+                  type={showPassword ? "text" : "password"}
+                  label="Password"
+                  variant="outlined"
+                  sx={TextFieldStyle}
+                  error={touched.password && Boolean(errors.password)}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleTogglePassword}
+                          edge="end"
+                          sx={{ color: "white" }}
+                        >
+                          {showPassword ? <Visibility /> : <VisibilityOff />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Typography
+                  variant="body2"
+                  sx={{ fontFamily: "Geist", textAlign: "center", mt: 1 }}
+                >
+                  Forgot Password?{" "}
+                  <Button
+                    onClick={() => navigator("/forgotpassword")}
+                    variant="text"
+                    sx={{
+                      color: "white",
+                      textDecoration: "underline",
+                      padding: 0,
+                      minWidth: 0,
+                    }}
+                  >
+                    Reset
+                  </Button>
+                </Typography>
+              </Box>
 
               <Button
                 type="submit"
@@ -162,6 +216,19 @@ const Login = ({ login }) => {
               >
                 Login
               </Button>
+              <Typography
+                variant="body2"
+                sx={{ fontFamily: "Geist", textAlign: "center" }}
+              >
+                Don&apos;t have an account?{" "}
+                <Button
+                  onClick={() => navigator("/register")}
+                  variant="text"
+                  sx={{ color: "white", textDecoration: "underline" }}
+                >
+                  Register
+                </Button>
+              </Typography>
 
               <img src={Ellipse} alt="Ellipse" style={ImageStyleTopLeft} />
               <img src={Vector} alt="Vector" style={ImageStyleBottomRight} />

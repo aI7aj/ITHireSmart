@@ -13,7 +13,7 @@ import {
   Divider,
   FormGroup,
 } from "@mui/material";
-import { getJobs } from "../API/jobsAPI";
+import { getJobs } from "../../API/jobsAPI";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";

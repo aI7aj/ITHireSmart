@@ -1,38 +1,35 @@
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
-import Landing from "./components/Landing";
-import Login from "./components/Login";
-import Register from "./components/Register";
-import FindJob from "./components/FindJob";
-import Authentication from "./components/Authentication";
+import Landing from "./components/pages/Landing";
+import Login from "./components/auth/Login";
+import Register from "./components/auth/Register";
+import FindJob from "./components/jobs/FindJob";
+import Authentication from "./components/auth/Authentication";
 import { Fragment } from "react";
 import { registerUser, loginUser } from "./API/API";
-import Navbar from "./components/Navbar";
-import JobDetails from "./components/JobDetails";
-import NotFoundPage from "./components/NotFound404";
-import Courses from "./components/Courses";
-import PostJob from "./components/post-job";
-import UploadCvPage from "./components/UploadCvPage";
-import CompanyDashboard from "./components/CompanyDashboard";
-import EditJob from "./components/EditJob";
+import Navbar from "./components/common/Navbar";
+import JobDetails from "./components/jobs/JobDetails";
+import NotFoundPage from "./components/pages/NotFound404";
+import Courses from "./components/pages/Courses";
+import PostJob from "./components/jobs/post-job";
+import UploadCvPage from "./components/users/UploadCvPage";
+import CompanyDashboard from "./components/jobs/CompanyDashboard";
+import EditJob from "./components/jobs/EditJob";
+import ApplicantsPage from "./components/jobs/ApplicantsPage";
+import UserProfilePage from "./components/users/UserProfilePage";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ForgotPassword from "./components/auth/forgotpassword"
 function App() {
   const location = useLocation();
+
   const handleRegister = async (values) => {
     try {
       const response = await registerUser(values);
       return response.data;
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.errors) {
-        return {
-          errors: error.response.data.errors,
-        };
+      if (error.response?.data?.errors) {
+        return { errors: error.response.data.errors };
       }
-
-      // console.error("Registration error:", error);
-      if (error.response && error.response.data && error.response.data.errors) {
-        return error.response.data;
-      }
-
       return {
         errors: [
           {
@@ -47,47 +44,50 @@ function App() {
   const handleLogin = async (values) => {
     try {
       const response = await loginUser(values);
-      if (response.data && response.data.token) {
+      if (response.data?.token) {
         localStorage.setItem("token", response.data.token);
+        localStorage.setItem("role", response.data.role);
       }
-      console.log("Backend response:", response.data);
+      // console.log("Backend response:", response.data);
       return response.data;
     } catch (error) {
-      // console.error("Login error:", error);
       return { errors: [{ param: "email", msg: "Invalid email or password" }] };
     }
   };
 
-  const showNavbar =
-    location.pathname !== "/login" &&
-    location.pathname !== "/Login" &&
-    location.pathname !== "/register" &&
-    location.pathname !== "/Register" &&
-    location.pathname !== "/" &&
-    location.pathname !== "/Authentication" &&
-    location.pathname !== "/authentication";
+  const showNavbar = !["/", "/login", "/register", "/authentication" ,"/forgotpassword"].includes(
+    location.pathname.toLowerCase()
+  );
 
   return (
     <Fragment>
       {showNavbar && <Navbar />}
       <Routes>
-        <Route path="*" element={<div>Page Not Found</div>} />
-        <Route path="/Navbar" element={<Navbar />} />
+        {/* Public Routes */}
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login login={handleLogin} />} />
         <Route
-          path="/Register"
+          path="/register"
           element={<Register register={handleRegister} />}
         />
-        <Route path="/Authentication" element={<Authentication />} />
-        <Route path="/FindJob" element={<FindJob />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/authentication" element={<Authentication />} />
+        <Route path="/findjob" element={<FindJob />} />
         <Route path="/job/:id" element={<JobDetails />} />
-        <Route path="/404" element={<NotFoundPage />} />
         <Route path="/courses" element={<Courses />} />
-        <Route path="/post-job" element={<PostJob />} />
-        <Route path="/UploadCvPage" element={<UploadCvPage />} />
-        <Route path="/CompanyDashboard" element={<CompanyDashboard />} />
-        <Route path="/jobs/:id/edit" element={<EditJob />} />
+        <Route path="/uploadcvpage" element={<UploadCvPage />} />
+        <Route path="/user/:userId" element={<UserProfilePage />} />
+
+        {/* Protected Routes for company role */}
+        <Route element={<ProtectedRoute allowedRole="company" />}>
+          <Route path="/post-job" element={<PostJob />} />
+          <Route path="/companydashboard" element={<CompanyDashboard />} />
+          <Route path="/jobs/:id/edit" element={<EditJob />} />
+          <Route path="/jobs/:jobId/applicants" element={<ApplicantsPage />} />
+        </Route>
+
+        {/* 404 Not Found */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Fragment>
   );

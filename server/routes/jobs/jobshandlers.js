@@ -124,7 +124,7 @@ export async function jobapply(req, res) {
     }
     if (
       job.applicants.some(
-        (applicant) => applicant.userId.toString() === req.user.id
+        (applicant) => applicant.user.toString() === req.user.id
       )
     ) {
       return res
@@ -133,11 +133,10 @@ export async function jobapply(req, res) {
     }
 
     job.applicants.push({
-      userId: req.user.id,
-      name: req.user.name,
-      email: req.user.email,
-      applicationDate: new Date(),
+      user: req.user.id,
+      appliedAt: new Date(),
     });
+
     await job.save();
     res.json({ msg: "Application submitted successfully" });
   } catch (error) {
@@ -186,5 +185,23 @@ export async function unhidejob(req, res) {
     res.status(200).json(job);
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+}
+
+export async function viewApplicants(req, res) {
+  try {
+    const job = await Job.findById(req.params.jobId).populate(
+      "applicants.user",
+      "firstName email profilepic"
+    );
+
+    if (!job) {
+      return res.status(404).json({ msg: "Job not found" });
+    }
+
+    res.json(job.applicants);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
   }
 }

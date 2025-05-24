@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getJobById } from "../API/jobsAPI";
+import { getJobById } from "../../API/jobsAPI";
 import {
   Card,
   CircularProgress,
@@ -18,7 +18,7 @@ import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import { useNavigate } from "react-router-dom";
-import { applyJob } from "../API/jobsAPI";
+import { applyJob } from "../../API/jobsAPI";
 function JobDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
