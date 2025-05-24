@@ -130,6 +130,7 @@ export async function myprofile(req, res) {
     console.error(error.message);
     res.status(500).send(error.message);
   }
+
 }
 
 function validateubdateinfo(obj) {
