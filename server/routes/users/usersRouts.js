@@ -1,8 +1,8 @@
-import express from "express";
-import { check} from "express-validator";
+import express, { Router } from "express";
+import { check } from "express-validator";
 import auth from "../../middleware/auth.js";
 import * as handlers from "../users/usershandlers.js"
-import {registerValidator} from "../../middleware/registervalidate.js"
+import { registerValidator } from "../../middleware/registervalidate.js"
 import validaterror from "../../middleware/validationresult.js";
 import checkRole from "../../middleware/checkRole.js";
 import photoUpload from "../../middleware/photoUpload.js"
@@ -40,7 +40,22 @@ router.route("/register")
  * @route   GET /api/users/verify-email?token=...
  * @access  Public
  */
-router.get("/verify-email", handlers.verifyEmail);
+router.route("/verify-email")
+  .get(handlers.verifyEmail);
+
+// -----------------------
+//  forgot Password
+// -----------------------
+
+router.route("/forgot-password")
+  .post(handlers.forgotPassword);
+
+// -----------------------
+//  Reset Password
+// -----------------------
+
+router.route("/reset-password")
+  .post(handlers.resetPassword);
 
 // /**
 // @Desc : login user
@@ -56,13 +71,15 @@ router.get("/verify-email", handlers.verifyEmail);
 // )
 
 
+
+
 /*
 Path : GET /api/users
 Desc : Takes a Token and returns the user information
 Private
 */
 router.route("/myprofile")
-.get(auth,handlers.myprofile)
+  .get(auth, handlers.myprofile)
 
 
 
@@ -72,7 +89,7 @@ router.route("/myprofile")
 @access : Private
 **/
 router.route("/editinfo")
-.patch(auth,handlers.editInfo)
+  .patch(auth, handlers.editInfo)
 
 
 
@@ -82,16 +99,16 @@ router.route("/editinfo")
 @access : Private(only admin)
 **/
 router.route("/getcount")
-.get(auth,checkRole("admin"),handlers.getcount)
+  .get(auth, checkRole("admin"), handlers.getcount)
 
 
 
 router.route("/uploadphoto")
-.post(auth,photoUpload.single("image"),handlers.uploadphoto)
+  .post(auth, photoUpload.single("image"), handlers.uploadphoto)
 
 
 
 router.route("/getphoto")
-.get(auth,handlers.getphoto)
+  .get(auth, handlers.getphoto)
 
 export default router;
