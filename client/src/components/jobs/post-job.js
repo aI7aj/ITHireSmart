@@ -9,7 +9,7 @@ import {
   Alert,
   Snackbar,
 } from "@mui/material";
-import { addJob } from "../API/jobsAPI";
+import { addJob } from "../../API/jobsAPI";
 import ApartmentIcon from "@mui/icons-material/Apartment";
 import BusinessCenterIcon from "@mui/icons-material/BusinessCenter";
 import ChecklistIcon from "@mui/icons-material/Checklist";

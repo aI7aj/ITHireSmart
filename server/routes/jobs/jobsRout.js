@@ -47,7 +47,8 @@ router.put("/:jobId/edit", auth, checkRole("company"), handlers.editjobbyid);
 // @route   PUT /api/jobs/apply/:jobId
 // @desc    edit a job by id
 // @access  public
-router.post("/apply/:jobId", auth, checkRole("user"), handlers.jobapply);
+router.post("/apply/:jobId", auth, handlers.jobapply);
+// checkRole("user"),
 
 // @route   PUT /api/jobs/companyJobs/:userId
 // @desc    edit a job by id
@@ -68,5 +69,15 @@ router.patch("/:id/hide", auth, checkRole("company"), handlers.hidejob);
 // @desc    edit a job by id
 // @access  Private (company only)
 router.patch("/:id/unhide", auth, checkRole("company"), handlers.unhidejob);
+
+// @route   GET /api/jobs/:id/applicants
+// @desc    Get all applicants for a job
+// @access  Private (company only)
+router.get(
+  "/:jobId/applicants",
+  auth,
+  checkRole("company"),
+  handlers.viewApplicants
+);
 
 export default router;

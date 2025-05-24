@@ -19,3 +19,4 @@ export const hideJob = (id) => API.patch(`/jobs/${id}/hide`);
 export const unhideJob = (id) => API.patch(`/jobs/${id}/unhide`);
 export const applyJob = (Id) => API.post(`/jobs/apply/${Id}`);
 export const editJob = (Id, jobData) => API.put(`/jobs/${Id}/edit`, jobData);
+export const ViewApplicants = (id) => API.get(`/jobs/${id}/applicants`);

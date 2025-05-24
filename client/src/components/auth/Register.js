@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, TextField, Typography, Button, Grid } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-import Ellipse from "../assets/Ellipse.png";
-import Vector from "../assets/Vector.png";
-import "../App.css";
+import Ellipse from "../../assets/Ellipse.png";
+import Vector from "../../assets/Vector.png";
+import "../../App.css";
 import { Link } from "react-router-dom";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";

@@ -41,7 +41,7 @@ import {
   Search as SearchIcon,
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
-import { getCompanyJob, hideJob, unhideJob, deleteJob } from "../API/jobsAPI";
+import { getCompanyJob, hideJob, unhideJob, deleteJob } from "../../API/jobsAPI";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
@@ -988,7 +988,7 @@ function CompanyDashboard() {
                               size="small"
                               startIcon={<VisibilityIcon />}
                               onClick={() =>
-                                navigate(`/company/job/${job._id}/applicants`)
+                                navigate(`/jobs/${job._id}/applicants`)
                               }
                             >
                               View Applicants

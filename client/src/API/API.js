@@ -13,10 +13,10 @@ API.interceptors.request.use((config) => {
 export const registerUser = (values) => API.post("/users/register", values);
 export const loginUser = (values) => API.post("/users/login", values);
 
-export const getProfile = (id) => API.get(`/profiles/${id}`);
+export const getPhoto = () => API.get("/users/getphoto");
+
+export const getProfile = (id) => API.get(`/profiles/user/${id}`);
 export const updateProfile = (id, values) => API.put(`/profiles/${id}`, values);
-
-
 
 export const getCourses = () => API.get("/course");
 export const getCourseById = (id) => API.get(`/course/${id}`);
