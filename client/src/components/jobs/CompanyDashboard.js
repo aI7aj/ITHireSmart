@@ -41,7 +41,12 @@ import {
   Search as SearchIcon,
   FilterList as FilterListIcon,
 } from "@mui/icons-material";
-import { getCompanyJob, hideJob, unhideJob, deleteJob } from "../../API/jobsAPI";
+import {
+  getCompanyJob,
+  hideJob,
+  unhideJob,
+  deleteJob,
+} from "../../API/jobsAPI";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 
@@ -637,7 +642,7 @@ function CompanyDashboard() {
                 <Button
                   variant="contained"
                   startIcon={<AddIcon />}
-                  onClick={() => navigate("/company/add-job")}
+                  onClick={() => navigate("/post-job")}
                   sx={{
                     px: 4,
                     py: 1.5,

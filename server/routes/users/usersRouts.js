@@ -63,12 +63,13 @@ router.route("/reset-password")
 // @access public
 // @method  POST
 // */
-// router.route("/login")
-// .post(
-//   check("email", "Please include a valid email").isEmail()
-//   ,check("password", "Password must be strong").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
-//   ,handlers.login
-// )
+
+router.route("/login")
+.post(
+  check("email", "Please include a valid email").isEmail()
+  ,check("password", "Password must be strong").matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/)
+  ,handlers.login
+)
 
 
 

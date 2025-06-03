@@ -17,6 +17,8 @@ import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
+
 const PostJob = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -53,6 +55,8 @@ const PostJob = () => {
   const handleBack = () => {
     window.history.back();
   };
+  const minDate = dayjs().format("YYYY-MM-DD");
+  const maxDate = dayjs().add(1, "month").format("YYYY-MM-DD");
 
   return (
     <Formik
@@ -61,7 +65,7 @@ const PostJob = () => {
         jobTitle: "",
         company: initialCompany,
         location: "",
-        from: "",
+        from: minDate,
         jobDescription: "",
         salaryPeriod: "monthly",
         jobType: "",
@@ -170,6 +174,7 @@ const PostJob = () => {
               helperText={touched.company && errors.company}
               fullWidth
               margin="normal"
+              disabled
             />
             <TextField
               label="Location"
@@ -183,18 +188,18 @@ const PostJob = () => {
               margin="normal"
             />
             <TextField
-              label="From Date"
-              name="from"
+              fullWidth
               type="date"
+              name="from"
               value={values.from}
               onChange={handleChange}
               onBlur={handleBlur}
+              inputProps={{
+                min: minDate,
+                max: maxDate,
+              }}
               error={touched.from && Boolean(errors.from)}
               helperText={touched.from && errors.from}
-              InputLabelProps={{ shrink: true }}
-              inputProps={{ max: new Date().toISOString().split("T")[0] }}
-              fullWidth
-              margin="normal"
             />
           </Box>
 

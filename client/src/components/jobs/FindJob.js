@@ -32,6 +32,9 @@ function FindJob() {
     const darkerColors = ["black"];
     return darkerColors[idx % darkerColors.length];
   };
+  const companyName = `${localStorage.getItem("firstName") || ""} ${
+    localStorage.getItem("lastName") || ""
+  }`.trim();
 
   const [errorOpen, setErrorOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
@@ -47,24 +50,23 @@ function FindJob() {
   });
   const [filteredJobs, setFilteredJobs] = useState([]);
   const [userRole, setRole] = useState("");
-
-  useEffect(() => {
-    const fetchJobs = async () => {
-      try {
-        const response = await getJobs();
-        const userRole = localStorage.getItem("role");
-        // console.log("User role:", userRole);
-        const visibleJobs = response.data.filter((job) => !job.isHidden);
-        if (userRole) {
-          setRole(userRole);
-        }
-        setJobs(visibleJobs);
-        setFilteredJobs(visibleJobs);
-      } catch (error) {
-        console.error("Error fetching jobs:", error);
-        navigate("/404");
+  const fetchJobs = async () => {
+    try {
+      const response = await getJobs();
+      const userRole = localStorage.getItem("role");
+      // console.log("User role:", userRole);
+      const visibleJobs = response.data.filter((job) => !job.isHidden);
+      if (userRole) {
+        setRole(userRole);
       }
-    };
+      setJobs(visibleJobs);
+      setFilteredJobs(visibleJobs);
+    } catch (error) {
+      console.error("Error fetching jobs:", error);
+      navigate("/404");
+    }
+  };
+  useEffect(() => {
     fetchJobs();
   }, [navigate]);
 
@@ -160,6 +162,15 @@ function FindJob() {
 
     setFilteredJobs(filtered);
     setPage(1);
+  };
+  const clearFilters = () => {
+    setFilters({
+      location: "",
+      experienceLevel: "",
+      jobTypes: [],
+      workTypes: [],
+    });
+    fetchJobs();
   };
 
   const startIndex = (page - 1) * jobsPerPage;
@@ -503,6 +514,24 @@ function FindJob() {
               >
                 Apply Filters
               </Button>
+              <Button
+                variant="outlined"
+                fullWidth
+                sx={{
+                  mt: 1.5,
+                  fontFamily: "Geist",
+                  color: "black",
+                  borderColor: "black",
+                  boxShadow: "none",
+                  "&:hover": {
+                    background: "#f5f5f5",
+                    borderColor: "black",
+                  },
+                }}
+                onClick={clearFilters}
+              >
+                Clear Filters
+              </Button>
             </Box>
           </Card>
         </Box>
@@ -645,8 +674,9 @@ function FindJob() {
                               letterSpacing: 0.1,
                             }}
                           >
-                            {job.company || job.companyName}
+                            {job.companyName || companyName}
                           </Typography>
+
                           <Typography
                             variant="body2"
                             sx={{

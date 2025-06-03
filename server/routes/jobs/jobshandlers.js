@@ -10,11 +10,10 @@ export async function postjob(req, res) {
     let job = new Job({
       user: req.user.id,
       jobTitle: req.body.jobTitle,
-      companyName: req.body.company,
+      companyName: req.body.companyName,
       location: req.body.location,
       from: req.body.from,
       to: req.body.to,
-      current: req.body.current,
       jobDescription: req.body.jobDescription,
       salaryPeriod: req.body.salaryPeriod,
       jobType: req.body.jobType,
@@ -24,6 +23,7 @@ export async function postjob(req, res) {
       salary: req.body.salary,
       workType: req.body.workType,
       isHidden: false,
+      date: req.body.date,
     });
     await job.save();
     return res.json(job);
