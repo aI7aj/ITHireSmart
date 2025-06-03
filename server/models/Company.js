@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const companySchema = new mongoose.Schema({
+const companySchema = new mongoose.Schema(
+  {
     companyName: { type: String, required: true },
     companyDescription: { type: String, required: true },
     companyField: { type: String, required: true },
@@ -12,10 +13,12 @@ const companySchema = new mongoose.Schema({
     contactPosition: { type: String, required: true },
     contactPhoneNumber: { type: String, required: true },
     status: {
-        type: String,
-        enum: ["pending", "approved", "denied"],
-        default: "pending"
-    }
-}, { timestamps: true });
+      type: String,
+      enum: ["pending", "approved", "denied"],
+      default: "pending",
+    },
+  },
+  { timestamps: true }
+);
 
 export default mongoose.model("Company", companySchema);

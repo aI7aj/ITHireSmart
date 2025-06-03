@@ -28,6 +28,13 @@ const jobSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    from: {
+      type: Date,
+      required: true,
+    },
+    to: {
+      type: Date,
+    },
     jobType: {
       type: String,
       required: true,
@@ -60,7 +67,6 @@ const jobSchema = new mongoose.Schema(
         appliedAt: { type: Date, default: Date.now },
       },
     ],
-    
   },
   { timestamps: true }
 );

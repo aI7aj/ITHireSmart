@@ -1,5 +1,7 @@
 import "./App.css";
 import { Routes, Route, useLocation } from "react-router-dom";
+import { UserProvider } from "./utils/UserContext";
+
 import Landing from "./components/pages/Landing";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
@@ -16,9 +18,10 @@ import UploadCvPage from "./components/users/UploadCvPage";
 import CompanyDashboard from "./components/jobs/CompanyDashboard";
 import EditJob from "./components/jobs/EditJob";
 import ApplicantsPage from "./components/jobs/ApplicantsPage";
-import UserProfilePage from "./components/users/UserProfilePage";
+import MyProfile from "./components/users/MyProfile";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import ForgotPassword from "./components/auth/forgotpassword"
+import ForgotPassword from "./components/auth/forgotpassword";
+import UserSetting from "./components/users/UserSetting";
 function App() {
   const location = useLocation();
 
@@ -55,41 +58,51 @@ function App() {
     }
   };
 
-  const showNavbar = !["/", "/login", "/register", "/authentication" ,"/forgotpassword"].includes(
-    location.pathname.toLowerCase()
-  );
+  const showNavbar = ![
+    "/",
+    "/login",
+    "/register",
+    "/authentication",
+    "/forgotpassword",
+  ].includes(location.pathname.toLowerCase());
 
   return (
-    <Fragment>
-      {showNavbar && <Navbar />}
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Landing />} />
-        <Route path="/login" element={<Login login={handleLogin} />} />
-        <Route
-          path="/register"
-          element={<Register register={handleRegister} />}
-        />
-        <Route path="/forgotpassword" element={<ForgotPassword />} />
-        <Route path="/authentication" element={<Authentication />} />
-        <Route path="/findjob" element={<FindJob />} />
-        <Route path="/job/:id" element={<JobDetails />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/uploadcvpage" element={<UploadCvPage />} />
-        <Route path="/user/:userId" element={<UserProfilePage />} />
+    <UserProvider>
+      <Fragment>
+        {showNavbar && <Navbar />}
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login login={handleLogin} />} />
+          <Route
+            path="/register"
+            element={<Register register={handleRegister} />}
+          />
+          <Route path="/forgotpassword" element={<ForgotPassword />} />
+          <Route path="/authentication" element={<Authentication />} />
+          <Route path="/findjob" element={<FindJob />} />
+          <Route path="/job/:id" element={<JobDetails />} />
+          <Route path="/courses" element={<Courses />} />
+          <Route path="/uploadcvpage" element={<UploadCvPage />} />
+          <Route path="/myprofile" element={<MyProfile />} />
+          <Route path="/UserSetting" element={<UserSetting />} />
 
-        {/* Protected Routes for company role */}
-        <Route element={<ProtectedRoute allowedRole="company" />}>
-          <Route path="/post-job" element={<PostJob />} />
-          <Route path="/companydashboard" element={<CompanyDashboard />} />
-          <Route path="/jobs/:id/edit" element={<EditJob />} />
-          <Route path="/jobs/:jobId/applicants" element={<ApplicantsPage />} />
-        </Route>
+          {/* Protected Routes for company role */}
+          <Route element={<ProtectedRoute allowedRole="company" />}>
+            <Route path="/post-job" element={<PostJob />} />
+            <Route path="/companydashboard" element={<CompanyDashboard />} />
+            <Route path="/jobs/:id/edit" element={<EditJob />} />
+            <Route
+              path="/jobs/:jobId/applicants"
+              element={<ApplicantsPage />}
+            />
+          </Route>
 
-        {/* 404 Not Found */}
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </Fragment>
+          {/* 404 Not Found */}
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </Fragment>
+    </UserProvider>
   );
 }
 

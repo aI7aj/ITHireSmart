@@ -130,7 +130,13 @@ export async function addexper(req, res) {
         skills: ["none"],
       });
     } else {
-      profile.experience.unshift(req.body);
+      profile.experience.unshift({
+        title: req.body.title,
+        company: req.body.company,
+        from: req.body.from,
+        to: req.body.to,
+        description: req.body.description,
+      });
     }
 
     await profile.save();

@@ -1,6 +1,8 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { getJobById } from "../../API/jobsAPI";
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams } from "react-router-dom"
+import { getJobById } from "../../API/jobsAPI"
 import {
   Card,
   CircularProgress,
@@ -11,60 +13,71 @@ import {
   Avatar,
   Snackbar,
   Alert,
-} from "@mui/material";
-import WorkIcon from "@mui/icons-material/Work";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
-import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import { useNavigate } from "react-router-dom";
-import { applyJob } from "../../API/jobsAPI";
+  Container,
+  Stack,
+  Divider,
+} from "@mui/material"
+import {
+  Work,
+  LocationOn,
+  AccessTime,
+  MonetizationOn,
+  CalendarMonth,
+  Business,
+  CheckCircle,
+  Assignment,
+} from "@mui/icons-material"
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
+import { useNavigate } from "react-router-dom"
+import { applyJob } from "../../API/jobsAPI"
+
 function JobDetails() {
-  const navigate = useNavigate();
-  const { id } = useParams();
-  const [job, setJob] = useState(null);
+  const navigate = useNavigate()
+  const { id } = useParams()
+  const [job, setJob] = useState(null)
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
-  });
+  })
+
   const handleClose = () => {
-    setSnackbar({ ...snackbar, open: false });
-  };
+    setSnackbar({ ...snackbar, open: false })
+  }
+
   const handleApply = async () => {
     try {
-      await applyJob(id);
+      await applyJob(id)
       setSnackbar({
         open: true,
         message: "Applied Successfully",
         severity: "success",
-      });
+      })
       setTimeout(() => {
-        navigate("/FindJob");
-      }, 1500);
+        navigate("/FindJob")
+      }, 1500)
     } catch (error) {
-      console.log(error);
-      const msg =
-        error.response?.data?.msg || "you are already applied for this job";
-      setSnackbar({ open: true, message: msg, severity: "error" });
+      console.log(error)
+      const msg = error.response?.data?.msg || "you are already applied for this job"
+      setSnackbar({ open: true, message: msg, severity: "error" })
       setTimeout(() => {
-        navigate("/FindJob");
-      }, 2000);
+        navigate("/FindJob")
+      }, 2000)
     }
-  };
+  }
 
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await getJobById(id);
-        setJob(response.data);
+        const response = await getJobById(id)
+        setJob(response.data)
       } catch (error) {
-        console.error("Error fetching job:", error);
+        console.error("Error fetching job:", error)
       }
-    };
+    }
 
-    fetchJob();
-  }, [id]);
+    fetchJob()
+  }, [id])
 
   if (!job) {
     return (
@@ -74,192 +87,384 @@ function JobDetails() {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          height: "70vh",
+          minHeight: "100vh",
+          bgcolor: "#ffffff",
         }}
       >
-        <CircularProgress size={60} thickness={5} color="primary" />
-        <Typography
-          variant="h6"
-          sx={{ marginTop: 2, fontFamily: "Poppins", color: "#555" }}
-        >
+        <CircularProgress size={60} sx={{ color: "#000000" }} />
+        <Typography variant="h6" sx={{ mt: 2, color: "#666666" }}>
           Loading job details...
         </Typography>
       </Box>
-    );
+    )
   }
 
-  return (
-    <Card
+  const InfoItem = ({ icon, children, label }) => (
+    <Box
       sx={{
-        maxWidth: 1100,
-        margin: "40px auto",
-        p: 0,
-        borderRadius: 3,
-        boxShadow: 2,
-        background: "#f9fbfd",
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
+        py: 0.5,
       }}
     >
-      {/* Back Link */}
-      <Box sx={{ p: 2, pb: 0 }}>
-        <Button
-          variant="text"
-          onClick={() => navigate(-1)}
-          sx={{ textTransform: "none", color: "#1976d2", fontWeight: 500 }}
+      <Box sx={{ color: "#666666", minWidth: 24 }}>{icon}</Box>
+      <Box>
+        <Typography variant="body2" sx={{ color: "#888888", fontSize: "0.75rem" }}>
+          {label}
+        </Typography>
+        <Typography variant="body1" sx={{ color: "#000000", fontWeight: 500 }}>
+          {children}
+        </Typography>
+      </Box>
+    </Box>
+  )
+
+  const SectionCard = ({ title, icon, children }) => (
+    <Card
+      sx={{
+        bgcolor: "#ffffff",
+        border: "1px solid #e0e0e0",
+        borderRadius: 2,
+        mb: 3,
+        position: "relative",
+        "&::before": {
+          content: '""',
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "4px",
+          height: "100%",
+          bgcolor: "#000000",
+          borderRadius: "2px 0 0 2px",
+        },
+      }}
+      elevation={1}
+    >
+      <Box sx={{ p: 3, pl: 4 }}>
+        <Typography
+          variant="h6"
+          sx={{
+            color: "#000000",
+            fontWeight: 600,
+            mb: 2,
+            display: "flex",
+            alignItems: "center",
+            gap: 1.5,
+          }}
         >
-          &#8592; Back
-        </Button>
+          {icon}
+          {title}
+        </Typography>
+        {children}
       </Box>
-      {/* Header */}
-      <Box
-        sx={{
-          background: "#f4f8fd",
-          borderRadius: "12px 12px 0 0",
-          p: { xs: 2, md: 4 },
-          pb: 3,
-          position: "relative",
-        }}
-      >
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-          <Avatar
-            src={job.companyLogo || ""}
-            alt={job.company || "Company"}
-            sx={{
-              width: 56,
-              height: 56,
-              bgcolor: "#fff",
-              color: "#222",
-              fontWeight: 700,
-              fontSize: 28,
-            }}
-          >
-            {job.company ? job.company[0] : "C"}
-          </Avatar>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, mb: 0.5 }}>
-              {job.jobTitle}
-            </Typography>
-            <Typography variant="subtitle1" sx={{ color: "#555" }}>
-              {job.companyName}
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 3, mt: 3 }}>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <LocationOnIcon sx={{ color: "#888" }} fontSize="small" />
-            <Typography sx={{ color: "#222", fontWeight: 500 }}>
-              {job.location || "California, CA"}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <AccessTimeIcon sx={{ color: "#888" }} fontSize="small" />
-            <Typography sx={{ color: "#222", fontWeight: 500 }}>
-              {job.jobType || "Full-time"}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <WorkIcon sx={{ color: "#888" }} fontSize="small" />
-            <Typography sx={{ color: "#222", fontWeight: 500 }}>
-              {job.experienceLevel || "Senior (5+ years)"}
-            </Typography>
-          </Box>
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <MonetizationOnIcon sx={{ color: "#888" }} fontSize="small" />
-            <Typography sx={{ color: "#222", fontWeight: 500 }}>
-              {job.salary ? `$${job.salary}` : "$2.5k"}/
-              {job.salaryPeriod || "month"}
-            </Typography>
-          </Box>
-        </Box>
-        <Box sx={{ display: "flex", gap: 1.5, mt: 2, flexWrap: "wrap" }}>
-          <Chip
-            label={job.jobType}
-            size="small"
-            sx={{ bgcolor: "#fff", fontWeight: 600 }}
-          />
-          <Chip
-            label={job.workType}
-            size="small"
-            sx={{ bgcolor: "#fff", fontWeight: 600 }}
-          />
-          <Chip
-            label={job.experienceLevel}
-            size="small"
-            sx={{ bgcolor: "#fff", fontWeight: 600 }}
-          />
-        </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
-          <CalendarMonthIcon sx={{ color: "#888" }} fontSize="small" />
-          <Typography sx={{ color: "#888", fontSize: 15 }}>
-            Posted :{" "}
-            {job.date ? new Date(job.date).toISOString().split("T")[0] : ""}
-          </Typography>
-        </Box>
-      </Box>
+    </Card>
+  )
 
-      {/* Details */}
-      <Box sx={{ p: { xs: 2, md: 4 }, pt: 3 }}>
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-          Job Description
-        </Typography>
-        <Typography sx={{ mb: 3, color: "#222" }}>
-          {job.jobDescription}
-        </Typography>
-
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-          Requirements
-        </Typography>
-        {job.Requirements.map((item, index) => (
-          <Typography key={index} sx={{ mb: 1, color: "#222" }}>
-            • {item}
-          </Typography>
-        ))}
-
-        <Typography variant="h6" sx={{ fontWeight: 700, mb: 1.5 }}>
-          Responsibilities
-        </Typography>
-        {job.Responsibilities.map((item, index) => (
-          <Typography key={index} sx={{ mb: 1, color: "#222" }}>
-            • {item}
-          </Typography>
-        ))}
-
-        <Box sx={{ mt: 5 }}>
+  return (
+    <Box sx={{ bgcolor: "#ffffff", minHeight: "100vh" }}>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        {/* Navigation */}
+        <Box sx={{ mb: 3 }}>
           <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            onClick={handleApply}
+            variant="outlined"
+            startIcon={<ArrowBackIosNewIcon />}
+            onClick={() => navigate(-1)}
             sx={{
-              bgcolor: "#171923",
-              color: "#fff",
-              borderRadius: "7px",
-              fontWeight: 600,
-              fontSize: "1rem",
-              py: 1.2,
-              boxShadow: "none",
-              "&:hover": { bgcolor: "#222" },
+              color: "#000000",
+              borderColor: "#e0e0e0",
+              textTransform: "none",
+              borderRadius: 2,
+              px: 3,
+              py: 1,
+              fontWeight: 500,
+              "&:hover": {
+                borderColor: "#000000",
+                bgcolor: "#f5f5f5",
+              },
             }}
           >
-            Apply Now
+            Back to Jobs
           </Button>
         </Box>
+
+        {/* Job Header Card */}
+        <Card
+          sx={{
+            bgcolor: "#ffffff",
+            border: "1px solid #e0e0e0",
+            borderRadius: 3,
+            mb: 3,
+            position: "relative",
+            overflow: "hidden",
+          }}
+          elevation={2}
+        >
+          {/* Black accent bar */}
+          <Box
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              height: "6px",
+              bgcolor: "#000000",
+            }}
+          />
+
+          <Box sx={{ p: 4, pt: 5 }}>
+            {/* Company and Job Title */}
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", sm: "row" },
+                gap: 3,
+                alignItems: { xs: "center", sm: "flex-start" },
+                textAlign: { xs: "center", sm: "left" },
+                mb: 4,
+              }}
+            >
+              <Avatar
+                src={job.companyLogo || ""}
+                alt={job.company || "Company"}
+                sx={{
+                  width: 80,
+                  height: 80,
+                  bgcolor: "#f5f5f5",
+                  color: "#000000",
+                  fontWeight: 700,
+                  fontSize: "2rem",
+                  border: "2px solid #e0e0e0",
+                }}
+              >
+                {job.company ? job.company[0] : "C"}
+              </Avatar>
+
+              <Box sx={{ flex: 1 }}>
+                <Typography
+                  variant="h4"
+                  sx={{
+                    color: "#000000",
+                    fontWeight: 700,
+                    mb: 1,
+                    fontSize: { xs: "1.75rem", sm: "2.125rem" },
+                  }}
+                >
+                  {job.jobTitle}
+                </Typography>
+                <Typography
+                  variant="h6"
+                  sx={{
+                    color: "#666666",
+                    fontWeight: 500,
+                    mb: 2,
+                  }}
+                >
+                  {job.companyName}
+                </Typography>
+
+                {/* Job Tags */}
+                <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+                  <Chip
+                    label={job.jobType}
+                    sx={{
+                      bgcolor: "#f5f5f5",
+                      color: "#000000",
+                      border: "1px solid #e0e0e0",
+                      fontWeight: 500,
+                      "&:hover": {
+                        bgcolor: "#000000",
+                        color: "#ffffff",
+                      },
+                    }}
+                  />
+                  <Chip
+                    label={job.workType}
+                    sx={{
+                      bgcolor: "#f5f5f5",
+                      color: "#000000",
+                      border: "1px solid #e0e0e0",
+                      fontWeight: 500,
+                      "&:hover": {
+                        bgcolor: "#000000",
+                        color: "#ffffff",
+                      },
+                    }}
+                  />
+                  <Chip
+                    label={job.experienceLevel}
+                    sx={{
+                      bgcolor: "#f5f5f5",
+                      color: "#000000",
+                      border: "1px solid #e0e0e0",
+                      fontWeight: 500,
+                      "&:hover": {
+                        bgcolor: "#000000",
+                        color: "#ffffff",
+                      },
+                    }}
+                  />
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Job Details Grid */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+                gap: 3,
+                mb: 3,
+              }}
+            >
+              <InfoItem icon={<LocationOn />} label="Location">
+                {job.location || "California, CA"}
+              </InfoItem>
+              <InfoItem icon={<AccessTime />} label="Job Type">
+                {job.jobType || "Full-time"}
+              </InfoItem>
+              <InfoItem icon={<Work />} label="Experience">
+                {job.experienceLevel || "Senior (5+ years)"}
+              </InfoItem>
+              <InfoItem icon={<MonetizationOn />} label="Salary">
+                {job.salary ? `$${job.salary}` : "$2.5k"}/{job.salaryPeriod || "month"}
+              </InfoItem>
+            </Box>
+
+            <Divider sx={{ mb: 3 }} />
+
+            {/* Posted Date */}
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CalendarMonth sx={{ color: "#666666", fontSize: "1.25rem" }} />
+              <Typography variant="body2" sx={{ color: "#666666" }}>
+                Posted: {job.date ? new Date(job.date).toLocaleDateString() : "Recently"}
+              </Typography>
+            </Box>
+          </Box>
+        </Card>
+
+        {/* Job Description */}
+        <SectionCard title="Job Description" icon={<Business sx={{ color: "#666666" }} />}>
+          <Typography
+            variant="body1"
+            sx={{
+              color: "#333333",
+              lineHeight: 1.7,
+              fontSize: "1rem",
+            }}
+          >
+            {job.jobDescription}
+          </Typography>
+        </SectionCard>
+
+        {/* Requirements */}
+        <SectionCard title="Requirements" icon={<CheckCircle sx={{ color: "#666666" }} />}>
+          <Stack spacing={1.5}>
+            {job.Requirements.map((item, index) => (
+              <Box key={index} sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
+                <Box
+                  sx={{
+                    width: 6,
+                    height: 6,
+                    bgcolor: "#000000",
+                    borderRadius: "50%",
+                    mt: 1,
+                    flexShrink: 0,
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#333333",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {item}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </SectionCard>
+
+        {/* Responsibilities */}
+        <SectionCard title="Responsibilities" icon={<Assignment sx={{ color: "#666666" }} />}>
+          <Stack spacing={1.5}>
+            {job.Responsibilities.map((item, index) => (
+              <Box key={index} sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
+                <Box
+                  sx={{
+                    width: 6,
+                    height: 6,
+                    bgcolor: "#000000",
+                    borderRadius: "50%",
+                    mt: 1,
+                    flexShrink: 0,
+                  }}
+                />
+                <Typography
+                  variant="body1"
+                  sx={{
+                    color: "#333333",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {item}
+                </Typography>
+              </Box>
+            ))}
+          </Stack>
+        </SectionCard>
+
+        {/* Apply Button */}
+        <Card
+          sx={{
+            bgcolor: "#ffffff",
+            border: "1px solid #e0e0e0",
+            borderRadius: 2,
+            position: "sticky",
+            bottom: 20,
+            zIndex: 10,
+          }}
+          elevation={3}
+        >
+          <Box sx={{ p: 3 }}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleApply}
+              sx={{
+                bgcolor: "#000000",
+                color: "#ffffff",
+                borderRadius: 2,
+                fontWeight: 600,
+                fontSize: "1.1rem",
+                py: 1.5,
+                textTransform: "none",
+                "&:hover": {
+                  bgcolor: "#333333",
+                  transform: "translateY(-1px)",
+                },
+                transition: "all 0.2s ease",
+              }}
+            >
+              Apply for this Position
+            </Button>
+          </Box>
+        </Card>
+
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          <Alert
-            onClose={handleClose}
-            severity={snackbar.severity}
-            sx={{ width: "120%", height: "120%" }}
-          >
+          <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: "100%" }}>
             {snackbar.message}
           </Alert>
         </Snackbar>
-      </Box>
-    </Card>
-  );
+      </Container>
+    </Box>
+  )
 }
 
-export default JobDetails;
+export default JobDetails
