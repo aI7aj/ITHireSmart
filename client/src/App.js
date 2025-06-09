@@ -22,6 +22,9 @@ import MyProfile from "./components/users/MyProfile";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import ForgotPassword from "./components/auth/forgotpassword";
 import UserSetting from "./components/users/UserSetting";
+import UserDetailsPage from "./components/users/UserDetailsPage";
+import Settings from "./components/common/Settings";
+import Security from "./components/users/Security";
 function App() {
   const location = useLocation();
 
@@ -86,6 +89,9 @@ function App() {
           <Route path="/uploadcvpage" element={<UploadCvPage />} />
           <Route path="/myprofile" element={<MyProfile />} />
           <Route path="/UserSetting" element={<UserSetting />} />
+          <Route path="/user/:id" element={<UserDetailsPage />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/security" element={<Security />} />
 
           {/* Protected Routes for company role */}
           <Route element={<ProtectedRoute allowedRole="company" />}>

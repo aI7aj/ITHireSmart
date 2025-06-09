@@ -35,7 +35,11 @@ export async function postjob(req, res) {
 
 export async function showalljobs(req, res) {
   try {
-    let jobsPosts = await Job.find().sort({ date: -1 });
+    let jobsPosts = await Job.find()
+      .sort({ date: -1 })
+      .populate("user", "profilepic firstName lastName")
+
+      
     res.json(jobsPosts);
   } catch (error) {
     console.error(error.message);

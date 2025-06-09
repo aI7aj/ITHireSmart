@@ -190,14 +190,8 @@ const ApplicantsPage = () => {
                         sx={{ p: 1 }}
                         onClick={() => navigate(`/user/${applicant.user._id}`)}
                       />
-                      <Chip
-                        size="small"
-                        label="Contact"
-                        icon={<Mail fontSize="small" />}
-                        variant="outlined"
-                        clickable
-                        sx={{ p: 1 }}
-                      />
+                      
+                      
                     </Box>
                   </CardContent>
                 </Card>
