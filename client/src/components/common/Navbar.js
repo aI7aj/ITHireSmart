@@ -117,7 +117,7 @@ const Navbar = () => {
     },
     {
       name: "Settings",
-      path: "./users/UserSetting",
+      path: "./common/Settings",
       icon: <SettingsIcon fontSize="small" />,
     },
     { name: "Logout", icon: <LogoutIcon fontSize="small" /> },
@@ -258,7 +258,7 @@ const Navbar = () => {
                     } else if (item.name === "Profile") {
                       navigate("/MyProfile");
                     } else if (item.name === "Settings") {
-                      navigate("/UserSetting");
+                      navigate("/Settings");
                     }
                   }}
                 >

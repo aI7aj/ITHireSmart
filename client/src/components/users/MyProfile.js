@@ -22,7 +22,6 @@ import {
   School,
   Code,
   Person,
-
 } from "@mui/icons-material";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";

@@ -395,3 +395,47 @@ export async function getphoto(req, res) {
     res.status(500).json({ message: "Server error" });
   }
 }
+
+
+export async function changePassword(req, res) {
+  const { oldPassword, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(400).json({ msg: "User not found" });
+    }
+
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ msg: "The old password is not correct" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(newPassword, salt);
+    await user.save();
+
+    const payload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
+    };
+
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: "5days" },
+      (err, token) => {
+        if (err) throw err;
+        res.json({
+          message: "Password updated successfully.",
+          token,
+        });
+      }
+    );
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: "Server error" });
+  }
+}
+

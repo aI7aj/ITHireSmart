@@ -375,6 +375,7 @@ const UserSettings = () => {
                               sx={{
                                 flex: 1,
                               }}
+                              disabled
                             />
                           )}
                         </Field>
@@ -388,6 +389,7 @@ const UserSettings = () => {
                               sx={{
                                 flex: 1,
                               }}
+                              disabled
                             />
                           )}
                         </Field>

@@ -112,4 +112,9 @@ router.route("/uploadphoto")
 router.route("/getphoto")
   .get(auth, handlers.getphoto)
 
+
+router.route("/changePassword")
+  .post(auth, handlers.changePassword)
+  
+
 export default router;

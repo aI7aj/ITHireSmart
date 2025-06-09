@@ -54,12 +54,12 @@ function FindJob() {
     try {
       const response = await getJobs();
       const userRole = localStorage.getItem("role");
-      // console.log("User role:", userRole);
+
       const visibleJobs = response.data.filter((job) => !job.isHidden);
       if (userRole) {
         setRole(userRole);
       }
-      setJobs(visibleJobs);
+      setJobs(response.data);
       setFilteredJobs(visibleJobs);
     } catch (error) {
       console.error("Error fetching jobs:", error);
@@ -648,14 +648,11 @@ function FindJob() {
                       >
                         <Box sx={{ mr: 1 }}>
                           <img
-                            src={
-                              job.companyLogo ||
-                              "https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
-                            }
+                            src={job.user?.profilepic?.url}
                             alt="Company Logo"
                             style={{
-                              width: "28px",
-                              height: "28px",
+                              width: "48px",
+                              height: "48px",
                               borderRadius: "50%",
                               objectFit: "cover",
                               fontFamily: "Geist",
