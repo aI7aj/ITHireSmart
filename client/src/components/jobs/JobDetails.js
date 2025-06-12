@@ -1,8 +1,6 @@
-"use client"
-
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import { getJobById } from "../../API/jobsAPI"
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { getJobById } from "../../API/jobsAPI";
 import {
   Card,
   CircularProgress,
@@ -16,7 +14,7 @@ import {
   Container,
   Stack,
   Divider,
-} from "@mui/material"
+} from "@mui/material";
 import {
   Work,
   LocationOn,
@@ -26,58 +24,59 @@ import {
   Business,
   CheckCircle,
   Assignment,
-} from "@mui/icons-material"
-import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew"
-import { useNavigate } from "react-router-dom"
-import { applyJob } from "../../API/jobsAPI"
+} from "@mui/icons-material";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useNavigate } from "react-router-dom";
+import { applyJob } from "../../API/jobsAPI";
 
 function JobDetails() {
-  const navigate = useNavigate()
-  const { id } = useParams()
-  const [job, setJob] = useState(null)
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [job, setJob] = useState(null);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success",
-  })
+  });
 
   const handleClose = () => {
-    setSnackbar({ ...snackbar, open: false })
-  }
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const handleApply = async () => {
     try {
-      await applyJob(id)
+      await applyJob(id);
       setSnackbar({
         open: true,
         message: "Applied Successfully",
         severity: "success",
-      })
+      });
       setTimeout(() => {
-        navigate("/FindJob")
-      }, 1500)
+        navigate("/FindJob");
+      }, 1500);
     } catch (error) {
-      console.log(error)
-      const msg = error.response?.data?.msg || "you are already applied for this job"
-      setSnackbar({ open: true, message: msg, severity: "error" })
+      console.log(error);
+      const msg =
+        error.response?.data?.msg || "you are already applied for this job";
+      setSnackbar({ open: true, message: msg, severity: "error" });
       setTimeout(() => {
-        navigate("/FindJob")
-      }, 2000)
+        navigate("/FindJob");
+      }, 2000);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchJob = async () => {
       try {
-        const response = await getJobById(id)
-        setJob(response.data)
+        const response = await getJobById(id);
+        setJob(response.data);
       } catch (error) {
-        console.error("Error fetching job:", error)
+        console.error("Error fetching job:", error);
       }
-    }
+    };
 
-    fetchJob()
-  }, [id])
+    fetchJob();
+  }, [id]);
 
   if (!job) {
     return (
@@ -96,7 +95,7 @@ function JobDetails() {
           Loading job details...
         </Typography>
       </Box>
-    )
+    );
   }
 
   const InfoItem = ({ icon, children, label }) => (
@@ -110,7 +109,10 @@ function JobDetails() {
     >
       <Box sx={{ color: "#666666", minWidth: 24 }}>{icon}</Box>
       <Box>
-        <Typography variant="body2" sx={{ color: "#888888", fontSize: "0.75rem" }}>
+        <Typography
+          variant="body2"
+          sx={{ color: "#888888", fontSize: "0.75rem" }}
+        >
           {label}
         </Typography>
         <Typography variant="body1" sx={{ color: "#000000", fontWeight: 500 }}>
@@ -118,7 +120,7 @@ function JobDetails() {
         </Typography>
       </Box>
     </Box>
-  )
+  );
 
   const SectionCard = ({ title, icon, children }) => (
     <Card
@@ -159,7 +161,7 @@ function JobDetails() {
         {children}
       </Box>
     </Card>
-  )
+  );
 
   return (
     <Box sx={{ bgcolor: "#ffffff", minHeight: "100vh" }}>
@@ -312,7 +314,11 @@ function JobDetails() {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
+                gridTemplateColumns: {
+                  xs: "1fr",
+                  sm: "repeat(2, 1fr)",
+                  md: "repeat(4, 1fr)",
+                },
                 gap: 3,
                 mb: 3,
               }}
@@ -327,24 +333,40 @@ function JobDetails() {
                 {job.experienceLevel || "Senior (5+ years)"}
               </InfoItem>
               <InfoItem icon={<MonetizationOn />} label="Salary">
-                {job.salary ? `$${job.salary}` : "$2.5k"}/{job.salaryPeriod || "month"}
+                {job.salary ? `$${job.salary}` : "$2.5k"}/
+                {job.salaryPeriod || "month"}
               </InfoItem>
             </Box>
 
             <Divider sx={{ mb: 3 }} />
 
-            {/* Posted Date */}
+            {/* Posted Date && expiration date */}
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
               <CalendarMonth sx={{ color: "#666666", fontSize: "1.25rem" }} />
               <Typography variant="body2" sx={{ color: "#666666" }}>
-                Posted: {job.date ? new Date(job.date).toLocaleDateString() : "Recently"}
+                Posted:{" "}
+                {job.date
+                  ? new Date(job.date).toLocaleDateString()
+                  : "Recently"}
+              </Typography>
+
+              <Typography variant="body2" sx={{ color: "#666666", mx: 1 }}>
+                |
+              </Typography>
+
+              <CalendarMonth sx={{ color: "#666666", fontSize: "1.25rem" }} />
+              <Typography variant="body2" sx={{ color: "#666666" }}>
+                To: {job.to ? new Date(job.to).toLocaleDateString() : "N/A"}
               </Typography>
             </Box>
           </Box>
         </Card>
 
         {/* Job Description */}
-        <SectionCard title="Job Description" icon={<Business sx={{ color: "#666666" }} />}>
+        <SectionCard
+          title="Job Description"
+          icon={<Business sx={{ color: "#666666" }} />}
+        >
           <Typography
             variant="body1"
             sx={{
@@ -358,10 +380,16 @@ function JobDetails() {
         </SectionCard>
 
         {/* Requirements */}
-        <SectionCard title="Requirements" icon={<CheckCircle sx={{ color: "#666666" }} />}>
+        <SectionCard
+          title="Requirements"
+          icon={<CheckCircle sx={{ color: "#666666" }} />}
+        >
           <Stack spacing={1.5}>
             {job.Requirements.map((item, index) => (
-              <Box key={index} sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
+              >
                 <Box
                   sx={{
                     width: 6,
@@ -387,10 +415,16 @@ function JobDetails() {
         </SectionCard>
 
         {/* Responsibilities */}
-        <SectionCard title="Responsibilities" icon={<Assignment sx={{ color: "#666666" }} />}>
+        <SectionCard
+          title="Responsibilities"
+          icon={<Assignment sx={{ color: "#666666" }} />}
+        >
           <Stack spacing={1.5}>
             {job.Responsibilities.map((item, index) => (
-              <Box key={index} sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}>
+              <Box
+                key={index}
+                sx={{ display: "flex", alignItems: "flex-start", gap: 1.5 }}
+              >
                 <Box
                   sx={{
                     width: 6,
@@ -458,13 +492,17 @@ function JobDetails() {
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
-          <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: "100%" }}>
+          <Alert
+            onClose={handleClose}
+            severity={snackbar.severity}
+            sx={{ width: "100%" }}
+          >
             {snackbar.message}
           </Alert>
         </Snackbar>
       </Container>
     </Box>
-  )
+  );
 }
 
-export default JobDetails
+export default JobDetails;

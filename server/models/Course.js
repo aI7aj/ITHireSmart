@@ -20,7 +20,7 @@ const CourseSchema = new Schema(
     },
     courseType: {
       type: String,
-      enum: ["Online", "company"],  
+      enum: ["Online", "company"],
     },
     startAt: {
       type: Date,
@@ -34,6 +34,14 @@ const CourseSchema = new Schema(
       type: String,
       required: true,
     },
+    duration: {
+      type: String,
+      default: "1 month",
+    },
+    requirements: {
+      type: [String],
+      required: true,
+    },
     capacity: {
       type: Number,
     },
@@ -44,7 +52,17 @@ const CourseSchema = new Schema(
     topics: {
       type: [String],
       required: true,
-    }
+    },
+    isHidden: {
+      type: Boolean,
+      default: false,
+    },
+    students: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   { timestamps: true }
 );
