@@ -51,7 +51,7 @@ router.post("/apply/:jobId", auth, handlers.jobapply);
 // checkRole("user"),
 
 // @route   PUT /api/jobs/companyJobs/:userId
-// @desc    edit a job by id
+// @desc    get all jobs by company id
 // @access  Private (company only)
 router.get(
   "/companyJobs/:userId",

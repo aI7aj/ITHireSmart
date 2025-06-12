@@ -21,6 +21,3 @@ export const uploadPhoto = (values) => API.post("/users/uploadphoto", values);
 export const getProfile = (id) => API.get(`/profiles/user/${id}`);
 export const updateProfile = (values) => API.post("/profiles/updateprofile", values);
 
-export const getCourses = () => API.get("/course");
-export const getCourseById = (id) => API.get(`/course/${id}`);
-export const addCourse = (courseData) => API.post("/course", courseData);

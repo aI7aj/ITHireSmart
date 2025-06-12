@@ -23,7 +23,6 @@ export async function postjob(req, res) {
       salary: req.body.salary,
       workType: req.body.workType,
       isHidden: false,
-      date: req.body.date,
     });
     await job.save();
     return res.json(job);
@@ -35,11 +34,18 @@ export async function postjob(req, res) {
 
 export async function showalljobs(req, res) {
   try {
-    let jobsPosts = await Job.find()
-      .sort({ date: -1 })
-      .populate("user", "profilepic firstName lastName")
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-      
+    await Job.updateMany(
+      { to: { $lte: today }, isHidden: false },
+      { $set: { isHidden: true } }
+    );
+
+    let jobsPosts = await Job.find({ isHidden: false })
+      .sort({ date: -1 })
+      .populate("user", "profilepic firstName lastName");
+
     res.json(jobsPosts);
   } catch (error) {
     console.error(error.message);

@@ -12,10 +12,10 @@ import { registerUser, loginUser } from "./API/API";
 import Navbar from "./components/common/Navbar";
 import JobDetails from "./components/jobs/JobDetails";
 import NotFoundPage from "./components/pages/NotFound404";
-import Courses from "./components/pages/Courses";
+import Courses from "./components/Courses/Courses";
 import PostJob from "./components/jobs/post-job";
 import UploadCvPage from "./components/users/UploadCvPage";
-import CompanyDashboard from "./components/jobs/CompanyDashboard";
+import CompanyJobs from "./components/jobs/CompanyJobs";
 import EditJob from "./components/jobs/EditJob";
 import ApplicantsPage from "./components/jobs/ApplicantsPage";
 import MyProfile from "./components/users/MyProfile";
@@ -25,6 +25,10 @@ import UserSetting from "./components/users/UserSetting";
 import UserDetailsPage from "./components/users/UserDetailsPage";
 import Settings from "./components/common/Settings";
 import Security from "./components/users/Security";
+import PostCourse from "./components/Courses/post-course";
+import CourseDetails from "./components/Courses/CourseDetails";
+import CompanyDashboard from "./components/Company/CompanyDashboard";
+import CompanyCourses from "./components/Courses/CompanyCourses";
 function App() {
   const location = useLocation();
 
@@ -92,16 +96,20 @@ function App() {
           <Route path="/user/:id" element={<UserDetailsPage />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />
+          <Route path="/course/:id" element={<CourseDetails />} />
 
           {/* Protected Routes for company role */}
           <Route element={<ProtectedRoute allowedRole="company" />}>
             <Route path="/post-job" element={<PostJob />} />
-            <Route path="/companydashboard" element={<CompanyDashboard />} />
+            <Route path="/CompanyJobs " element={<CompanyJobs />} />
             <Route path="/jobs/:id/edit" element={<EditJob />} />
             <Route
               path="/jobs/:jobId/applicants"
               element={<ApplicantsPage />}
             />
+            <Route path="/post-course" element={<PostCourse />} />
+            <Route path="/companydashboard" element={<CompanyDashboard />} />
+            <Route path="/companycourses" element={<CompanyCourses />} />
           </Route>
 
           {/* 404 Not Found */}
