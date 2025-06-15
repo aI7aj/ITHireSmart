@@ -41,4 +41,9 @@ router
 router.post("/:courseId/enroll", auth, handlers.enrollCourse);
 
 router.get("/companyCourses/:userId", auth, handlers.getCompanyCourses);
+
+router.get("/getEnrolledCourses/:courseId", auth, handlers.getEnrolledCourses);
+
+router.post("/accept/:courseId/:studentId", auth, handlers.acceptStudent);
+
 export default router;

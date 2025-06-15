@@ -219,21 +219,19 @@ function CourseDetails() {
                 mb: 4,
               }}
             >
-              <Avatar
-                src={course.providerLogo || ""}
-                alt={course.provider || "Provider"}
-                sx={{
-                  width: 80,
-                  height: 80,
-                  bgcolor: "#f5f5f5",
-                  color: "#000000",
-                  fontWeight: 700,
-                  fontSize: "2rem",
-                  border: "2px solid #e0e0e0",
-                }}
-              >
-                {course.provider ? course.provider[0] : "P"}
-              </Avatar>
+              <Box sx={{ mr: 1 }}>
+                <img
+                  src={course.user?.profilepic?.url}
+                  alt="Company Logo"
+                  style={{
+                    width: "48px",
+                    height: "48px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    fontFamily: "Geist",
+                  }}
+                />
+              </Box>
 
               <Box sx={{ flex: 1 }}>
                 <Typography

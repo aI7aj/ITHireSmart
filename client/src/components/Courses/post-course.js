@@ -42,7 +42,7 @@ const PostCourse = () => {
     startAt: Yup.date().required("Start date is required"),
     endAt: Yup.date().required("End date is required"),
     description: Yup.string().required("Description is required"),
-    studentsEnrolled: Yup.number()
+    capacity: Yup.number()
       .typeError("Must be a number")
       .nullable()
       .min(1, "Capacity must be at least 1"),
@@ -64,7 +64,7 @@ const PostCourse = () => {
         startAt: minDate,
         endAt: minDate,
         description: "",
-        studentsEnrolled: "",
+        capacity: "",
         topics: "",
         duration: "1 month",
         requirements: "",
@@ -76,10 +76,10 @@ const PostCourse = () => {
           const courseData = {
             ...values,
             topics: values.topics.split(",").map((item) => item.trim()),
-            studentsEnrolled:
-              values.studentsEnrolled === ""
+            capacity:
+              values.capacity === ""
                 ? null
-                : Number(values.studentsEnrolled),
+                : Number(values.capacity),
             requirements: values.requirements
               .split(",")
               .map((item) => item.trim()),
@@ -246,16 +246,16 @@ const PostCourse = () => {
             />
 
             <TextField
-              label="studentsEnrolled (optional)"
-              name="studentsEnrolled"
+              label="Capacity"
+              name="capacity"
               type="number"
-              value={values.studentsEnrolled}
+              value={values.capacity}
               onChange={handleChange}
               onBlur={handleBlur}
               error={
-                touched.studentsEnrolled && Boolean(errors.studentsEnrolled)
+                touched.capacity && Boolean(errors.capacity)
               }
-              helperText={touched.studentsEnrolled && errors.studentsEnrolled}
+              helperText={touched.capacity && errors.capacity}
               fullWidth
               margin="normal"
             />

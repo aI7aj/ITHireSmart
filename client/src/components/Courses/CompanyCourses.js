@@ -3,17 +3,18 @@ import { getCompanyCourses } from "../../API/courseAPI";
 import enhancedBlackAndWhiteTheme from "../../assets/enhancedBlackAndWhiteTheme";
 import {
   Button,
-  Paper,
   Card,
-  CircularProgress,
   Typography,
   Box,
   Container,
+  CircularProgress,
   Grid,
   Divider,
   Chip,
   CardContent,
   CardActions,
+  Paper,
+  Stack,
   ThemeProvider,
   createTheme,
   LinearProgress,
@@ -30,10 +31,13 @@ import {
   DialogContentText,
   DialogActions,
 } from "@mui/material";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 import PeopleIcon from "@mui/icons-material/People";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddIcon from "@mui/icons-material/Add";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 import { useNavigate } from "react-router-dom";
 const CompanyCourses = () => {
   const [courses, setCourses] = useState([]);
@@ -203,7 +207,7 @@ const CompanyCourses = () => {
                     </Typography>
                   </Box>
                 </Box>
-                {/*Active Jobs */}
+                {/*Active Courses */}
                 <Box
                   sx={{
                     width: "fit-content",
@@ -230,7 +234,7 @@ const CompanyCourses = () => {
                       {courses.length}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      Active Jobs
+                      Active Courses
                     </Typography>
                   </Box>
                 </Box>
@@ -293,8 +297,202 @@ const CompanyCourses = () => {
               </Box>
             </Box>
 
+            <Divider sx={{ mb: 3 }} />
 
-            
+            {/* Course Cards Section */}
+            {loading ? (
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <CircularProgress />
+              </Box>
+            ) : courses.length == 0 ? (
+              <Box
+                sx={{
+                  py: 8,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  bgcolor: "#fafafa",
+                  border: "1px dashed #e0e0e0",
+                  position: "relative",
+                }}
+              >
+                <Box
+                  sx={{
+                    width: "80px",
+                    height: "80px",
+                    borderRadius: "50%",
+                    bgcolor: "#f5f5f5",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mb: 3,
+                    border: "1px solid #e0e0e0",
+                  }}
+                >
+                  <MenuBookIcon sx={{ fontSize: 40, color: "#9e9e9e" }} />
+                </Box>
+                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                  No Course posted yet
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 3, textAlign: "center", maxWidth: "400px" }}
+                >
+                  Create your first Course posting to start receiving
+                  applications from qualified candidates
+                </Typography>
+                <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => navigate("/post-course")}
+                  sx={{
+                    px: 4,
+                    py: 1.5,
+                    fontSize: "1rem",
+                  }}
+                >
+                  Post Your First Course
+                </Button>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 3,
+                }}
+              >
+                {courses.map((course) => (
+                  <Box
+                    key={course._id}
+                    sx={{
+                      minWidth: "280px",
+                      display: "flex",
+                    }}
+                  >
+                    <Card
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        height: "100%",
+                        width: "100%",
+                      }}
+                    >
+                      {/* Card Header Section (Course Title , Location , number of students) */}
+                      <CardContent>
+                        <Typography
+                          variant="h6"
+                          component="h2"
+                          fontWeight="bold"
+                          gutterBottom
+                        >
+                          {course.courseTitle}
+                        </Typography>
+
+                        <Stack direction="row" spacing={3} sx={{ mb: 2 }}>
+                          {/* Location */}
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <LocationOnIcon
+                              fontSize="small"
+                              sx={{ mr: 0.5, color: "#000" }}
+                            />
+                            <Typography variant="body2" color="text.secondary">
+                              {courses.location || "Online"}
+                            </Typography>
+                          </Box>
+
+                          <Box sx={{ display: "flex", mt: 2 }}>
+                            <PeopleIcon
+                              fontSize="small"
+                              sx={{ mr: 0.5, color: "#000" }}
+                            />
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              component="span"
+                            >
+                              <Badge
+                                badgeContent={course.studentsEnrolled}
+                                color="primary"
+                                sx={{
+                                  "& .MuiBadge-badge": {
+                                    right: -3,
+                                    top: 8,
+                                    border: "2px solid white",
+                                    padding: "0 4px",
+                                  },
+                                }}
+                              >
+                                <Typography
+                                  variant="body2"
+                                  color="text.secondary"
+                                  component="span"
+                                  sx={{ mr: 2 }}
+                                >
+                                  Applicants
+                                </Typography>
+                              </Badge>
+                            </Typography>
+                          </Box>
+                        </Stack>
+                      </CardContent>
+
+                      <Divider sx={{ mx: 2 }} />
+                      {/* Card Actions Section (Edit, View Applicants) */}
+                      <CardActions
+                        sx={{
+                          px: 2,
+                          py: 1.5,
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Box>
+                          <Typography variant="caption" color="text.secondary">
+                            Posted{" "}
+                            {course.createdAt
+                              ? new Date(course.createdAt).toLocaleDateString()
+                              : "Recently"}
+                          </Typography>
+                        </Box>
+
+                        <Box sx={{ display: "flex", gap: 1 }}>
+                          <Tooltip title="Edit Course">
+                            <Button
+                              size="small"
+                              startIcon={<EditIcon />}
+                              onClick={() =>
+                                navigate(`/EditCourses/${course._id}`)
+                              }
+                            >
+                              Edit
+                            </Button>
+                          </Tooltip>
+                          <Tooltip title="View applicants">
+                            <Button
+                              variant="outlined"
+                              size="small"
+                              startIcon={<VisibilityIcon />}
+                              onClick={() =>
+                                navigate(`/courses/${course._id}/applicants`)
+                              }
+                            >
+                              View Applicants
+                            </Button>
+                          </Tooltip>
+                        </Box>
+                      </CardActions>
+                    </Card>
+                  </Box>
+                ))}
+              </Box>
+            )}
           </Paper>
         </Container>
       </Box>
