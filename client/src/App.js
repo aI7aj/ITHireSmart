@@ -29,6 +29,9 @@ import PostCourse from "./components/Courses/post-course";
 import CourseDetails from "./components/Courses/CourseDetails";
 import CompanyDashboard from "./components/Company/CompanyDashboard";
 import CompanyCourses from "./components/Courses/CompanyCourses";
+import EditCourse from "./components/Courses/EditCourse";
+import CoursesApplicants from "./components/Courses/CoursesApplicants";
+
 function App() {
   const location = useLocation();
 
@@ -110,6 +113,11 @@ function App() {
             <Route path="/post-course" element={<PostCourse />} />
             <Route path="/companydashboard" element={<CompanyDashboard />} />
             <Route path="/companycourses" element={<CompanyCourses />} />
+            <Route path="/EditCourses/:id" element={<EditCourse />} />
+            <Route
+              path="/courses/:courseId/applicants"
+              element={<CoursesApplicants />}
+            />
           </Route>
 
           {/* 404 Not Found */}

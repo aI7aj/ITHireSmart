@@ -20,7 +20,7 @@ const CourseSchema = new Schema(
     },
     courseType: {
       type: String,
-      enum: ["Online", "company"],
+      enum: ["Online", "Company"],
     },
     startAt: {
       type: Date,
@@ -62,6 +62,9 @@ const CourseSchema = new Schema(
         type: Schema.Types.ObjectId,
         ref: "User",
       },
+    ],
+    acceptedStudents: [
+      { type: mongoose.Schema.Types.ObjectId, ref: "User", default: [] },
     ],
   },
   { timestamps: true }

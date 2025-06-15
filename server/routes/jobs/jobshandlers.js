@@ -34,19 +34,20 @@ export async function postjob(req, res) {
 
 export async function showalljobs(req, res) {
   try {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
+    console.log("Now:", now.toISOString());
 
-    await Job.updateMany(
-      { to: { $lte: today }, isHidden: false },
+   
+    const updateResult = await Job.updateMany(
+      { to: { $lte: now }, isHidden: false },
       { $set: { isHidden: true } }
     );
 
-    let jobsPosts = await Job.find({ isHidden: false })
+    const visibleJobs = await Job.find({ isHidden: false })
       .sort({ date: -1 })
       .populate("user", "profilepic firstName lastName");
 
-    res.json(jobsPosts);
+    res.json(visibleJobs);
   } catch (error) {
     console.error(error.message);
     res.status(500).send(error.message);

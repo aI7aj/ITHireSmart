@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import { ViewApplicants } from "../../API/jobsAPI";
+import { useParams, useNavigate } from "react-router-dom";
+import { getEnrolledCourses, acceptStudent } from "../../API/courseAPI";
 import {
   Box,
   Typography,
-  Grid,
   Card,
   CardContent,
   Avatar,
@@ -13,38 +12,36 @@ import {
   CircularProgress,
   Container,
   CardHeader,
-  IconButton,
   Button,
 } from "@mui/material";
 import { Mail } from "@mui/icons-material";
 import NewspaperIcon from "@mui/icons-material/Newspaper";
-import { useNavigate } from "react-router-dom";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 
-const ApplicantsPage = () => {
-  const { jobId } = useParams();
-  const { id } = useParams();
-  const [applicants, setApplicants] = useState([]);
+const CoursesApplicants = () => {
+  const { courseId } = useParams();
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
+  const [acceptedIds, setAcceptedIds] = useState([]);
   const navigate = useNavigate();
+
   useEffect(() => {
-    const fetchApplicants = async () => {
+    const fetchStudents = async () => {
       try {
         setLoading(true);
-        const res = await ViewApplicants(jobId);
-        const applicantsList = res.data;
-        console.log("Applicants with populated user:", applicantsList);
-        setApplicants(applicantsList);
+        const res = await getEnrolledCourses(courseId);
+        const course = res.data;
+        console.log("Fetched course:", course);
+        setStudents(course);
       } catch (error) {
-        console.log(error);
+        console.error("Failed to load course students:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchApplicants();
-  }, [jobId]);
+    fetchStudents();
+  }, [courseId]);
 
   if (loading) {
     return (
@@ -73,13 +70,14 @@ const ApplicantsPage = () => {
           pb: 2,
         }}
       >
-        Applicants
+        Enrolled Students
         <Chip
-          label={`${applicants.length} total`}
+          label={`${students.length} total`}
           size="small"
           sx={{ ml: 2, bgcolor: "#e3f2fd" }}
         />
       </Typography>
+
       <Button
         variant="contained"
         size="medium"
@@ -98,7 +96,7 @@ const ApplicantsPage = () => {
         Back
       </Button>
 
-      {applicants.length === 0 ? (
+      {students.length === 0 ? (
         <Card
           sx={{
             p: 4,
@@ -108,34 +106,20 @@ const ApplicantsPage = () => {
           }}
         >
           <Typography variant="h6" color="text.secondary">
-            No applicants found for this position yet.
-          </Typography>
-          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-            Check back later or modify your job posting to attract more
-            candidates.
+            No students enrolled in this course yet.
           </Typography>
         </Card>
       ) : (
-        <Box
-          sx={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: 2,
-          }}
-        >
-          {applicants.map((applicant) => {
-            const name = applicant.user?.firstName || "Unknown Applicant";
-            const email = applicant.user?.email || "No email provided";
-            const appliedDateObj = new Date(applicant.appliedAt);
-            const appliedDate =
-              appliedDateObj.toLocaleDateString() +
-              " " +
-              appliedDateObj.toLocaleTimeString();
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+          {students.map((student) => {
+            const name = student?.firstName || "Unknown Student";
+            const email = student?.email || "No email provided";
 
             return (
-              <Box key={applicant._id}>
+              <Box key={student._id}>
                 <Card
                   sx={{
+                    minWidth: 300,
                     height: "100%",
                     transition: "transform 0.2s, box-shadow 0.2s",
                     "&:hover": {
@@ -148,7 +132,7 @@ const ApplicantsPage = () => {
                     avatar={
                       <Avatar
                         alt={`${name} Avatar`}
-                        src={applicant.user?.profilepic?.url}
+                        src={student?.profilepic?.url}
                         sx={{
                           width: 56,
                           height: 56,
@@ -156,7 +140,7 @@ const ApplicantsPage = () => {
                           color: "#1976d2",
                         }}
                       >
-                        {!applicant.user?.profilepic?.url && name[0]}
+                        {!student?.profilepic?.url && name[0]}
                       </Avatar>
                     }
                     title={
@@ -164,7 +148,7 @@ const ApplicantsPage = () => {
                         {name}
                       </Typography>
                     }
-                    subheader={`Applied on ${appliedDate}`}
+                    subheader="Enrolled"
                   />
 
                   <Divider />
@@ -187,7 +171,7 @@ const ApplicantsPage = () => {
                         variant="outlined"
                         clickable
                         sx={{ p: 1 }}
-                        onClick={() => navigate(`/user/${applicant.user._id}`)}
+                        onClick={() => navigate(`/user/${student._id}`)}
                       />
                     </Box>
                   </CardContent>
@@ -201,4 +185,4 @@ const ApplicantsPage = () => {
   );
 };
 
-export default ApplicantsPage;
+export default CoursesApplicants;

@@ -40,11 +40,12 @@ export const postCourse = async (req, res) => {
       endAt: req.body.endAt,
       description: req.body.description,
       capacity: req.body.capacity,
-      studentsEnrolled: req.body.studentsEnrolled,
+      capacity: req.body.capacity,
       topics: req.body.topics,
       isHidden: false,
       requirements: req.body.requirements,
       capacity: req.body.capacity,
+      duration: req.body.duration,
     });
 
     await course.save();
@@ -57,7 +58,9 @@ export const postCourse = async (req, res) => {
 
 export async function coursesearchbyid(req, res) {
   try {
-    const course = await Course.findById(req.params.courseId).sort({ _id: -1 });
+    const course = await Course.findById(req.params.courseId)
+      .sort({ _id: -1 })
+      .populate("user", "profilepic firstName lastName");
     if (!course) {
       return res.status(404).json({ msg: "Course not found" });
     }
@@ -106,7 +109,7 @@ export async function updatecourse(req, res) {
     course.topics = req.body.topics;
     course.registrationLink = req.body.registrationLink;
     course.materials = req.body.materials;
-
+    course.duration = req.body.duration;
     await course.save();
     res.json(course);
   } catch (error) {
@@ -134,6 +137,8 @@ export const enrollCourse = async (req, res) => {
     }
 
     course.students.push(userId);
+    course.studentsEnrolled += 1;
+
     course.studentsEnrolled = course.students.length;
     await course.save();
 
@@ -159,5 +164,21 @@ export const getCompanyCourses = async (req, res) => {
     res.status(200).json(courses);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getEnrolledCourses = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId).populate(
+      "students",
+      "firstName lastName profilepic email"
+    );
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+    res.status(200).json(course.students);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
   }
 };
