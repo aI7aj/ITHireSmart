@@ -38,12 +38,24 @@ router
   .delete(handlers.deletecourse)
   .put(handlers.updatecourse);
 
+router.patch("/:courseId/hide", handlers.hideCourse);
+
+router.patch("/:courseId/unhide", handlers.unhideCourse);
+
 router.post("/:courseId/enroll", auth, handlers.enrollCourse);
 
 router.get("/companyCourses/:userId", auth, handlers.getCompanyCourses);
 
 router.get("/getEnrolledCourses/:courseId", auth, handlers.getEnrolledCourses);
 
-router.post("/accept/:courseId/:studentId", auth, handlers.acceptStudent);
+router.post("/:courseId/accept", auth, handlers.acceptStudent);
+
+router.get("/:courseId/acceptedStudents", auth, handlers.getAcceptedStudents);
+
+router.post("/:courseId/reject", handlers.rejectStudent);
+
+router.get("/:courseId/rejected", auth, handlers.getRejectedStudents);
+
+router.post("/:courseId/pending", auth, handlers.pendingStudent);
 
 export default router;

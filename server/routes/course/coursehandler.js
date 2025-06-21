@@ -182,3 +182,149 @@ export const getEnrolledCourses = async (req, res) => {
     res.status(500).send(error.message);
   }
 };
+
+export const acceptStudent = async (req, res) => {
+  const { courseId } = req.params;
+  const { studentId } = req.body;
+  try {
+    const course = await Course.findById(courseId);
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    if (!course.acceptedStudents.includes(studentId)) {
+      course.acceptedStudents.push(studentId);
+    }
+
+    course.students = course.students.filter(
+      (id) => id.toString() !== studentId
+    );
+
+    course.rejectedStudents = course.rejectedStudents.filter(
+      (id) => id.toString() !== studentId
+    );
+
+    await course.save();
+    res.status(200).json({ message: "Student accepted successfully" });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send(error.message);
+  }
+};
+
+export const getAcceptedStudents = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId).populate(
+      "acceptedStudents",
+      "firstName lastName email profilepic"
+    );
+
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
+
+    res.status(200).json(course.acceptedStudents);
+  } catch (err) {
+    console.error("Error fetching accepted students:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const rejectStudent = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { studentId } = req.body;
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    if (!course.rejectedStudents.includes(studentId)) {
+      course.rejectedStudents.push(studentId);
+    }
+
+    course.students = course.students.filter(
+      (id) => id.toString() !== studentId
+    );
+    course.acceptedStudents = course.acceptedStudents.filter(
+      (id) => id.toString() !== studentId
+    );
+
+    await course.save();
+    res.status(200).json({ message: "Student rejected successfully" });
+  } catch (error) {
+    console.error("Error rejecting student:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const getRejectedStudents = async (req, res) => {
+  try {
+    const course = await Course.findById(req.params.courseId).populate(
+      "rejectedStudents",
+      "firstName lastName email profilepic"
+    );
+
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    res.status(200).json(course.rejectedStudents);
+  } catch (error) {
+    console.error("Error fetching rejected students:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const pendingStudent = async (req, res) => {
+  try {
+    const { courseId } = req.params;
+    const { studentId } = req.body;
+
+    const course = await Course.findById(courseId);
+    if (!course) return res.status(404).json({ message: "Course not found" });
+
+    // لا تضيفه إذا موجود
+    if (!course.students.includes(studentId)) {
+      course.students.push(studentId);
+    }
+
+    // شيله من المقبولين والمرفوضين
+    course.acceptedStudents = course.acceptedStudents.filter(
+      (id) => id.toString() !== studentId
+    );
+
+    course.rejectedStudents = course.rejectedStudents.filter(
+      (id) => id.toString() !== studentId
+    );
+
+    await course.save();
+    res.status(200).json({ message: "Student moved to pending successfully" });
+  } catch (error) {
+    console.error("Error setting student to pending:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+export const hideCourse = async (req, res) => {
+  try {
+    const course = await Course.findByIdAndUpdate(
+      req.params.courseId,
+      { isHidden: true },
+      { new: true }
+    );
+    res.status(200).json(course);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to hide course" });
+  }
+};
+
+export const unhideCourse = async (req, res) => {
+  try {
+    const course = await Course.findByIdAndUpdate(
+      req.params.courseId,
+      { isHidden: false },
+      { new: true }
+    );
+    res.status(200).json(course);
+  } catch (err) {
+    res.status(500).json({ message: "Failed to unhide course" });
+  }
+};

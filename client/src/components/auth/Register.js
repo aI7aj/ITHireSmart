@@ -108,7 +108,7 @@ const Register = ({ register }) => {
 
     mobileNumber: Yup.string()
       .matches(/^\d{10,10}$/, "Mobile number must be between 10")
-      .required("Mobile number is required"), 
+      .required("Mobile number is required"),
 
     dateOfBirth: Yup.date()
       .max(
@@ -155,12 +155,10 @@ const Register = ({ register }) => {
         validationSchema={validationSchema}
         onSubmit={async (values, { setSubmitting, setFieldError }) => {
           try {
-            // Ensure mobileNumber is sent as a string
             const res = await register({
               ...values,
               mobileNumber: String(values.mobileNumber),
             });
-            // console.log("Backend response:", res);
 
             if (res && Array.isArray(res.errors)) {
               let emailError = false;
@@ -171,13 +169,12 @@ const Register = ({ register }) => {
                 }
               });
               if (emailError) return;
-              // If there are other errors, stop here
               return;
             }
 
             if ((res && res.token) || (res && res.success)) {
-              navigate("/Authentication");
-              console.log("Registration successful");
+              // بدل navigate("/Authentication") نستخدم:
+              navigate("/verify-email", { state: { email: values.email } });
               return;
             }
 

@@ -98,7 +98,7 @@ const Navbar = () => {
   const navItems = [
     { name: "Find Job", path: "/FindJob" },
     { name: "Courses", path: "/Courses" },
-    { name: "Hiring", path: "/Hiring" },
+    { name: "Training", path: "/Training" },
     ...(localStorage.getItem("role") === "company"
       ? [{ name: "Dashboard", path: "/CompanyDashboard" }]
       : []),
