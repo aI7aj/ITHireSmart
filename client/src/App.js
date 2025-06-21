@@ -31,7 +31,7 @@ import CompanyDashboard from "./components/Company/CompanyDashboard";
 import CompanyCourses from "./components/Courses/CompanyCourses";
 import EditCourse from "./components/Courses/EditCourse";
 import CoursesApplicants from "./components/Courses/CoursesApplicants";
-
+import VerifyEmail from "./components/auth/VerifyEmail";
 function App() {
   const location = useLocation();
 
@@ -100,6 +100,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/security" element={<Security />} />
           <Route path="/course/:id" element={<CourseDetails />} />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
           {/* Protected Routes for company role */}
           <Route element={<ProtectedRoute allowedRole="company" />}>

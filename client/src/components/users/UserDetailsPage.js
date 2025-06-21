@@ -10,10 +10,14 @@ import EmailIcon from "@mui/icons-material/Email";
 import PhoneAndroidIcon from "@mui/icons-material/PhoneAndroid";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import CakeIcon from "@mui/icons-material/Cake";
+import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
+import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 const UserCVPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
   const [photo, setPhoto] = useState(null);
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -65,6 +69,23 @@ const UserCVPage = () => {
   return (
     <Box sx={{ maxWidth: "900px", margin: "24px auto", padding: "0 16px" }}>
       {/* Profile card */}
+      <Button
+        variant="contained"
+        size="medium"
+        startIcon={<ArrowBackIosNewIcon />}
+        sx={{
+          mb: 3,
+          bgcolor: "black",
+          textTransform: "none",
+          borderRadius: 2,
+          boxShadow: 2,
+          px: 3,
+          color: "white",
+        }}
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </Button>
       <Box
         sx={{
           boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
