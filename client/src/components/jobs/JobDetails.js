@@ -226,21 +226,19 @@ function JobDetails() {
                 mb: 4,
               }}
             >
-              <Avatar
-                src={job.companyLogo || ""}
-                alt={job.company || "Company"}
-                sx={{
-                  width: 80,
-                  height: 80,
-                  bgcolor: "#f5f5f5",
-                  color: "#000000",
-                  fontWeight: 700,
-                  fontSize: "2rem",
-                  border: "2px solid #e0e0e0",
-                }}
-              >
-                {job.company ? job.company[0] : "C"}
-              </Avatar>
+              <Box sx={{ mr: 1 }}>
+                <img
+                  src={job.user?.profilepic?.url}
+                  alt="Company Logo"
+                  style={{
+                    width: "70px",
+                    height: "70px",
+                    borderRadius: "50%",
+                    objectFit: "cover",
+                    fontFamily: "Geist",
+                  }}
+                />
+              </Box>
 
               <Box sx={{ flex: 1 }}>
                 <Typography

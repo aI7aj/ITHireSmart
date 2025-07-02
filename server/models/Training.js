@@ -49,11 +49,11 @@ const TrainingSchema = new Schema(
       min: 1,
     },
     topicsCovered: {
-      type: String ,
+      type: [String] ,
       required: true,
     },
     Requirements: {
-      type: String ,
+      type: [String] ,
       required: true,
     },
     enrolledUsers: [

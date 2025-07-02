@@ -13,7 +13,7 @@ import {
   Divider,
   FormGroup,
 } from "@mui/material";
-import { getJobs } from "../../API/jobsAPI";
+import { getJobs, searchJobByKeyword } from "../../API/jobsAPI";
 import { useNavigate } from "react-router-dom";
 import { Snackbar, Alert } from "@mui/material";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -28,10 +28,7 @@ function FindJob() {
     const colors = ["#EFF5F5"];
     return colors[idx % colors.length];
   };
-  const getCardTextColor = (idx) => {
-    const darkerColors = ["black"];
-    return darkerColors[idx % darkerColors.length];
-  };
+
   const companyName = `${localStorage.getItem("firstName") || ""} ${
     localStorage.getItem("lastName") || ""
   }`.trim();
@@ -165,6 +162,7 @@ function FindJob() {
   };
   const clearFilters = () => {
     setFilters({
+      keyword: "",
       location: "",
       experienceLevel: "",
       jobTypes: [],
@@ -249,6 +247,49 @@ function FindJob() {
                   p: 0.5,
                 }}
               />
+            </Box>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                label="Search by Keyword"
+                variant="outlined"
+                fullWidth
+                size="small"
+                value={filters.keyword}
+                onChange={handleFilterChange}
+                name="keyword"
+                sx={{
+                  borderRadius: "12px",
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                  },
+                }}
+              />
+              <Button
+                variant="contained"
+                fullWidth
+                sx={{
+                  mt: 1,
+                  background: "black",
+                  color: "white",
+                  "&:hover": {
+                    background: "#333",
+                  },
+                }}
+                onClick={async () => {
+                  try {
+                    const res = await searchJobByKeyword(filters.keyword);
+                    const visibleJobs = res.data.filter((job) => !job.isHidden);
+                    setJobs(visibleJobs);
+                    setFilteredJobs(visibleJobs);
+                    setPage(1);
+                  } catch (err) {
+                    console.error(err);
+                    setErrorOpen(true);
+                  }
+                }}
+              >
+                Search
+              </Button>
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -558,7 +599,7 @@ function FindJob() {
             >
               <BoltIcon sx={{ fontSize: 20, color: "#F3C623" }} />
               <span style={{ fontWeight: 500, fontSize: 14, color: "#F3C623" }}>
-                {jobs.length}
+                {filteredJobs.length}
               </span>
               <Typography
                 variant="subtitle1"
@@ -694,7 +735,7 @@ function FindJob() {
                           mb: 1.2,
                           color: "black",
                           fontSize: "19px",
-                          fontFamily: "Geist" ,
+                          fontFamily: "Geist",
                           textTransform: "capitalize",
                           lineHeight: 1.2,
                           letterSpacing: 0.1,
@@ -800,7 +841,7 @@ function FindJob() {
                                 fontFamily: "Geist",
                               }}
                             >
-                              {job.salary ? `$${job.salary}k` : "$2.5k"}
+                              {job.salary ? `$${job.salary}` : "0"}
                             </Typography>
                             <Typography
                               variant="body2"
