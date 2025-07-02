@@ -37,3 +37,6 @@ const photodelete=multer({
     
 })
 export default photoUpload;
+
+
+

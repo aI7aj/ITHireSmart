@@ -17,7 +17,7 @@ import {
   sendVerificationEmail,
   sendPasswordResetEmail,
   sendResetSuccessEmail,
-} from "../../mailtrap/emails.js";
+} from "../../nodemailer/sendEmail.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
