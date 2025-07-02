@@ -39,7 +39,7 @@ const CourseSchema = new Schema(
       default: "1 month",
     },
     requirements: {
-      type: String,
+      type: [String],
       required: true,
     },
     capacity: {

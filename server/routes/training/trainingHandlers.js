@@ -255,14 +255,14 @@ export async function acceptParticipant(req, res) {
       (id) => id.toString() !== participantId
     );
 
-    if (!training.acceptedParticipants.includes(participantId)) {
+    if (!training.acceptedParticipants.some(id => id.toString() === participantId)) {
       training.acceptedParticipants.push(participantId);
     }
 
     await training.save();
     res.json({ msg: "Participant accepted" });
   } catch (error) {
-    console.error(error.message);
+    console.error("Error accepting participant:", error);
     res.status(500).send("Server Error");
   }
 }

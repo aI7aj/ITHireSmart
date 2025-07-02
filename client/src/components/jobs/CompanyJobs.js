@@ -608,6 +608,11 @@ function CompanyJobs() {
                               onClose={handleCloseConfirm}
                               aria-labelledby="confirm-dialog-title"
                               aria-describedby="confirm-dialog-description"
+                              BackdropProps={{
+                                style: {
+                                  backgroundColor: "rgba(0, 0, 0, 0.3)",
+                                },
+                              }}
                             >
                               <DialogTitle id="confirm-dialog-title">
                                 <Box
@@ -634,7 +639,7 @@ function CompanyJobs() {
                                       sx={{
                                         fontSize: 45,
                                         color: "#10B981",
-                                        bgcolor: "#E7F8F2",
+                                        bgcolor: "rgba(255, 0, 0, 0.1)",
                                         borderRadius: "50%",
                                         p: 1,
                                       }}
