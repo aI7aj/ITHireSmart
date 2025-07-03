@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
-import { verifyEmailAPI } from "../../API/API"; 
+
 
 const VerifyEmail = () => {
   const [token, setToken] = useState("");
@@ -12,33 +12,9 @@ const VerifyEmail = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // نستلم الإيميل من صفحة التسجيل (إذا أردنا استخدامه للعرض أو إعادة إرسال الرمز)
   const email = location.state?.email || "";
 
-  const handleSubmit = async () => {
-    setError("");
-    setSuccess("");
-    setLoading(true);
-
-    try {
-      // نرسل الطلب للسيرفر مع الرمز
-      const res = await verifyEmailAPI(token);
-      if (res.data.message === "Email verified successfully.") {
-        setSuccess("Email verified successfully! Redirecting to login...");
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      } else {
-        setError("Verification failed. Please try again.");
-      }
-    } catch (err) {
-      setError(
-        err.response?.data?.message || "An error occurred during verification."
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  
 
   return (
     <Box
@@ -83,7 +59,7 @@ const VerifyEmail = () => {
 
       <Button
         variant="contained"
-        onClick={handleSubmit}
+        
         disabled={loading || !token.trim()}
         sx={{ width: "300px" }}
       >

@@ -32,8 +32,12 @@
     "nodemailer": "^6.10.1",
     "nodemon": "^3.1.9",
     "normalize-url": "^8.0.1",
+<<<<<<< HEAD
     "openai": "^5.8.2",
     "pdf-parse": "^1.1.1",
     "tesseract.js": "^6.0.1"
+=======
+    "openai": "^5.8.2"
+>>>>>>> 3b71154209ff1a42617f05610d5a346ceb82b5e7
   }
 }

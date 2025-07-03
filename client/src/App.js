@@ -32,6 +32,12 @@ import CompanyCourses from "./components/Courses/CompanyCourses";
 import EditCourse from "./components/Courses/EditCourse";
 import CoursesApplicants from "./components/Courses/CoursesApplicants";
 import VerifyEmail from "./components/auth/VerifyEmail";
+import Trainings from "./components/Training/Trainings";
+import TrainingDetails from "./components/Training/TrainingDetails";
+import CompanyTrainings from "./components/Training/CompanyTrainings";
+import PostTraining from "./components/Training/post-training";
+import TrainingsApplicants from "./components/Training/TrainingsApplicants";
+import EditTraining from "./components/Training/EditTraining";
 function App() {
   const location = useLocation();
 
@@ -61,7 +67,6 @@ function App() {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("role", response.data.role);
       }
-      // console.log("Backend response:", response.data);
       return response.data;
     } catch (error) {
       return { errors: [{ param: "email", msg: "Invalid email or password" }] };
@@ -101,6 +106,8 @@ function App() {
           <Route path="/security" element={<Security />} />
           <Route path="/course/:id" element={<CourseDetails />} />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/trainings" element={<Trainings />} />
+          <Route path="/training/:id" element={<TrainingDetails />} />
 
           {/* Protected Routes for company role */}
           <Route element={<ProtectedRoute allowedRole="company" />}>
@@ -119,6 +126,13 @@ function App() {
               path="/courses/:courseId/applicants"
               element={<CoursesApplicants />}
             />
+            <Route path="/companytrainings" element={<CompanyTrainings />} />
+            <Route path="/post-training" element={<PostTraining />} />
+            <Route
+              path="/training-applicants/:trainingId"
+              element={<TrainingsApplicants />}
+            />
+            <Route path="/edit-training/:id" element={<EditTraining />} />
           </Route>
 
           {/* 404 Not Found */}

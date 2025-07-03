@@ -12,6 +12,7 @@ API.interceptors.request.use((config) => {
 
 export const registerUser = (values) => API.post("/users/register", values);
 export const loginUser = (values) => API.post("/users/login", values);
+
 export const changePassword = (values) =>
   API.post("/users/changepassword", values);
 
@@ -22,4 +23,6 @@ export const getProfile = (id) => API.get(`/profiles/user/${id}`);
 export const updateProfile = (values) =>
   API.post("/profiles/updateprofile", values);
 
-export const verifyEmailAPI = (token) =>API.get(`/users/verify-email?token=${token}`);
+export const GetRecommendedApplicants = (jobId) => {
+  return API.get(`/jobs/${jobId}/recommendations`);
+};

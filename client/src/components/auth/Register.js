@@ -9,6 +9,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 
+
 const style = {
   display: "flex",
   justifyContent: "center",
@@ -173,13 +174,14 @@ const Register = ({ register }) => {
             }
 
             if ((res && res.token) || (res && res.success)) {
-              // بدل navigate("/Authentication") نستخدم:
               navigate("/verify-email", { state: { email: values.email } });
               return;
             }
 
             setFieldError("email", "Registration failed. Please try again.");
           } catch (error) {
+            console.log(error.response?.data || error.message);
+
             setFieldError(
               "email",
               "An error occurred during registration. Please try again."

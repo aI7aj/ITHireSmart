@@ -6,13 +6,8 @@ import jobPostValidater from "../../middleware/jobPostvalidater.js";
 const router = express.Router();
 import * as handlers from "../jobs/jobshandlers.js";
 import checkRole from "../../middleware/checkRole.js";
-/*
-1- POST/jobs
-2- GET/jobs
-3- GET/jobs/:jobId
-4- DELETE/jobs/:jobId
-5- PUT/jobs/:jobId
-*/
+
+
 
 // @route   POST /api/jobs/postJobs
 // @desc    Create new Job
@@ -78,6 +73,14 @@ router.get(
   auth,
   checkRole("company"),
   handlers.viewApplicants
+);
+
+// @route GET /api/jobs/getRecommendedApplicants
+router.get(
+  "/:jobId/recommendations",
+  auth,
+  checkRole("company"),
+  handlers.getRecommendedApplicants
 );
 
 export default router;
