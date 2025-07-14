@@ -26,3 +26,6 @@ export const updateProfile = (values) =>
 export const GetRecommendedApplicants = (jobId) => {
   return API.get(`/jobs/${jobId}/recommendations`);
 };
+
+export const verifyEmail = (token) =>
+  API.get(`/users/verify-email?token=${token}`);

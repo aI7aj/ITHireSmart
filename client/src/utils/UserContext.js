@@ -15,6 +15,7 @@ export const UserProvider = ({ children }) => {
         const profile = response.data;
         setUser({
           ...profile.user,
+          
           location: profile.location || "",
           experience: profile.experience || [],
           education: profile.education || [],

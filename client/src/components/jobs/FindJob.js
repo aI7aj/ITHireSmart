@@ -29,10 +29,6 @@ function FindJob() {
     return colors[idx % colors.length];
   };
 
-  const companyName = `${localStorage.getItem("firstName") || ""} ${
-    localStorage.getItem("lastName") || ""
-  }`.trim();
-
   const [errorOpen, setErrorOpen] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [page, setPage] = useState(1);
@@ -58,6 +54,7 @@ function FindJob() {
       }
       setJobs(response.data);
       setFilteredJobs(visibleJobs);
+      console.log("Jobs fetched successfully:", response.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
       navigate("/404");
@@ -701,20 +698,34 @@ function FindJob() {
                           />
                         </Box>
                         <Box>
-                          <Typography
-                            variant="subtitle2"
-                            sx={{
-                              color: "#334155",
-                              fontFamily: "DM Sans, Poppins, Arial",
-                              fontSize: "15px",
-                              fontWeight: 500,
-                              textTransform: "capitalize",
-                              letterSpacing: 0.1,
-                            }}
-                          >
-                            {job.companyName || companyName}
-                          </Typography>
-
+                          <Box sx={{ display: "flex", gap: 0.5 }}>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                color: "#334155",
+                                fontFamily: "DM Sans, Poppins, Arial",
+                                fontSize: "15px",
+                                fontWeight: 500,
+                                textTransform: "capitalize",
+                                letterSpacing: 0.1,
+                              }}
+                            >
+                              {job.user?.firstName}
+                            </Typography>
+                            <Typography
+                              variant="subtitle2"
+                              sx={{
+                                color: "#334155",
+                                fontFamily: "DM Sans, Poppins, Arial",
+                                fontSize: "15px",
+                                fontWeight: 500,
+                                textTransform: "capitalize",
+                                letterSpacing: 0.1,
+                              }}
+                            >
+                              {job.user?.lastName}
+                            </Typography>
+                          </Box>
                           <Typography
                             variant="body2"
                             sx={{

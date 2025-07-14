@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useUser } from "../../utils/UserContext";
-
 import { getProfile, updateProfile, uploadPhoto } from "../../API/API";
 import {
   Box,
@@ -245,6 +244,7 @@ const UserSettings = () => {
                 message: "Profile updated successfully!",
                 severity: "success",
               });
+              
             } catch (error) {
               setSnackbar({
                 open: true,
@@ -372,10 +372,7 @@ const UserSettings = () => {
                               variant="outlined"
                               fullWidth
                               {...field}
-                              sx={{
-                                flex: 1,
-                              }}
-                              disabled
+                              sx={{ flex: 1 }}
                             />
                           )}
                         </Field>
@@ -386,10 +383,7 @@ const UserSettings = () => {
                               variant="outlined"
                               fullWidth
                               {...field}
-                              sx={{
-                                flex: 1,
-                              }}
-                              disabled
+                              sx={{ flex: 1 }}
                             />
                           )}
                         </Field>

@@ -83,7 +83,7 @@ export async function register(req, res) {
     const hashedpass = await bcrypt.hash(password, salt);
 
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpiresAt = Date.now() + 60 * 60 * 1000; // 1 hour..
+    const verificationTokenExpiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
 
     user = new User({
       firstName,
@@ -108,11 +108,10 @@ export async function register(req, res) {
       },
     };
     // Send verification email
-    const verificationURL = `${process.env.BASE_URL}/api/users/verify-email?token=${verificationToken}`;
+    const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
       await sendVerificationEmail(email, verificationURL);
     } catch (mailErr) {
-      // *** might added later ,, to roll back the user if verify failed to send
       // await User.findByIdAndDelete(user._id);
       return res.status(500).json({
         errors: [{ msg: "Registration succeeded but sending email failed." }],
@@ -122,18 +121,18 @@ export async function register(req, res) {
       message:
         "Registration successful. Please check ur email to verify ur account.",
     });
-    // jwt.sign(
-    //   payload,
-    //   config.get("jwtSecret"),
-    //   { expiresIn: "5days" },
-    //   (err, token) => {
-    //     if (err) {
-    //       throw err;
-    //     } else {
-    //       res.json({ token });
-    //     }
-    //   }
-    // );
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: "5days" },
+      (err, token) => {
+        if (err) {
+          throw err;
+        } else {
+          res.json({ token });
+        }
+      }
+    );
   } catch (error) {
     console.error(error.message);
     res.status(500).send(error.message);
@@ -281,6 +280,7 @@ export async function login(req, res) {
     res.status(500).send(error.message);
   }
 }
+
 export async function myprofile(req, res) {
   try {
     const foundUser = await User.findById(req.user.id).select("-password");
@@ -396,7 +396,6 @@ export async function getphoto(req, res) {
   }
 }
 
-
 export async function changePassword(req, res) {
   const { oldPassword, newPassword } = req.body;
   try {
@@ -438,4 +437,3 @@ export async function changePassword(req, res) {
     res.status(500).json({ msg: "Server error" });
   }
 }
-

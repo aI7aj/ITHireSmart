@@ -36,8 +36,6 @@ export async function postjob(req, res) {
 export async function showalljobs(req, res) {
   try {
     const now = new Date();
-    console.log("Now:", now.toISOString());
-
     const updateResult = await Job.updateMany(
       { to: { $lte: now }, isHidden: false },
       { $set: { isHidden: true } }
@@ -48,7 +46,7 @@ export async function showalljobs(req, res) {
       .populate("user", "profilepic firstName lastName");
 
     res.json(visibleJobs);
-  } catch (error) {
+  } catch (error) {   
     console.error(error.message);
     res.status(500).send(error.message);
   }
@@ -263,21 +261,36 @@ export async function getRecommendedApplicants(req, res) {
       };
     });
 
-    const prompt = `
-Given the following applicants for a job, rank them from best to worst fit.
-Consider their skills and years of experience.
-Applicants:
-${applicantsData
-  .map(
-    (app, i) =>
-      `${i + 1}. Name: ${app.name}, Skills: ${
-        app.skills.length > 0 ? app.skills.join(", ") : "None"
-      }, Experience: ${app.experience} years`
-  )
-  .join("\n")}
-Return the top 5 applicants by their index numbers only in JSON array format.
-Example: [1, 3, 2, 5, 4]
-`;
+    const prompt = `You are an intelligent recruitment assistant. Your task is to recommend the top 5 applicants for a job opening based on their skills, education, and experience.
+
+The job requirements are:
+Skills: [List job required skills here]
+Education: [Required degrees or fields]
+Experience: [Required years and domains of experience]
+
+Below is a list of applicants. Each applicant has the following structure:
+
+{
+  "name": "Applicant Name",
+  "skills": [...],
+  "education": [...],
+  "experience": [...]
+}
+
+Please evaluate each applicant carefully and rank them based on how well they match the job requirements. Justify briefly why each of the top 5 was selected.
+
+Return your answer in this JSON format:
+
+{
+  "top_applicants": [
+    {
+      "name": "Applicant Name",
+      "match_score": 0-100,
+      "justification": "Why this applicant is a good fit"
+    },
+    ...
+  ]
+}`;
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
@@ -289,6 +302,8 @@ Example: [1, 3, 2, 5, 4]
     console.log("Full OpenAI response:", completion);
 
     const responseText = completion.choices?.[0]?.message?.content?.trim();
+    
+    console.log("OpenAI response text:", responseText);
     if (!responseText) {
       throw new Error("No response text from OpenAI");
     }

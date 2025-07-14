@@ -1,15 +1,24 @@
 import Profile from "../../models/Profile.js";
 import { validationResult } from "express-validator";
-import Job from "../../models/Profile.js";
-import User from "../../models/Profile.js";
+import Job from "../../models/Job.js";
+import User from "../../models/User.js";
 
 export async function updateprofile(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).send({ errors: errors.array() });
   } else {
-    const { company, location, status, skills, bio, experience, education } =
-      req.body;
+    const {
+      company,
+      firstName,
+      lastName,
+      location,
+      status,
+      skills,
+      bio,
+      experience,
+      education,
+    } = req.body;
 
     const profileFields = {
       user: req.user.id,
@@ -24,6 +33,13 @@ export async function updateprofile(req, res) {
       education,
     };
     try {
+      if (firstName || lastName) {
+        await User.findByIdAndUpdate(req.user.id, {
+          ...(firstName && { firstName }),
+          ...(lastName && { lastName }),
+        });
+      }
+
       let profileObject = await Profile.findOneAndUpdate(
         { user: req.user.id },
         { $set: profileFields },
