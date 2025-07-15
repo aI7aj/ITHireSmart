@@ -72,7 +72,8 @@ const Login = ({ login, type }) => {
   const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
-  
+
+
 
   const validationSchema = Yup.object({
     email: Yup.string()
@@ -83,6 +84,7 @@ const Login = ({ login, type }) => {
       .min(8, "Password must be at least 8 characters"),
   });
 
+  
   return (
     <Formik
       initialValues={{ email: "", password: "" }}
