@@ -72,6 +72,7 @@ const Login = ({ login, type }) => {
   const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
+  
 
   const validationSchema = Yup.object({
     email: Yup.string()
