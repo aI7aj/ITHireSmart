@@ -19,6 +19,8 @@ router.post("/postJobs", auth, jobPostValidater, handlers.postjob);
 // @access  Private (company only)
 router.get("/", auth, handlers.showalljobs);
 
+
+
 // @route   GET /api/jobs/search?keyword=developer
 // @desc    Search jobs by title or company name (case-insensitive)
 // @access  Public (for users search)=
