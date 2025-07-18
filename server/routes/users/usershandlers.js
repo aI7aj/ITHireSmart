@@ -26,6 +26,7 @@ import {
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 export async function resetPassword(req, res) {
   const { token } = req.params;
   const { password } = req.body;
@@ -199,43 +200,6 @@ export async function verifyEmail(req, res) {
   }
 }
 
-// POST /api/users/forgot-password
-// export async function forgotPassword(req, res) {
-//   const { email } = req.body;
-
-
-//   } catch (error) {
-//     console.error(error.message);
-//     return res.status(500).send("Server error during registration");
-//   }
-// }
-
-
-  try {
-    const user = await User.findOne({ email });
-    if (!user) {
-      return res.json({
-        message:
-          "If that email is registered, you’ll receive reset instructions.",
-      });
-    }
-
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpiresAt = resetTokenExpiresAt;
-
-    await user.save();
-
-    const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
-    await sendPasswordResetEmail(email, resetURL);
-  } catch (error) {
-    console.log("Error in forgotPassword ", error);
-    res.status(400).json({ success: false, message: error.message });
-  }
-}
-
 // -----------------------
 //  login
 // -----------------------
@@ -294,6 +258,7 @@ export async function login(req, res) {
     res.status(500).send(error.message);
   }
 }
+
 
 // POST /api/users/forgot-password
 export async function forgotPassword(req, res) {
@@ -357,9 +322,7 @@ export async function forgotPassword(req, res) {
 //   return res.json({ message: "Password has been reset successfully." });
 // }
 
-// -----------------------
-//  login
-// -----------------------
+
 
 export async function myprofile(req, res) {
   try {
@@ -560,11 +523,6 @@ export async function getUserById(req, res) {
 // -----------------------
 export async function toggleUserStatus(req, res) {
   const { id } = req.params;
-
-
-  export async function toggleUserStatus(req, res) {
-    const { id } = req.params;
-
 
   try {
     const user = await User.findById(id);
