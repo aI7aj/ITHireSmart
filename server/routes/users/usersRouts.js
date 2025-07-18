@@ -124,4 +124,7 @@ router.route("/viewJobApplications/:userID")
 router.route("/viewTrainingApplications/:userID")
   .get(handlers.viewTrainingApplications);
 
+router.route("/viewCourseApplications/:userID")
+  .get(handlers.viewCourseApplications);
+
 export default router;
