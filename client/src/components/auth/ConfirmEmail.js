@@ -34,7 +34,13 @@ const ConfirmEmail = () => {
     );
 
     verifyEmail(token)
-      .then(() => setStatus("success"))
+      .then((data) => {
+        console.log("API Response:", data); 
+        if (data.userId) {
+          localStorage.setItem("userId", data.userId);
+        }
+        setStatus("success");
+      })
       .catch(() => setStatus("error"));
   }, [token]);
 

@@ -7,6 +7,9 @@ const UploadCvPage = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
+  const userId = localStorage.getItem("userId");
+  console.log("User ID:", userId);
+
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
@@ -24,7 +27,7 @@ const UploadCvPage = () => {
       const res = await axios.post("/api/cv/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // لو بتستخدم JWT
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
 

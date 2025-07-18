@@ -160,7 +160,7 @@ export async function verifyEmail(req, res) {
     user.verificationTokenExpiresAt = undefined;
     await user.save();
 
-    return res.json({ message: "Email verified successfully." });
+    return res.json({ msg: "Email verified successfully", userId: user._id }); 
   } catch (err) {
     console.error("Email verification error:", err);
     return res.status(500).json({ message: "Server error." });

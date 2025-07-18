@@ -28,4 +28,5 @@ export const GetRecommendedApplicants = (jobId) => {
 };
 
 export const verifyEmail = (token) =>
-  API.get(`/users/verify-email?token=${token}`);
+  API.get(`/users/verify-email?token=${token}`).then((res) => res.data);
+
