@@ -14,6 +14,8 @@ import * as cloudinarys from "../../utils/cloudinary.js";
 import fs from "fs";
 import crypto from "crypto";
 import mongoose from "mongoose";
+import Profile from "../../models/Profile.js";
+
 import {
   sendVerificationEmail,
   sendPasswordResetEmail,
