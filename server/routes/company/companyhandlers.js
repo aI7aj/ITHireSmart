@@ -136,7 +136,7 @@ export async function loginCompany(req, res) {
             id: company._id,
             companyName: company.companyName,
             email: company.companyEmail,
-            
+
             role: "company",
           });
         }
