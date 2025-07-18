@@ -121,4 +121,7 @@ router.route("/uploadCv").post(upload.single('cv'), handlers.uploadCv);
 router.route("/viewJobApplications/:userID")
   .get(handlers.viewJobApplications);
 
+router.route("/viewTrainingApplications/:userID")
+  .get(handlers.viewTrainingApplications);
+
 export default router;

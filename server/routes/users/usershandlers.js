@@ -666,3 +666,43 @@ export async function viewJobApplications(req, res) {
   }
 }
 
+// -----------------------
+//  view training applications for user
+// -----------------------
+export async function viewTrainingApplications(req, res) {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.params.userID);
+
+    const trainings = await Training.find({
+      $or: [
+        { enrolledUsers: userId },
+        { acceptedParticipants: userId },
+        { rejectedParticipants: userId },
+        { pendingParticipants: userId }
+      ]
+    }).select("trainingTitle companyName startAt endAt trainingType location enrolledUsers acceptedParticipants rejectedParticipants pendingParticipants");
+
+    const result = trainings.map(training => {
+      let status = "pending";
+      if (training.acceptedParticipants.some(u => u.equals(userId))) status = "accepted";
+      else if (training.rejectedParticipants.some(u => u.equals(userId))) status = "rejected";
+      else if (training.enrolledUsers.some(u => u.equals(userId))) status = "enrolled";
+      else if (training.pendingParticipants.some(u => u.equals(userId))) status = "pending";
+
+      return {
+        trainingTitle: training.trainingTitle,
+        companyName: training.companyName,
+        startAt: training.startAt,
+        endAt: training.endAt,
+        trainingType: training.trainingType,
+        location: training.location,
+        status
+      };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching training applications:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+}
