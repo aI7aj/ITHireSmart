@@ -6,6 +6,7 @@ import { registerValidator } from "../../middleware/registervalidate.js";
 import validaterror from "../../middleware/validationresult.js";
 import checkRole from "../../middleware/checkRole.js";
 import photoUpload from "../../middleware/photoUpload.js";
+import multer from 'multer';
 
 const router = express.Router();
 
@@ -108,4 +109,13 @@ router.route("/:id")
 router.route("/toggleUserStatus/:id")
   .patch(handlers.toggleUserStatus);
 // .patch(auth, checkRole("admin"), handlers.toggleUserStatus); // to be handled later
+
+
+
+
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+router.route("/uploadCv").post(upload.single('cv'), handlers.uploadCv);
+
+
 export default router;

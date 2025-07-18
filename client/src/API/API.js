@@ -28,5 +28,15 @@ export const GetRecommendedApplicants = (jobId) => {
   return API.get(`/jobs/${jobId}/recommendations`);
 };
 
+export const uploadCv = (formData) => {
+  const token = localStorage.getItem("token");
+  return API.post("/users/uploadCv", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+};
+
 export const verifyEmail = (token) =>
-  API.get(`/users/verify-email?token=${token}`);
+  API.get(`/users/verify-email?token=${token}`).then((res)=>res.data);

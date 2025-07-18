@@ -15,6 +15,8 @@ import fs from "fs";
 import crypto from "crypto";
 import mongoose from "mongoose";
 import Profile from "../../models/Profile.js";
+import { OpenAI } from "openai";
+
 
 import {
   sendVerificationEmail,
@@ -73,7 +75,7 @@ export async function register(req, res) {
     role,
   } = req.body;
 
-  email = email.trim().toLowerCase(); 
+  email = email.trim().toLowerCase();
 
   try {
     let existingUser = await User.findOne({ email });
@@ -89,7 +91,6 @@ export async function register(req, res) {
     const verificationToken = crypto.randomBytes(32).toString("hex");
     const verificationTokenExpiresAt = Date.now() + 60 * 60 * 1000;
 
-  
     const user = new User({
       firstName,
       lastName,
@@ -107,7 +108,6 @@ export async function register(req, res) {
 
     await user.save();
 
- 
     const profile = new Profile({
       user: user.id,
       company: "",
@@ -118,14 +118,14 @@ export async function register(req, res) {
       experience: [],
       education: [],
     });
+
     await profile.save();
 
-    
     const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
       await sendVerificationEmail(email, verificationURL);
     } catch (mailErr) {
-  
+      // حذف المستخدم والبروفايل لو فشل إرسال الإيميل
       await User.findByIdAndDelete(user._id);
       await Profile.deleteOne({ user: user._id });
       return res.status(500).json({
@@ -133,20 +133,46 @@ export async function register(req, res) {
       });
     }
 
+    // إنشاء JWT والرد معاه
+    const payload = {
+      user: {
+        id: user.id,
+        role: user.role,
+      },
+    };
 
-    return res.status(201).json({
-      message:
-        "Registration successful. Please check your email to verify your account.",
-    });
+    jwt.sign(
+      payload,
+      config.get("jwtSecret"),
+      { expiresIn: "5days" },
+      (err, token) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ errors: [{ msg: "Token generation failed" }] });
+        } else {
+          return res.status(201).json({
+            token,
+            id: user.id,
+            email: user.email,
+            role: user.role,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            profilepic: user.profilepic,
+            message: "Registration successful. Please check your email to verify your account.",
+          });
+        }
+      }
+    );
 
   } catch (error) {
     console.error(error.message);
     return res.status(500).send("Server error during registration");
   }
-
-
 }
 
+// -----------------------
+//  login
+// -----------------------
 export async function login(req, res) {
   const errors = validationResult(req);
 
@@ -225,7 +251,11 @@ export async function login(req, res) {
       user.verificationTokenExpiresAt = undefined;
       await user.save();
 
-      return res.json({ message: "Email verified successfully." });
+      return res.json({ message: "Email verified successfully.",
+        userId:user.id
+       },
+      
+      );
     } catch (err) {
       console.error("Email verification error:", err);
       return res.status(500).json({ message: "Server error." });
@@ -510,4 +540,77 @@ export async function login(req, res) {
       console.error("toggleUserStatus error:", error.message);
       res.status(500).json({ msg: "Server error while toggling status", error: error.message });
     }
+  }
+
+
+   // -----------------------
+  //  uploadCv CV
+  // -----------------------
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+export async function uploadCv(req, res) {
+  
+  try {
+    
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const fileBuffer = req.file.buffer;
+    const base64Data = fileBuffer.toString("base64");
+
+    const result = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content:  `
+            أنت مساعد ذكي. سيتم تزويدك بسيرة ذاتية (CV) مكتوبة داخل صورة.
+
+              أريد منك استخراج المهارات (Skills) فقط من هذا الـ CV.
+
+              الرجاء إرجاع المهارات بشكل قائمة مفصولة بفواصل فقط مثل:
+              JavaScript, Node.js, Python, React, Teamwork
+`,
+        },
+        {
+          role: "user",
+          content: [
+            {
+              type: "image_url",
+              image_url: {
+                url: `data:${req.file.mimetype};base64,${base64Data}`,
+              },
+            },
+          ],
+        },
+      ],
+      max_tokens: 300,
+    });
+
+    const aiResponse = result.choices[0].message.content;
+
+    // 2. استخراج skills من النص (نفترض مفصولين بفواصل أو أسطر)
+    const skills = aiResponse
+      .split(/[\n,]+/)
+      .map((s) => s.trim())
+      .filter((s) => s.length > 1);
+
+    // 3. تحديث user profile (مثلاً بإضافة skills للـ user)
+    const userId = req.body.userId;
+    await User.findByIdAndUpdate(userId, {
+      $set: { skills },
+    });
+
+    return res.status(200).json({
+      message: "CV processed and skills updated.",
+      extractedSkills: skills,
+    });
+  } catch (error) {
+  console.error("CV processing error:", error);
+  return res.status(500).json({ message: "Failed to process CV" });
+}
   }
