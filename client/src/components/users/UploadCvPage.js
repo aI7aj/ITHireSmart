@@ -1,20 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Button, Typography, Box, CircularProgress } from "@mui/material";
-import { uploadCv } from "../../API/API.js"
+import { uploadCv } from "../../API/API.js";
+
 const UploadCvPage = () => {
   const [file, setFile] = useState(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
-
-  const userId = localStorage.getItem("userId");
-  console.log("User ID:", userId);
-
+  
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
     setMessage("");
   };
-  const userId=localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
   const handleUpload = async () => {
     if (!file) return setMessage("Please upload your CV first.");
 
@@ -32,9 +30,7 @@ const UploadCvPage = () => {
         },
       });
 
-
       setMessage("CV processed and profile updated successfully.");
-
     } catch (err) {
       console.error(err);
       setMessage("Failed to process CV.");
@@ -64,7 +60,10 @@ const UploadCvPage = () => {
         </Button>
       </Box>
       {message && (
-        <Typography mt={2} color={message.includes("Failed") ? "error" : "primary"}>
+        <Typography
+          mt={2}
+          color={message.includes("Failed") ? "error" : "primary"}
+        >
           {message}
         </Typography>
       )}

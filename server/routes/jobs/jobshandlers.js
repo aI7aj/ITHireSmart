@@ -11,7 +11,7 @@ export async function postjob(req, res) {
     let job = new Job({
       user: req.user.id,
       jobTitle: req.body.jobTitle,
-      companyName: req.body.companyName,
+
       location: req.body.location,
       from: req.body.from,
       to: req.body.to,
@@ -23,6 +23,7 @@ export async function postjob(req, res) {
       experienceLevel: req.body.experienceLevel,
       salary: req.body.salary,
       workType: req.body.workType,
+      companyName: req.body.company,
       isHidden: false,
     });
     await job.save();
@@ -206,7 +207,7 @@ export async function viewApplicants(req, res) {
   try {
     const job = await Job.findById(req.params.jobId).populate(
       "applicants.user",
-      "firstName lastName email profilepic"
+      "firstName  email profilepic"
     );
 
     if (!job) {

@@ -70,6 +70,7 @@ function JobDetails() {
       try {
         const response = await getJobById(id);
         setJob(response.data);
+        console.log("Job fetched successfully:", response.data);
       } catch (error) {
         console.error("Error fetching job:", error);
       }
@@ -252,16 +253,24 @@ function JobDetails() {
                 >
                   {job.jobTitle}
                 </Typography>
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: "#666666",
-                    fontWeight: 500,
-                    mb: 2,
-                  }}
-                >
-                  {job.companyName}
-                </Typography>
+
+                {job.companyName ? (
+                  <Typography
+                    variant="h6"
+                    sx={{
+                      fontSize: "2rem",
+                      color: "#666666",
+                      fontWeight: 500,
+                      mb: 2,
+                    }}
+                  >
+                    {job.companyName}
+                  </Typography>
+                ) : (
+                  <Typography variant="h6" color="error" mb={2}>
+                    Company name not available
+                  </Typography>
+                )}
 
                 {/* Job Tags */}
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
