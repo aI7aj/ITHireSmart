@@ -59,6 +59,92 @@ export async function resetPassword(req, res) {
 // -----------------------
 //  registration
 // -----------------------
+export async function register(req, res) {
+  let {
+    firstName,
+    lastName,
+    email,
+    location,
+    dateOfBirth,
+    mobileNumber,
+    password,
+    role,
+  } = req.body;
+
+  email = email.trim().toLowerCase(); 
+
+  try {
+    let existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ errors: [{ param: "email", msg: "Email already exists" }] });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedpass = await bcrypt.hash(password, salt);
+
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const verificationTokenExpiresAt = Date.now() + 60 * 60 * 1000;
+
+  
+    const user = new User({
+      firstName,
+      lastName,
+      email,
+      location,
+      dateOfBirth,
+      mobileNumber,
+      password: hashedpass,
+      dateOfcreation: Date.now(),
+      isVerified: false,
+      verificationToken,
+      verificationTokenExpiresAt,
+      role,
+    });
+
+    await user.save();
+
+ 
+    const profile = new Profile({
+      user: user.id,
+      company: "",
+      location: location || "",
+      status: "active",
+      skills: [],
+      bio: "",
+      experience: [],
+      education: [],
+    });
+    await profile.save();
+
+    
+    const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
+    try {
+      await sendVerificationEmail(email, verificationURL);
+    } catch (mailErr) {
+  
+      await User.findByIdAndDelete(user._id);
+      await Profile.deleteOne({ user: user._id });
+      return res.status(500).json({
+        errors: [{ msg: "Registration succeeded but sending email failed." }],
+      });
+    }
+
+
+    return res.status(201).json({
+      message:
+        "Registration successful. Please check your email to verify your account.",
+    });
+
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).send("Server error during registration");
+  }
+
+
+}
+
 export async function login(req, res) {
   const errors = validationResult(req);
 
