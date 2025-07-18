@@ -203,11 +203,38 @@ export async function verifyEmail(req, res) {
 // export async function forgotPassword(req, res) {
 //   const { email } = req.body;
 
+
 //   } catch (error) {
 //     console.error(error.message);
 //     return res.status(500).send("Server error during registration");
 //   }
 // }
+
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        message:
+          "If that email is registered, you’ll receive reset instructions.",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = resetTokenExpiresAt;
+
+    await user.save();
+
+    const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
+    await sendPasswordResetEmail(email, resetURL);
+  } catch (error) {
+    console.log("Error in forgotPassword ", error);
+    res.status(400).json({ success: false, message: error.message });
+  }
+}
 
 // -----------------------
 //  login
@@ -296,6 +323,7 @@ export async function forgotPassword(req, res) {
     res.status(400).json({ success: false, message: error.message });
   }
 }
+
 
 // -----------------------
 //  RESET PASSWORD
@@ -525,12 +553,18 @@ export async function getUserById(req, res) {
     console.error("getUserById error:", error.message);
     res.status(500).json({ msg: "Failed to fetch user", error: error.message });
   }
+
 }
 // -----------------------
 //  Enables or disables user account for admin dashboard.
 // -----------------------
 export async function toggleUserStatus(req, res) {
   const { id } = req.params;
+
+
+  export async function toggleUserStatus(req, res) {
+    const { id } = req.params;
+
 
   try {
     const user = await User.findById(id);
@@ -677,5 +711,71 @@ Use this format:
   } catch (error) {
     console.error("CV processing error:", error);
     return res.status(500).json({ message: "Failed to process CV" });
+  }
+}
+
+// -----------------------
+//  view job applications for user
+// -----------------------
+export async function viewJobApplications(req, res) {
+  try {
+    const userId = req.params.userID; // أو req.user.id إذا مع auth
+
+    const jobs = await Job.find({ "applicants.user": userId }).select("jobTitle applicants");
+
+    const filtered = jobs.map(job => {
+      const applicant = job.applicants.find(app => app.user.toString() === userId);
+      return {
+        jobTitle: job.jobTitle,
+        appliedAt: applicant?.appliedAt,
+        status: applicant?.status || "pending"
+      };
+    });
+
+    res.json(filtered);
+  } catch (error) {
+    console.error("Error fetching job applications:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+}
+
+// -----------------------
+//  view training applications for user
+// -----------------------
+export async function viewTrainingApplications(req, res) {
+  try {
+    const userId = new mongoose.Types.ObjectId(req.params.userID);
+
+    const trainings = await Training.find({
+      $or: [
+        { enrolledUsers: userId },
+        { acceptedParticipants: userId },
+        { rejectedParticipants: userId },
+        { pendingParticipants: userId }
+      ]
+    }).select("trainingTitle companyName startAt endAt trainingType location enrolledUsers acceptedParticipants rejectedParticipants pendingParticipants");
+
+    const result = trainings.map(training => {
+      let status = "pending";
+      if (training.acceptedParticipants.some(u => u.equals(userId))) status = "accepted";
+      else if (training.rejectedParticipants.some(u => u.equals(userId))) status = "rejected";
+      else if (training.enrolledUsers.some(u => u.equals(userId))) status = "enrolled";
+      else if (training.pendingParticipants.some(u => u.equals(userId))) status = "pending";
+
+      return {
+        trainingTitle: training.trainingTitle,
+        companyName: training.companyName,
+        startAt: training.startAt,
+        endAt: training.endAt,
+        trainingType: training.trainingType,
+        location: training.location,
+        status
+      };
+    });
+
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching training applications:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
   }
 }
