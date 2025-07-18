@@ -28,6 +28,7 @@ const ConfirmCompanyEmail = () => {
         setStatus("error");
         setMessage("No token provided.");
         return;
+        
       }
 
       try {
