@@ -202,12 +202,30 @@ export async function verifyEmail(req, res) {
 export async function forgotPassword(req, res) {
   const { email } = req.body;
 
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        message:
+          "If that email is registered, you’ll receive reset instructions.",
+      });
+    }
+
+    const resetToken = crypto.randomBytes(20).toString("hex");
+    const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpiresAt = resetTokenExpiresAt;
+
+    await user.save();
+
+    const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
+    await sendPasswordResetEmail(email, resetURL);
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).send("Server error during registration");
+    console.log("Error in forgotPassword ", error);
+    res.status(400).json({ success: false, message: error.message });
   }
 }
-
 // -----------------------
 //  login
 // -----------------------
@@ -267,67 +285,7 @@ export async function login(req, res) {
   }
 }
 
-  // -----------------------
-  //  Email verification
-  // -----------------------
-  export async function verifyEmail(req, res) {
-    const { token } = req.query;
-    try {
-      const user = await User.findOne({
-        verificationToken: token,
-        verificationTokenExpiresAt: { $gt: Date.now() },
-      });
-
-      if (!user) {
-        return res
-          .status(400)
-          .json({ message: "Invalid or expired verification token." });
-      }
-
-      user.isVerified = true;
-      user.verificationToken = undefined;
-      user.verificationTokenExpiresAt = undefined;
-      await user.save();
-
-      return res.json({ message: "Email verified successfully.",
-        userId:user.id
-       },
-      
-      );
-    } catch (err) {
-      console.error("Email verification error:", err);
-      return res.status(500).json({ message: "Server error." });
-    }
-  }
-
-  // POST /api/users/forgot-password
-  export async function forgotPassword(req, res) {
-    const { email } = req.body;
-
-    try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.json({
-          message:
-            "If that email is registered, you’ll receive reset instructions.",
-        });
-      }
-
-      const resetToken = crypto.randomBytes(20).toString("hex");
-      const resetTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-
-      user.resetPasswordToken = resetToken;
-      user.resetPasswordExpiresAt = resetTokenExpiresAt;
-
-      await user.save();
-
-      const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
-      await sendPasswordResetEmail(email, resetURL);
-    } catch (error) {
-      console.log("Error in forgotPassword ", error);
-      res.status(400).json({ success: false, message: error.message });
-    }
-  }
+ 
 
   // -----------------------
   //  RESET PASSWORD
@@ -556,9 +514,7 @@ export async function login(req, res) {
       res.status(500).json({ msg: "Failed to fetch user", error: error.message });
     }
   }
-  // -----------------------
-  //  Enables or disables user account for admin dashboard.
-  // -----------------------
+
   export async function toggleUserStatus(req, res) {
     const { id } = req.params;
 
@@ -685,5 +641,28 @@ await User.findByIdAndUpdate(userId, {
     return res.status(500).json({ message: "Failed to process CV" });
   }
 }
+// -----------------------
+//  view job applications for user
+// -----------------------
+export async function viewJobApplications(req, res) {
+  try {
+    const userId = req.params.userID; // أو req.user.id إذا مع auth
 
+    const jobs = await Job.find({ "applicants.user": userId }).select("jobTitle applicants");
+
+    const filtered = jobs.map(job => {
+      const applicant = job.applicants.find(app => app.user.toString() === userId);
+      return {
+        jobTitle: job.jobTitle,
+        appliedAt: applicant?.appliedAt,
+        status: applicant?.status || "pending"
+      };
+    });
+
+    res.json(filtered);
+  } catch (error) {
+    console.error("Error fetching job applications:", error.message);
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+}
 

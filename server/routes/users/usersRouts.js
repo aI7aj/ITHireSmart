@@ -118,4 +118,7 @@ const upload = multer({ storage: storage });
 router.route("/uploadCv").post(upload.single('cv'), handlers.uploadCv);
 
 
+router.route("/viewJobApplications/:userID")
+  .get(handlers.viewJobApplications);
+
 export default router;
