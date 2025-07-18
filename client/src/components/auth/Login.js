@@ -105,6 +105,7 @@ const Login = ({ login, type }) => {
             localStorage.setItem("role", data.role || type);
             localStorage.setItem("email", data.email);
             localStorage.setItem("userId", data.id);
+            localStorage.setItem("token", data.token);
 
             if (type === "company") {
               localStorage.setItem("companyName", data.companyName);
