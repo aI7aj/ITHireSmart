@@ -101,4 +101,11 @@ router.route("/getallusers")
   .get(handlers.getAllUsers)
 //.get(auth, checkRole("admin"), handlers.getallusers) // to be handled later
 
+router.route("/:id")
+  .get(handlers.getUserById);  
+// .get(auth, checkRole("admin"), handlers.getUserById); // to be handled later
+
+router.route("/toggleUserStatus/:id")
+  .patch(handlers.toggleUserStatus);
+// .patch(auth, checkRole("admin"), handlers.toggleUserStatus); // to be handled later
 export default router;
