@@ -234,6 +234,7 @@ export async function forgotPassword(req, res) {
 // -----------------------
 export async function login(req, res) {
   const errors = validationResult(req);
+  
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
@@ -249,6 +250,10 @@ export async function login(req, res) {
 
     if (!isMatch) {
       return res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+    }
+
+    if (user.role === "none") {
+      return res.status(403).json({ msg: "Your account is disabled." });
     }
     const payload = {
       user: {
@@ -449,7 +454,7 @@ export async function getAllUsers(req, res) {
     res.status(200).json(users);
   } catch (error) {
     console.error("getAllUsers error:", error.message);
-    res.status(500).json({ msg: "Failed to fetch users" });
+    res.status(500).json({ msg: "Failed to fetch users", error: error.message });
   }
 }
 // -----------------------
@@ -472,5 +477,28 @@ export async function getUserById(req, res) {
   } catch (error) {
     console.error("getUserById error:", error.message);
     res.status(500).json({ msg: "Failed to fetch user", error: error.message });
+  }
+}
+// -----------------------
+//  Enables or disables user account for admin dashboard.
+// -----------------------
+export async function toggleUserStatus(req, res) {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) return res.status(404).json({ msg: "User not found" });
+
+    user.role = user.role === "none" ? "user" : "none";
+
+    await user.save();
+
+    res.status(200).json({
+      msg: `User account has been ${user.role === "none" ? "disabled" : "enabled"}`,
+      role: user.role
+    });
+  } catch (error) {
+    console.error("toggleUserStatus error:", error.message);
+    res.status(500).json({ msg: "Server error while toggling status", error :error.message });
   }
 }
