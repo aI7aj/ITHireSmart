@@ -552,9 +552,9 @@ const openai = new OpenAI({
 });
 
 export async function uploadCv(req, res) {
-  
+
   try {
-    
+
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });
     }
@@ -567,14 +567,27 @@ export async function uploadCv(req, res) {
       messages: [
         {
           role: "system",
-          content:  `
-            أنت مساعد ذكي. سيتم تزويدك بسيرة ذاتية (CV) مكتوبة داخل صورة.
+          content: `You are a smart assistant.
 
-              أريد منك استخراج المهارات (Skills) فقط من هذا الـ CV.
+You will receive a CV written inside an image.
 
-              الرجاء إرجاع المهارات بشكل قائمة مفصولة بفواصل فقط مثل:
-              JavaScript, Node.js, Python, React, Teamwork
-`,
+I want you to extract and return ONLY the following information from the CV, in a strict and clean JSON format (no explanation, no code block, just the object itself).
+
+Use this format:
+
+{
+  "Skills": "Java, JavaScript, Node.js",
+  "TrainingCourses": "Front-end Course in Hasib, AI Training in GSG",
+  "Experience": "Internship at Google (2023); Backend Developer at Asal Technologies (2024 - Present)",
+  "Education": "Arab American University, Bachelor of Computer Science, Expected 2025; MIT, Master's in AI, Expected 2028 with gpa 3.5",
+  "Languages": "Arabic: Native, English: Good"
+}
+
+✅ Notes:
+- Each list should be returned as a **string**.
+- Use commas **inside** each item if needed.
+- Use a **semicolon (;)** to separate items in the Experience and Education fields only.
+- Return ONLY the JSON, without code blocks or explanation.`,
         },
         {
           role: "user",
@@ -588,29 +601,51 @@ export async function uploadCv(req, res) {
           ],
         },
       ],
-      max_tokens: 300,
+      max_tokens: 3000,
     });
 
-    const aiResponse = result.choices[0].message.content;
+    let aiResponse = result.choices[0].message.content;
+    aiResponse = aiResponse.trim();
 
-    // 2. استخراج skills من النص (نفترض مفصولين بفواصل أو أسطر)
-    const skills = aiResponse
-      .split(/[\n,]+/)
-      .map((s) => s.trim())
-      .filter((s) => s.length > 1);
+    if (aiResponse.startsWith("```json")) {
+      aiResponse = aiResponse.replace(/^```json\s*/, "");
+    }
 
-    // 3. تحديث user profile (مثلاً بإضافة skills للـ user)
-    const userId = req.body.userId;
-    await User.findByIdAndUpdate(userId, {
-      $set: { skills },
-    });
+    if (aiResponse.endsWith("```")) {
+      aiResponse = aiResponse.replace(/\s*```$/, "");
+    }
 
-    return res.status(200).json({
-      message: "CV processed and skills updated.",
-      extractedSkills: skills,
-    });
+    let extracted;
+    try {
+      extracted = JSON.parse(aiResponse);
+    } catch (error) {
+      console.error("❌ JSON parsing error:", error);
+      return res.status(500).json({ message: "Invalid response format" });
+    }
+// Convert comma- or semicolon-separated strings to arrays
+const skills = extracted.Skills ? extracted.Skills.split(",").map(s => s.trim()).filter(Boolean) : [];
+const trainingCourses = extracted.TrainingCourses ? extracted.TrainingCourses.split(",").map(c => c.trim()).filter(Boolean) : [];
+const languages = extracted.Languages ? extracted.Languages.split(",").map(l => l.trim()).filter(Boolean) : [];
+
+// education & experience are separated by semicolons
+const education = extracted.Education ? extracted.Education.split(";").map(e => e.trim()).filter(Boolean) : [];
+const experience = extracted.Experience ? extracted.Experience.split(";").map(e => e.trim()).filter(Boolean) : [];
+
+const userId = req.body.userId;
+await User.findByIdAndUpdate(userId, {
+  $set: {
+    skills,
+    education,
+    experience,
+    trainingCourses,
+    languages,
+  },
+});
+    return res.status(200).json({ message: "CV uploaded and processed successfully" });
   } catch (error) {
-  console.error("CV processing error:", error);
-  return res.status(500).json({ message: "Failed to process CV" });
-}
+    console.error("CV processing error:", error);
+    return res.status(500).json({ message: "Failed to process CV" });
   }
+}
+
+
