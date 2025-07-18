@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Avatar,
   Box,
   Button,
   Card,
@@ -10,22 +9,18 @@ import {
   Grid,
   TextField,
   Typography,
-  Chip,
   Alert,
   CircularProgress,
   Fade,
 } from "@mui/material";
-import { useTheme, alpha } from "@mui/material/styles";
 import { getCompanyProfile, updateCompanyProfile } from "../../API/company";
 
 function EditCompanyProfile() {
-  const theme = useTheme();
   const companyId = localStorage.getItem("companyId");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-
   const [formData, setFormData] = useState({
     companyName: "",
     companyField: "",
@@ -61,7 +56,9 @@ function EditCompanyProfile() {
           companyDescription: res.data.companyDescription || "",
           status: res.data.status || "",
         });
+        localStorage.setItem("companyName", res.data.companyName || "");
       })
+
       .catch(() => setError("Failed to load company data."))
       .finally(() => setLoading(false));
   }, [companyId]);
@@ -79,6 +76,7 @@ function EditCompanyProfile() {
     try {
       await updateCompanyProfile(companyId, formData);
       setSuccess("Company profile updated successfully!");
+      localStorage.setItem("companyName", formData.companyName || "");
     } catch {
       setError("Failed to update company profile.");
     } finally {
@@ -114,7 +112,7 @@ function EditCompanyProfile() {
             )}
             <Box component="form" onSubmit={handleSubmit} noValidate>
               <Grid container spacing={2}>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Company Name"
                     name="companyName"
@@ -124,7 +122,7 @@ function EditCompanyProfile() {
                     required
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Company Field"
                     name="companyField"
@@ -133,7 +131,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Location"
                     name="location"
@@ -142,7 +140,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Email"
                     name="companyEmail"
@@ -152,7 +150,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Phone Number"
                     name="companyNumbers"
@@ -161,7 +159,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Website"
                     name="companyWebsite"
@@ -170,7 +168,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Contact Person Name"
                     name="contactName"
@@ -179,7 +177,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Contact Person Position"
                     name="contactPosition"
@@ -188,7 +186,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Contact Phone Number"
                     name="contactPhoneNumber"
@@ -197,7 +195,7 @@ function EditCompanyProfile() {
                     fullWidth
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Company Description"
                     name="companyDescription"
@@ -208,7 +206,7 @@ function EditCompanyProfile() {
                     rows={4}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid>
                   <TextField
                     label="Status"
                     name="status"

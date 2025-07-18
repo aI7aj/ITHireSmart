@@ -1,17 +1,20 @@
 import { check } from "express-validator";
 import checkRole from "../middleware/checkRole.js";
 
- const jobPostValidater = [
+const jobPostValidater = [
   checkRole("company"),
   check("jobTitle", "Title is required").notEmpty(),
-  check("company", "Company is required").notEmpty(),
   check("location", "Location is required").notEmpty(),
   check("salary", "Salary is required").notEmpty(),
-  check("from", "From date is required and needs to be from the past")
+  check("from", "From date is required and must be today or in the future")
     .notEmpty()
-    .custom((value, { req }) => {
-      if (new Date(value) > new Date()) {
-        throw new Error("From date must be in the past");
+    .custom((value) => {
+      const selectedDate = new Date(value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (selectedDate < today) {
+        throw new Error("From date must be today or in the future");
       }
       return true;
     }),

@@ -158,6 +158,10 @@ function App() {
               path="/companyprofilepage"
               element={<CompanyProfilePage />}
             />
+            <Route
+              path="/EditCompanyProfile"
+              element={<EditCompanyProfile />}
+            />
           </Route>
 
           {/* 404 Not Found */}

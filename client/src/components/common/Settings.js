@@ -66,7 +66,7 @@ const Settings = () => {
         <Box
           onClick={() => {
             if (role === "company") {
-              navigate("/companyprofilepage");
+              navigate("/EditCompanyProfile");
             } else {
               navigate("/profile");
             }

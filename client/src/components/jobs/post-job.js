@@ -84,6 +84,7 @@ const PostJob = () => {
         setShowConfirm(true);
         setConfirmCallback(() => async () => {
           const jobData = {
+            company: values.company,
             ...values,
             Requirements: values.requirements
               .split(",")
@@ -103,8 +104,17 @@ const PostJob = () => {
               navigate("/FindJob");
             }, 1500);
           } catch (error) {
-            console.error(error);
-            setSnackbarMessage("Failed to post job");
+            console.error("Validation error:", error.response?.data); // 👈 ضروري نطبع التفاصيل
+            const errors = error.response?.data?.errors;
+            if (errors && errors.length > 0) {
+              console.log("Validation message:", errors[0].msg); // 👈 نطبع أول رسالة خطأ
+            }
+
+            setSnackbarMessage(
+              errors?.[0]?.msg ||
+                error.response?.data?.message ||
+                "Failed to post job"
+            );
             setSnackbarSeverity("error");
             setOpenSnackbar(true);
           }
@@ -171,7 +181,7 @@ const PostJob = () => {
             <TextField
               label="Company"
               name="company"
-              value={values.company}
+              value={values.company }
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.company && Boolean(errors.company)}

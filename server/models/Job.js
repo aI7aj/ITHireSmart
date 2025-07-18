@@ -12,6 +12,7 @@ const jobSchema = new mongoose.Schema(
     },
     companyName: {
       type: String,
+      required: true,
     },
     location: {
       type: String,
@@ -71,8 +72,8 @@ const jobSchema = new mongoose.Schema(
     recommendedApplicants: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        recommendedAt: { type: Date, default: Date.now }, 
-        rank: Number, 
+        recommendedAt: { type: Date, default: Date.now },
+        rank: Number,
       },
     ],
   },
