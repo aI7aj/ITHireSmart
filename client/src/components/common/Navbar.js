@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   patch,
 } from "@mui/material";
-import { getProfile } from "../../API/API";
+import { getProfile,getMyProfile } from "../../API/API";
 import { getCompanyProfile } from "../../API/company";
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -145,7 +145,7 @@ const Navbar = () => {
             profilepic: profile?.companyLogo?.url || profile?.companyLogo || "",
           });
         } else {
-          const response = await getProfile(userId);
+          const response = await getMyProfile();
           profile = response.data;
           setUser({
             ...profile.user,
@@ -241,7 +241,7 @@ const Navbar = () => {
                   sx={{ p: 0.5 }}
                 >
                   <Avatar
-                    src={user?.profilepic}
+                    src={user?.profilepic?.url || "/default-avatar.png"}
                     sx={{
                       width: 50,
                       height: 50,

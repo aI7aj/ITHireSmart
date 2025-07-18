@@ -19,6 +19,7 @@ export const changePassword = (values) =>
 export const getPhoto = () => API.get("/users/getphoto");
 export const uploadPhoto = (values) => API.post("/users/uploadphoto", values);
 
+export const getMyProfile = () => API.get("/profiles/me");
 export const getProfile = (id) => API.get(`/profiles/user/${id}`);
 export const updateProfile = (values) =>
   API.post("/profiles/updateprofile", values);
