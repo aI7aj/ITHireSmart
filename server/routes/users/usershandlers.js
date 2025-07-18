@@ -13,6 +13,7 @@ import { fileURLToPath } from "url";
 import * as cloudinarys from "../../utils/cloudinary.js";
 import fs from "fs";
 import crypto from "crypto";
+import mongoose from "mongoose";
 import {
   sendVerificationEmail,
   sendPasswordResetEmail,
@@ -439,13 +440,37 @@ export async function changePassword(req, res) {
   }
 }
 
-
+// -----------------------
+//   get all users for admin dashboard (show all users)
+// -----------------------
 export async function getAllUsers(req, res) {
   try {
     const users = await User.find().select("-password");
     res.status(200).json(users);
   } catch (error) {
-    console.error("getAllUsers error:", error);
+    console.error("getAllUsers error:", error.message);
     res.status(500).json({ msg: "Failed to fetch users" });
+  }
+}
+// -----------------------
+//  get users by id for admin dashboard (view user details)
+// -----------------------
+export async function getUserById(req, res) {
+  const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(400).json({ msg: "Invalid user ID" });
+  }
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error("getUserById error:", error.message);
+    res.status(500).json({ msg: "Failed to fetch user", error: error.message });
   }
 }
