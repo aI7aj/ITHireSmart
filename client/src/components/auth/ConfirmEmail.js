@@ -155,10 +155,10 @@ const ConfirmEmail = () => {
               </Button>
               <Button
                 variant="outlined"
-                onClick={() => navigate("/")}
+                onClick={() => navigate("/UploadCvPage")}
                 sx={{ minWidth: 140 }}
               >
-                Go Home
+                Cv upload
               </Button>
             </Box>
           </Box>
