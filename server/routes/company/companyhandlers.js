@@ -115,7 +115,7 @@ export async function loginCompany(req, res) {
     if (company.status !== "approved") {
       return res.status(403).json({ msg: "Company not approved yet" });
     }
-
+    
     const payload = {
       user: {
         id: company._id,
