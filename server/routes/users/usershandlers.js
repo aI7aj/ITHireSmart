@@ -123,7 +123,7 @@ export async function register(req, res) {
     
     const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
-      await sendVerificationEmail(email, verificationURL);
+      await sendVerificationEmail(firstName,email, verificationURL);
     } catch (mailErr) {
   
       await User.findByIdAndDelete(user._id);
