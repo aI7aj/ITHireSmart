@@ -97,4 +97,8 @@ router.route("/getphoto").get(auth, handlers.getphoto);
 
 router.route("/changePassword").post(auth, handlers.changePassword);
 
+router.route("/getallusers")
+  .get(handlers.getAllUsers)
+//.get(auth, checkRole("admin"), handlers.getallusers) // to be handled later
+
 export default router;

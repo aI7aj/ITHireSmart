@@ -438,3 +438,14 @@ export async function changePassword(req, res) {
     res.status(500).json({ msg: "Server error" });
   }
 }
+
+
+export async function getAllUsers(req, res) {
+  try {
+    const users = await User.find().select("-password");
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("getAllUsers error:", error);
+    res.status(500).json({ msg: "Failed to fetch users" });
+  }
+}
