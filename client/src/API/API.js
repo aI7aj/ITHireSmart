@@ -19,12 +19,23 @@ export const changePassword = (values) =>
 export const getPhoto = () => API.get("/users/getphoto");
 export const uploadPhoto = (values) => API.post("/users/uploadphoto", values);
 
+export const getMyProfile = () => API.get("/profiles/me");
 export const getProfile = (id) => API.get(`/profiles/user/${id}`);
 export const updateProfile = (values) =>
   API.post("/profiles/updateprofile", values);
 
 export const GetRecommendedApplicants = (jobId) => {
   return API.get(`/jobs/${jobId}/recommendations`);
+};
+
+export const uploadCv = (formData) => {
+  const token = localStorage.getItem("token");
+  return API.post("/users/uploadCv", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${token}`,
+    },
+  });
 };
 
 export const verifyEmail = (token) =>

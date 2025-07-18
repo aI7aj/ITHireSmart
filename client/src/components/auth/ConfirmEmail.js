@@ -34,6 +34,7 @@ const ConfirmEmail = () => {
     );
 
     verifyEmail(token)
+
       .then((data) => {
         console.log("API Response:", data); 
         if (data.userId) {
@@ -43,7 +44,7 @@ const ConfirmEmail = () => {
       })
       .catch(() => setStatus("error"));
   }, [token]);
-
+  
   const renderContent = () => {
     switch (status) {
       case "loading":
