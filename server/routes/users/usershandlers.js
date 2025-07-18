@@ -255,6 +255,7 @@ export async function login(req, res) {
         role: user.role,
       },
     };
+    
     jwt.sign(
       payload,
       config.get("jwtSecret"),
