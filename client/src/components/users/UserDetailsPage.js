@@ -13,6 +13,35 @@ import CakeIcon from "@mui/icons-material/Cake";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
+
+function parseEducationString(str) {
+  // Example: "Birzeit University, Bachelor's degree in Computer Engineering, August 2018 - July 2023"
+  const [school, degreeField, dateRange] = str.split(",");
+  const [degree, fieldOfStudy] = degreeField?.split(" degree in ") || ["", ""];
+  const [from, to] = dateRange?.trim().split(" - ") || ["", ""];
+  return {
+    school: school?.trim() || "",
+    degree: degree?.replace("'", "").trim() || "",
+    fieldOfStudy: fieldOfStudy?.trim() || "",
+    from: from ? moment(from, "MMMM YYYY").toDate() : null,
+    to: to ? moment(to, "MMMM YYYY").toDate() : null,
+    description: "",
+  };
+}
+
+function parseExperienceString(str) {
+  // Example: "IoT Engineer at ASAL Technologies, May 2023 - Present (2 years 3 months)"
+  const [titleCompany, dateRange] = str.split(",");
+  const [title, company] = titleCompany?.split(" at ") || ["", ""];
+  const [from, to] = dateRange?.trim().split(" - ") || ["", ""];
+  return {
+    title: title?.trim() || "",
+    company: company?.trim() || "",
+    from: from ? moment(from, "MMMM YYYY").toDate() : null,
+    to: to ? moment(to, "MMMM YYYY").toDate() : null,
+    description: "",
+  };
+}
 const UserCVPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
@@ -28,15 +57,18 @@ const UserCVPage = () => {
           experience,
           education,
           skills,
+          languages,
+          trainingCourses,
         } = response.data;
-
-        setUser(response.data.user);
+        console.log("Profile response:", response.data);
         setUser({
           ...userInfo,
           location: location || "",
           experience: experience || [],
           education: education || [],
           skills: skills || [],
+          languages: languages || [],
+          trainingCourses: trainingCourses || [],
           profilepic: userInfo.profilepic || null,
         });
         setPhoto(userInfo.profilepic || null);
@@ -242,28 +274,12 @@ const UserCVPage = () => {
                       marginBottom: "16px",
                     }}
                   >
-                    <BusinessCenterIcon
-                      sx={{ fontSize: "1.5rem", color: "#2c3e50" }}
-                    />
-
-                    <Box
-                      sx={{
-                        fontSize: "1.25rem",
-                        fontWeight: "700",
-                        color: "#2c3e50",
-                      }}
-                    >
+                    <BusinessCenterIcon sx={{ fontSize: "1.5rem", color: "#2c3e50" }} />
+                    <Box sx={{ fontSize: "1.25rem", fontWeight: "700", color: "#2c3e50" }}>
                       Experience
                     </Box>
                   </Box>
-
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "16px",
-                    }}
-                  >
+                  <Box sx={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {user.experience.map((exp, idx) => (
                       <Box
                         key={idx}
@@ -272,35 +288,10 @@ const UserCVPage = () => {
                           borderLeft: "4px solid #2c3e50",
                           padding: "16px",
                           borderRadius: "4px",
+                          fontSize: "1rem",
                         }}
                       >
-                        <Box sx={{ fontSize: "1.1rem", fontWeight: "700" }}>
-                          {exp.title}
-                        </Box>
-                        <Box
-                          sx={{
-                            fontSize: "0.9rem",
-                            color: "#6c757d",
-                            fontWeight: "500",
-                          }}
-                        >
-                          {exp.company}
-                        </Box>
-                        <Box sx={{ fontSize: "0.8rem", color: "#999" }}>
-                          {formatMonthYear(exp.from)} -{" "}
-                          {exp.current ? "Present" : formatMonthYear(exp.to)}
-                        </Box>
-                        {exp.description && (
-                          <Box
-                            sx={{
-                              fontSize: "0.9rem",
-                              marginTop: "8px",
-                              lineHeight: "1.5",
-                            }}
-                          >
-                            {exp.description}
-                          </Box>
-                        )}
+                        {exp}
                       </Box>
                     ))}
                   </Box>
@@ -337,7 +328,7 @@ const UserCVPage = () => {
                       gap: "16px",
                     }}
                   >
-                    {user.education.map((edu, idx) => (
+                    {user.education.map(parseEducationString).map((edu, idx) => (
                       <Box
                         key={idx}
                         sx={{
@@ -393,6 +384,7 @@ const UserCVPage = () => {
                       color: "#2c3e50",
                       marginBottom: "8px",
                     }}
+                    
                   >
                     Skills
                   </Box>
