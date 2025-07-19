@@ -14,34 +14,6 @@ import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 
-function parseEducationString(str) {
-  // Example: "Birzeit University, Bachelor's degree in Computer Engineering, August 2018 - July 2023"
-  const [school, degreeField, dateRange] = str.split(",");
-  const [degree, fieldOfStudy] = degreeField?.split(" degree in ") || ["", ""];
-  const [from, to] = dateRange?.trim().split(" - ") || ["", ""];
-  return {
-    school: school?.trim() || "",
-    degree: degree?.replace("'", "").trim() || "",
-    fieldOfStudy: fieldOfStudy?.trim() || "",
-    from: from ? moment(from, "MMMM YYYY").toDate() : null,
-    to: to ? moment(to, "MMMM YYYY").toDate() : null,
-    description: "",
-  };
-}
-
-function parseExperienceString(str) {
-  // Example: "IoT Engineer at ASAL Technologies, May 2023 - Present (2 years 3 months)"
-  const [titleCompany, dateRange] = str.split(",");
-  const [title, company] = titleCompany?.split(" at ") || ["", ""];
-  const [from, to] = dateRange?.trim().split(" - ") || ["", ""];
-  return {
-    title: title?.trim() || "",
-    company: company?.trim() || "",
-    from: from ? moment(from, "MMMM YYYY").toDate() : null,
-    to: to ? moment(to, "MMMM YYYY").toDate() : null,
-    description: "",
-  };
-}
 const UserCVPage = () => {
   const { id } = useParams();
   const [user, setUser] = useState(null);
