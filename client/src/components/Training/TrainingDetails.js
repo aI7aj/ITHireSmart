@@ -256,7 +256,7 @@ const userRole = localStorage.getItem("role");
                     mb: 2,
                   }}
                 >
-                  {training.user?.firstName + " " + training.user?.lastName}
+                  {training.companyName || "Company"}
                 </Typography>
               </Box>
             </Box>

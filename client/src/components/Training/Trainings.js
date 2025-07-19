@@ -234,7 +234,7 @@ function Trainings() {
                         letterSpacing: 0.1,
                       }}
                     >
-                      {training.user?.firstName + " " + training.user?.lastName}
+                      {training.companyName || "Company"}
                     </Typography>
                     <Typography
                       variant="body2"

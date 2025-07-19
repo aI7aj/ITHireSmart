@@ -710,7 +710,7 @@ function FindJob() {
                                 letterSpacing: 0.1,
                               }}
                             >
-                              {job.user?.firstName}
+                              {job.companyName || "Company"}
                             </Typography>
                             <Typography
                               variant="subtitle2"
