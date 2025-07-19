@@ -64,6 +64,7 @@ function JobDetails() {
       }, 2000);
     }
   };
+    const userRole = localStorage.getItem("role");
 
   useEffect(() => {
     const fetchJob = async () => {
@@ -457,6 +458,7 @@ function JobDetails() {
         </SectionCard>
 
         {/* Apply Button */}
+        {userRole === "user" && (
         <Card
           sx={{
             bgcolor: "#ffffff",
@@ -491,7 +493,7 @@ function JobDetails() {
               Apply for this Position
             </Button>
           </Box>
-        </Card>
+        </Card>)}
 
         <Snackbar
           open={snackbar.open}
