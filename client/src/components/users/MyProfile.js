@@ -271,7 +271,22 @@ const UserProfilePage = () => {
             </Stack>
           </ProfileSection>
         )}
-
+{/* Work Experience */}
+{user.experience && user.experience.length > 0 && (
+  <ProfileSection>
+    <Typography variant="h5" sx={{ fontWeight: 600, mb: 3 }}>
+      <Work sx={{ color: "#666666", mr: 1 }} />
+      Work Experience
+    </Typography>
+    <Stack spacing={1}>
+      {user.experience.map((exp, index) => (
+        <Typography key={index} variant="body1" sx={{ color: "#555" }}>
+          • {exp}
+        </Typography>
+      ))}
+    </Stack>
+  </ProfileSection>
+)}
         {/* Training Courses */}
         {user.trainingCourses && user.trainingCourses.length > 0 && (
           <ProfileSection>
