@@ -229,11 +229,22 @@ function Courses() {
                   ))}
                 </Stack>
               </Box>
-              <Box sx={{ p: 2, mt: "auto" }}>
-                <Button fullWidth variant="contained" onClick={() => navigate(`/course/${c._id}`)}>
-                  View Details
-                </Button>
-              </Box>
+<Box sx={{ p: 2, mt: "auto" }}>
+  <Button
+    fullWidth
+    variant="contained"
+    onClick={() => navigate(`/course/${c._id}`)}
+    sx={{
+      bgcolor: "#000000",
+      color: "#FFFFFF",
+      "&:hover": {
+        bgcolor: "#333333"
+      }
+    }}
+  >
+    View Details
+  </Button>
+</Box>
             </Card>
           ))}
         </Box>
