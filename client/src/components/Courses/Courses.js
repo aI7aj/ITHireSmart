@@ -202,7 +202,8 @@ function Courses() {
               <Box sx={{ background: "#F8F8F8", p: 2, borderBottom: "1px solid #E0E0E0" }}>
                 <Stack direction="row" spacing={1.5} alignItems="center">
 <img
-  src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png"
+  src="https://plus.unsplash.com/premium_photo-1720287601920-ee8c503af775?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNvbXB1dGVyfGVufDB8fDB8fHww
+"
   alt="course"
   style={{ width: 48, height: 48, borderRadius: "12px", objectFit: "cover" }}
 />
