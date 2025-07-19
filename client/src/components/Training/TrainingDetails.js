@@ -59,7 +59,7 @@ function TrainingDetails() {
       }, 2000);
     }
   };
-
+const userRole = localStorage.getItem("role");
   useEffect(() => {
     const fetchTraining = async () => {
       try {
@@ -360,7 +360,8 @@ function TrainingDetails() {
             </SectionCard>
 
             {/* Enroll Button */}
-            <Box sx={{ textAlign: "center", mt: 4 }}>
+            {userRole === "user" && (
+<Box sx={{ textAlign: "center", mt: 4 }}>
               <Button
                 variant="contained"
                 size="large"
@@ -379,7 +380,7 @@ function TrainingDetails() {
               >
                 Enroll Now
               </Button>
-            </Box>
+            </Box>)}
           </Box>
         </Card>
       </Container>
