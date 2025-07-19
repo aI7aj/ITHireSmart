@@ -663,6 +663,25 @@ Use this format:
         languages,
       },
     });
+    
+try {
+  await Profile.findOneAndUpdate(
+    { user: userId },
+    {
+      $set: {
+        skills,
+        education,
+        experience,
+        trainingCourses,
+        languages,
+      },
+    },
+    { new: true, upsert: true }
+  );
+  console.log("✅ Profile updated");
+} catch (err) {
+  console.error("❌ Failed to update profile:", err);
+}
     return res
       .status(200)
       .json({ message: "CV uploaded and processed successfully" });
