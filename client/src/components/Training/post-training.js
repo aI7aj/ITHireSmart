@@ -211,7 +211,7 @@ const PostTraining = () => {
               margin="normal"
             >
               <MenuItem value="Online">Online</MenuItem>
-              <MenuItem value="company">Company</MenuItem>
+              <MenuItem value="Company">Company</MenuItem>
             </TextField>
 
             <TextField
