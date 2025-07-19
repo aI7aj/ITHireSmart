@@ -677,7 +677,7 @@ Use this format:
 // -----------------------
 export async function viewJobApplications(req, res) {
   try {
-    const userId = req.params.userID; // أو req.user.id إذا مع auth
+    const userId = req.user.id; 
 
     const jobs = await Job.find({ "applicants.user": userId }).select("jobTitle applicants");
 
@@ -685,6 +685,9 @@ export async function viewJobApplications(req, res) {
       const applicant = job.applicants.find(app => app.user.toString() === userId);
       return {
         jobTitle: job.jobTitle,
+        companyName: job.companyName,
+        location: job.location,
+        description: job.description,
         appliedAt: applicant?.appliedAt,
         status: applicant?.status || "pending"
       };
@@ -702,7 +705,7 @@ export async function viewJobApplications(req, res) {
 // -----------------------
 export async function viewTrainingApplications(req, res) {
   try {
-    const userId = new mongoose.Types.ObjectId(req.params.userID);
+    const userId = new mongoose.Types.ObjectId(req.user.id);
 
     const trainings = await Training.find({
       $or: [
@@ -742,7 +745,7 @@ export async function viewTrainingApplications(req, res) {
 // -----------------------
 export async function viewCourseApplications(req, res) {
   try {
-    const userId = new mongoose.Types.ObjectId(req.params.userID);
+    const userId = new mongoose.Types.ObjectId(req.user.id);
 
     const courses = await Course.find({
       $or: [
