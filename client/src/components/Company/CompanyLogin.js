@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import { useState } from "react";
 import {
   Box,
   TextField,
@@ -6,180 +8,288 @@ import {
   Button,
   IconButton,
   InputAdornment,
-  FormHelperText,
+  Paper,
+  Container,
+  Alert,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Visibility, VisibilityOff, Business } from "@mui/icons-material";
 import { loginCompany } from "../../API/company.js";
-
-const style = {
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  height: "100vh",
-  color: "white",
-  flexDirection: "column",
-  gap: "20px",
-  backgroundColor: "black",
-  padding: "0 20px",
-};
-
-const TextFieldStyle = {
-  width: "100%",
-  maxWidth: "400px",
-  height: "50px",
-  borderRadius: "15px",
-  backgroundColor: "transparent",
-  color: "#fff",
-  "& label, & label.Mui-focused, & .MuiInputBase-input": { color: "#fff" },
-  "& .MuiOutlinedInput-root": {
-    "& fieldset": { borderColor: "#fff" },
-    "&:hover fieldset": { borderColor: "#fff" },
-    "&.Mui-focused fieldset": { borderColor: "#fff" },
-  },
-  fontFamily: "Poppins",
-};
-
-const ButtonStyle = {
-  fontSize: "1.2rem",
-  bgcolor: "white",
-  color: "black",
-  "&:hover": { bgcolor: "#f0f0f0" },
-  width: "100%",
-  maxWidth: "450px",
-  borderRadius: "10px",
-  fontFamily: "Geist",
-};
+import { useNavigate } from "react-router-dom";
 
 const CompanyLogin = () => {
+  const [formData, setFormData] = useState({
+    companyEmail: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+
   const navigate = useNavigate();
 
-  const validationSchema = Yup.object({
-    companyEmail: Yup.string()
-      .email("Invalid email address")
-      .required("Company Email is required"),
-    password: Yup.string()
-      .required("Password is required")
-      .min(8, "Password must be at least 8 characters"),
-  });
+  const validateForm = () => {
+    const newErrors = {};
 
-  const handleTogglePassword = () => {
-    setShowPassword((prev) => !prev);
+    if (!formData.companyEmail) {
+      newErrors.companyEmail = "Company Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.companyEmail)) {
+      newErrors.companyEmail = "Invalid email address";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleInputChange = (field) => (event) => {
+    setFormData({
+      ...formData,
+      [field]: event.target.value,
+    });
+
+    // Clear error when user starts typing
+    if (errors[field]) {
+      setErrors({
+        ...errors,
+        [field]: "",
+      });
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setLoading(true);
+    setAlertMessage("");
+
+    try {
+      const res = await loginCompany(formData.companyEmail, formData.password);
+
+      if (res && res.data && res.data.token) {
+        const data = res.data;
+        localStorage.setItem("role", data.role || "company");
+        localStorage.setItem("email", data.email);
+        localStorage.setItem("companyId", data.id);
+        localStorage.setItem("companyName", data.companyName);
+        localStorage.setItem("token", data.token);
+
+        navigate("/CompanyDashboard");
+      } else if (
+        res &&
+        res.data &&
+        res.data.errors &&
+        Array.isArray(res.data.errors)
+      ) {
+        res.data.errors.forEach((error) => {
+          const field = error.param || "companyEmail";
+          const message = error.msg || "Login failed";
+          setErrors((prev) => ({
+            ...prev,
+            [field]: message,
+          }));
+        });
+        setAlertMessage("Please check the errors below");
+      } else if (res && res.data && res.data.msg) {
+        setErrors((prev) => ({
+          ...prev,
+          companyEmail: res.data.msg,
+        }));
+        setAlertMessage(res.data.msg);
+      } else {
+        setAlertMessage("Login failed. Please try again.");
+      }
+    } catch (error) {
+      const msg =
+        error?.response?.data?.msg || "An error occurred during login.";
+      setErrors((prev) => ({
+        ...prev,
+        companyEmail: msg,
+      }));
+      setAlertMessage(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
-    <Formik
-      initialValues={{ companyEmail: "", password: "" }}
-      validationSchema={validationSchema}
-      onSubmit={async (values, { setSubmitting, setFieldError }) => {
-        try {
-          const res = await loginCompany(values.companyEmail, values.password);
-          if (res && res.data && res.data.token) {
-            const data = res.data;
-            localStorage.setItem("role", data.role || "company");
-            localStorage.setItem("email", data.email);
-            localStorage.setItem("companyId", data.id);
-            localStorage.setItem("companyName", data.companyName);
-            localStorage.setItem("token", data.token);
-            
-            navigate("/CompanyDashboard");
-            
-          } else if (
-            res &&
-            res.data &&
-            res.data.errors &&
-            Array.isArray(res.data.errors)
-          ) {
-            res.data.errors.forEach((error) => {
-              setFieldError(
-                error.param || "companyEmail",
-                error.msg || "Login failed"
-              );
-            });
-          } else if (res && res.data && res.data.msg) {
-            setFieldError("companyEmail", res.data.msg);
-          } else {
-            setFieldError("companyEmail", "Login failed. Please try again.");
-          }
-        } catch (error) {
-          const msg =
-            error?.response?.data?.msg || "An error occurred during login.";
-          setFieldError("companyEmail", msg);
-        } finally {
-          setSubmitting(false);
-        }
+    <Box
+      sx={{
+        minHeight: "100vh",
+        backgroundColor: "#000000",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        padding: 2,
       }}
     >
-      {({ errors, touched, handleChange, handleBlur }) => (
-        <Form>
-          <Box sx={style}>
-            <Typography variant="h3" sx={{ mb: 3, fontFamily: "Geist" }}>
-              Company Login
-            </Typography>
+      <Container maxWidth="sm">
+        <Paper
+          elevation={24}
+          sx={{
+            padding: 4,
+            borderRadius: 3,
+            backgroundColor: "#ffffff",
+            border: "1px solid #e0e0e0",
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              gap: 3,
+            }}
+          >
+            {/* Header */}
+            <Box sx={{ textAlign: "center", mb: 2 }}>
+              <Business
+                sx={{
+                  fontSize: 48,
+                  color: "#000000",
+                  mb: 1,
+                }}
+              />
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: 600,
+                  color: "#000000",
+                  mb: 1,
+                }}
+              >
+                Company Login
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#666666" }}>
+                Welcome back! Please sign in to your account
+              </Typography>
+            </Box>
 
-            <Field
-              name="companyEmail"
-              as={TextField}
-              label="Company Email"
-              variant="outlined"
-              sx={TextFieldStyle}
-              error={touched.companyEmail && Boolean(errors.companyEmail)}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              fullWidth
-            />
-            {touched.companyEmail && errors.companyEmail && (
-              <FormHelperText sx={{ color: "red", mb: 2 }}>
-                {errors.companyEmail}
-              </FormHelperText>
+            {/* Alert Message */}
+            {alertMessage && (
+              <Alert
+                severity={
+                  alertMessage.includes("successful") ? "success" : "error"
+                }
+                sx={{ width: "100%" }}
+              >
+                {alertMessage}
+              </Alert>
             )}
 
-            <Field
-              name="password"
-              as={TextField}
-              type={showPassword ? "text" : "password"}
-              label="Password"
-              variant="outlined"
-              sx={TextFieldStyle}
-              error={touched.password && Boolean(errors.password)}
-              onChange={handleChange}
-              onBlur={handleBlur}
+            {/* Email Field */}
+            <TextField
               fullWidth
+              label="Company Email"
+              type="email"
+              value={formData.companyEmail}
+              onChange={handleInputChange("companyEmail")}
+              error={Boolean(errors.companyEmail)}
+              helperText={errors.companyEmail}
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
+            />
+
+            {/* Password Field */}
+            <TextField
+              fullWidth
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              value={formData.password}
+              onChange={handleInputChange("password")}
+              error={Boolean(errors.password)}
+              helperText={errors.password}
+              variant="outlined"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={handleTogglePassword}
+                      onClick={togglePasswordVisibility}
                       edge="end"
-                      sx={{ color: "white" }}
+                      aria-label="toggle password visibility"
                     >
-                      {showPassword ? <Visibility /> : <VisibilityOff />}
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
-            {touched.password && errors.password && (
-              <FormHelperText sx={{ color: "red", mb: 2 }}>
-                {errors.password}
-              </FormHelperText>
-            )}
 
+            {/* Login Button */}
             <Button
               type="submit"
+              fullWidth
               variant="contained"
               size="large"
-              sx={ButtonStyle}
+              disabled={loading}
+              sx={{
+                py: 1.5,
+                borderRadius: 2,
+                fontSize: "1.1rem",
+                fontWeight: 600,
+                textTransform: "none",
+                backgroundColor: "#000000",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#333333",
+                },
+                "&:disabled": {
+                  backgroundColor: "#cccccc",
+                  color: "#666666",
+                },
+              }}
             >
-              Login
+              {loading ? "Signing In..." : "Sign In"}
             </Button>
+
+            {/* Footer */}
+            <Typography
+              variant="body2"
+              sx={{ color: "#666666", textAlign: "center", mt: 2 }}
+            >
+              Don't have an account?{" "}
+              <Button
+                variant="text"
+                onClick={() => navigate("/CompanyRegister")}
+                sx={{
+                  textDecoration: "underline",
+                  padding: 0,
+                  minWidth: "auto",
+                  color: "#666666",
+                }}
+              >
+                Register
+              </Button>
+            </Typography>
           </Box>
-        </Form>
-      )}
-    </Formik>
+        </Paper>
+      </Container>
+    </Box>
   );
 };
 

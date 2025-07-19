@@ -139,15 +139,19 @@ function Courses() {
             </Typography>
           </Box>
 
-          <Button variant="contained" onClick={fetchRecommendedCourses}>
-            AI Recommend Top 5
-          </Button>
-          <Button variant="outlined" color="secondary" onClick={loadSavedRecommendations}>
-            Show Saved
-          </Button>
-          <Button variant="outlined" color="error" onClick={clearSavedRecommendations}>
-            Clear Saved
-          </Button>
+{userRole === "user" && (
+  <>
+    <Button variant="contained" onClick={fetchRecommendedCourses}>
+      AI Recommend Top 5
+    </Button>
+    <Button variant="outlined" color="secondary" onClick={loadSavedRecommendations}>
+      Show Saved
+    </Button>
+    <Button variant="outlined" color="error" onClick={clearSavedRecommendations}>
+      Clear Saved
+    </Button>
+  </>
+)}
         </Box>
 
         {userRole === "company" && (

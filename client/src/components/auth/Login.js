@@ -275,6 +275,22 @@ const Login = ({ login, type }) => {
                 </Button>
               </Typography>
 
+              <Typography
+                variant="body2"
+                sx={{ fontFamily: "Geist", textAlign: "center" }}
+              >
+                {type === "company"
+                  ? "Login as a company?"
+                  : "Login as a company?"}{" "}
+                <Button
+                  onClick={() => navigator("/companylogin")}
+                  variant="text"
+                  sx={{ color: "white", textDecoration: "underline" }}
+                >
+                  Login
+                </Button>
+              </Typography>
+
               <img src={Ellipse} alt="Ellipse" style={ImageStyleTopLeft} />
               <img src={Vector} alt="Vector" style={ImageStyleBottomRight} />
             </Box>
