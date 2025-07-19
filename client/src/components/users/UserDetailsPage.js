@@ -292,7 +292,6 @@ const UserCVPage = () => {
                       Education
                     </Box>
                   </Box>
-
                   <Box
                     sx={{
                       display: "flex",
@@ -300,7 +299,7 @@ const UserCVPage = () => {
                       gap: "16px",
                     }}
                   >
-                    {user.education.map(parseEducationString).map((edu, idx) => (
+                    {user.education.map((edu, idx) => (
                       <Box
                         key={idx}
                         sx={{
@@ -308,42 +307,16 @@ const UserCVPage = () => {
                           borderLeft: "4px solid #6c757d",
                           padding: "16px",
                           borderRadius: "4px",
+                          fontSize: "1rem",
                         }}
                       >
-                        <Box sx={{ fontSize: "1.1rem", fontWeight: "700" }}>
-                          {edu.school}
-                        </Box>
-                        <Box
-                          sx={{
-                            fontSize: "0.9rem",
-                            color: "#6c757d",
-                            fontWeight: "500",
-                          }}
-                        >
-                          {edu.degree} - {edu.fieldOfStudy}
-                        </Box>
-                        <Box sx={{ fontSize: "0.8rem", color: "#999" }}>
-                          {formatMonthYear(edu.from)} -{" "}
-                          {edu.to ? formatMonthYear(edu.to) : "Present"}
-                        </Box>
-                        {edu.description && (
-                          <Box
-                            sx={{
-                              fontSize: "0.9rem",
-                              marginTop: "8px",
-                              lineHeight: "1.5",
-                            }}
-                          >
-                            {edu.description}
-                          </Box>
-                        )}
+                        {edu}
                       </Box>
                     ))}
                   </Box>
                 </Box>
               )}
-            </Box>
-
+</Box>
             {/* Right Column */}
             <Box sx={{ flex: "0 0 250px", minWidth: "250px" }}>
               {/* Skills */}
