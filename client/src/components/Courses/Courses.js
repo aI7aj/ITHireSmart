@@ -201,11 +201,11 @@ function Courses() {
             >
               <Box sx={{ background: "#F8F8F8", p: 2, borderBottom: "1px solid #E0E0E0" }}>
                 <Stack direction="row" spacing={1.5} alignItems="center">
-                  <img
-                    src={c.user?.profilepic?.url}
-                    alt="logo"
-                    style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover" }}
-                  />
+<img
+  src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png"
+  alt="course"
+  style={{ width: 48, height: 48, borderRadius: "12px", objectFit: "cover" }}
+/>
                   <Box>
                     <Typography variant="subtitle2" sx={{ textTransform: "capitalize" }}>
                       {c.instructorName}
