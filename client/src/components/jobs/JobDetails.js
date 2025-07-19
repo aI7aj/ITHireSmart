@@ -229,7 +229,7 @@ function JobDetails() {
             >
               <Box sx={{ mr: 1 }}>
                 <img
-                  src={job.user?.profilepic?.url}
+                  src="https://cdn-icons-png.flaticon.com/512/1055/1055687.png"
                   alt="Company Logo"
                   style={{
                     width: "70px",

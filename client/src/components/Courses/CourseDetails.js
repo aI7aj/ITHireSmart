@@ -221,11 +221,11 @@ function CourseDetails() {
             >
               <Box sx={{ mr: 1 }}>
                 <img
-                  src={course.user?.profilepic?.url}
+                  src="https://plus.unsplash.com/premium_photo-1720287601920-ee8c503af775?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNvbXB1dGVyfGVufDB8fDB8fHww"
                   alt="Company Logo"
                   style={{
-                    width: "48px",
-                    height: "48px",
+                    width: "80px",
+                    height: "80px",
                     borderRadius: "50%",
                     objectFit: "cover",
                     fontFamily: "Geist",
