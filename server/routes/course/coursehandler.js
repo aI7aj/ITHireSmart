@@ -35,6 +35,7 @@ export const postCourse = async (req, res) => {
     const course = new Course({
       user: req.user.id,
       courseTitle: req.body.courseTitle,
+      companyName: req.body.companyName,
       instructorName: req.body.instructorName,
       location: req.body.location,
       courseType: req.body.courseType,

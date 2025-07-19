@@ -8,7 +8,7 @@ import {
   Box,
   Button,
   Chip,
-  Avatar,
+ // Avatar,
   Snackbar,
   Alert,
   Container,
@@ -253,6 +253,11 @@ const userRole = localStorage.getItem("role");
                     mb: 2,
                   }}
                 >
+                  
+                  <span style={{ fontWeight: "bold", color: "#000000" }}>
+                    {course.companyName ? course.companyName.toUpperCase() : ""}
+                  </span>
+                  {course.companyName ? " | " : ""}
                   {course.instructorName}
                 </Typography>
 

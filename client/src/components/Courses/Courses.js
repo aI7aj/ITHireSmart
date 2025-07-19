@@ -213,7 +213,7 @@ function Courses() {
 />
                   <Box>
                     <Typography variant="subtitle2" sx={{ textTransform: "capitalize" }}>
-                      {c.instructorName}
+                      {c.companyName || "Unknown Company" }
                     </Typography>
                     <Typography variant="body2" color="#888">
                       {c.location || "Online"}

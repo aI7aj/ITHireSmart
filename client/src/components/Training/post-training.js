@@ -22,25 +22,20 @@ const PostTraining = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [initialInstructor, setInitialInstructor] = useState("");
   const [initialCompany, setInitialCompany] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCallback, setConfirmCallback] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const firstName = localStorage.getItem("firstName");
-    const lastName = localStorage.getItem("lastName");
     const companyId = localStorage.getItem("companyId");
-    if (firstName && lastName) {
-      setInitialInstructor(`${firstName} ${lastName}`);
-    }
     if (companyId) {
       getCompanyProfile(companyId)
         .then((response) => {
           setInitialCompany(response.data.companyName || "");
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error("Error fetching company profile:", err.message);
           setInitialCompany("");
         });
     }
@@ -69,7 +64,6 @@ const PostTraining = () => {
       enableReinitialize
       initialValues={{
         trainingTitle: "",
-        instructorName: "",
         companyName: initialCompany,
         location: "Online",
         trainingType: "Online",
@@ -185,18 +179,7 @@ const PostTraining = () => {
               margin="normal"
               disabled
             />
-            <TextField
-              label="Instructor Name"
-              name="instructorName"
-              value={values.instructorName}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              error={touched.instructorName && Boolean(errors.instructorName)}
-              helperText={touched.instructorName && errors.instructorName}
-              fullWidth
-              margin="normal"
-             
-            />
+
 
             <TextField
               select

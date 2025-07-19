@@ -23,7 +23,6 @@ const PostCourse = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
-  const [initialInstructor, setInitialInstructor] = useState("");
   const [initialCompany, setInitialCompany] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCallback, setConfirmCallback] = useState(null);
@@ -31,11 +30,6 @@ const PostCourse = () => {
 
   useEffect(() => {
     const companyId = localStorage.getItem("companyId");
-    const firstName = localStorage.getItem("firstName");
-    const lastName = localStorage.getItem("lastName");
-    if (firstName && lastName) {
-      setInitialInstructor(`${firstName} ${lastName}`);
-    }
     if (companyId) {
       getCompanyProfile(companyId)
         .then((response) => {
@@ -88,6 +82,7 @@ const PostCourse = () => {
         setConfirmCallback(() => async () => {
           const courseData = {
             ...values,
+            companyName: initialCompany,
             topics: values.topics.split(",").map((item) => item.trim()),
             capacity:
               values.capacity === ""
