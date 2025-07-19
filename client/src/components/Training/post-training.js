@@ -17,7 +17,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-
+import { getCompanyProfile } from "../../API/company.js"; // Adjust the import path as necessary
 const PostTraining = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -31,12 +31,18 @@ const PostTraining = () => {
   useEffect(() => {
     const firstName = localStorage.getItem("firstName");
     const lastName = localStorage.getItem("lastName");
-    const companyName = localStorage.getItem("companyName");
+    const companyId = localStorage.getItem("companyId");
     if (firstName && lastName) {
       setInitialInstructor(`${firstName} ${lastName}`);
     }
-    if (companyName) {
-      setInitialCompany(companyName);
+    if (companyId) {
+      getCompanyProfile(companyId)
+        .then((response) => {
+          setInitialCompany(response.data.companyName || "");
+        })
+        .catch(() => {
+          setInitialCompany("");
+        });
     }
   }, []);
 
@@ -168,6 +174,18 @@ const PostTraining = () => {
               margin="normal"
             />
             <TextField
+              label="Company Name"
+              name="companyName"
+              value={values.companyName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.companyName && Boolean(errors.companyName)}
+              helperText={touched.companyName && errors.companyName}
+              fullWidth
+              margin="normal"
+              disabled
+            />
+            <TextField
               label="Instructor Name"
               name="instructorName"
               value={values.instructorName}
@@ -199,7 +217,7 @@ const PostTraining = () => {
             <TextField
               label="Location"
               name="location"
-              value={values.location}
+              value={values.courseType === "Online" ? "Online" : values.location}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.location && Boolean(errors.location)}

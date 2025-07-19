@@ -17,21 +17,33 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import { getCompanyProfile } from "../../API/company.js"; 
 
 const PostCourse = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("success");
   const [initialInstructor, setInitialInstructor] = useState("");
+  const [initialCompany, setInitialCompany] = useState("");
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmCallback, setConfirmCallback] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    const companyId = localStorage.getItem("companyId");
     const firstName = localStorage.getItem("firstName");
     const lastName = localStorage.getItem("lastName");
     if (firstName && lastName) {
       setInitialInstructor(`${firstName} ${lastName}`);
+    }
+    if (companyId) {
+      getCompanyProfile(companyId)
+        .then((response) => {
+          setInitialCompany(response.data.companyName || "");
+        })
+        .catch(() => {
+          setInitialCompany("");
+        });
     }
   }, []);
 
@@ -59,6 +71,7 @@ const PostCourse = () => {
       initialValues={{
         courseTitle: "",
         instructorName: "",
+        companyName: initialCompany,
         location: "Online",
         courseType: "Online",
         startAt: minDate,
@@ -162,6 +175,18 @@ const PostCourse = () => {
               margin="normal"
             />
             <TextField
+              label="Company Name"
+              name="companyName"
+              value={values.companyName}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              error={touched.companyName && Boolean(errors.companyName)}
+              helperText={touched.companyName && errors.companyName}
+              fullWidth
+              margin="normal"
+              disabled
+            />
+            <TextField
               label="Instructor Name"
               name="instructorName"
               value={values.instructorName}
@@ -192,7 +217,7 @@ const PostCourse = () => {
             <TextField
               label="Location"
               name="location"
-              value={values.location}
+              value={values.courseType === "Online" ? "Online" : values.location}
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.location && Boolean(errors.location)}
