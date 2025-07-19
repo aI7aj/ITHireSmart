@@ -9,8 +9,15 @@ import postCourseValidators from "../../middleware/coursepostvalidater.js";
 
 router.use(auth);
 
-// @route   GET /api/courses
-// @desc    Get all courses
+// @route GET /api/courses/getRecommendedcourses
+router.get(
+  "/recommendations",
+  auth,
+  checkRole("user"),
+  handlers.getRecommendedCourses
+);
+// @route   GET /api/course
+// @desc    Get all course
 // @access  Private
 router.route("/").get(handlers.getallcourses);
 
@@ -57,5 +64,8 @@ router.post("/:courseId/reject", handlers.rejectStudent);
 router.get("/:courseId/rejected", auth, handlers.getRejectedStudents);
 
 router.post("/:courseId/pending", auth, handlers.pendingStudent);
+
+
+
 
 export default router;

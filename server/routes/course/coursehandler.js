@@ -1,6 +1,8 @@
 import Course from "../../models/Course.js";
 import { validationResult } from "express-validator";
-
+import User from "../../models/User.js";
+import Profile from "../../models/Profile.js";
+import openai from "../../utils/openaiClient.js";
 export async function getallcourses(req, res) {
   try {
     const today = new Date();
@@ -328,3 +330,76 @@ export const unhideCourse = async (req, res) => {
     res.status(500).json({ message: "Failed to unhide course" });
   }
 };
+
+export const getRecommendedCourses = async (req, res) => {
+  try {
+    // 1) جلب معلومات المستخدم وملفه الشخصي
+    const user    = await User.findById(req.user.id);
+    const profile = await Profile.findOne({ user: req.user.id });
+
+    if (!user || !profile) {
+      return res.status(404).json({ message: "User or profile not found" });
+    }
+
+    // 2) جلب جميع الدورات
+    const allCourses = await Course.find().populate("user");
+
+    // 3) بناء الـ prompt
+    const prompt = `You are a smart learning assistant. Your task is to recommend the best 5 courses for the following user based on their profile, experience, skills, and interests.
+
+User Profile:
+- Name: ${user.firstName} ${user.lastName}
+- Skills: ${profile.skills?.join(", ") || "None"}
+- Education: ${profile.education?.join(", ") || "None"}
+- Experience: ${Array.isArray(profile.experience) ? profile.experience.length : 0} years
+- Languages: ${profile.languages?.join(", ") || "None"}
+- Training Courses: ${profile.trainingCourses?.join(", ") || "None"}
+
+Available Courses:
+${JSON.stringify(
+  allCourses.map((course) => ({
+    id: course._id,
+    title: course.courseTitle,
+    topics: course.topics,
+    instructor: course.instructorName,
+    location: course.location,
+  })),
+  null,
+  2
+)}
+
+Return a JSON array of recommended courses like this:
+
+[
+  {
+    "id": "courseId",
+    "title": "Course Title",
+    "match_score": 0-100,
+    "justification": "Why this course is a good fit"
+  }
+]`;
+
+    // 4) استدعاء ChatGPT
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0,
+      max_tokens: 1000,
+    });
+
+    const responseText = completion.choices?.[0]?.message?.content?.trim();
+    const jsonMatch    = responseText?.match(/\[.*\]/s);
+
+    if (!jsonMatch) {
+      return res.status(500).json({ message: "AI response format error" });
+    }
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    return res.json(parsed);
+  } catch (err) {
+    console.error("Error:", err.message);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+

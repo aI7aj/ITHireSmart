@@ -49,4 +49,8 @@ export const hideCourse = (courseId) => API.patch(`/course/${courseId}/hide`);
 export const unhideCourse = (courseId) =>
   API.patch(`/course/${courseId}/unhide`);
 
+export const getRecommendedcourses = () =>
+  API.get("/course/recommendations");
+
+
 export const deleteCourse = (courseId) => API.delete(`/course/${courseId}`);
