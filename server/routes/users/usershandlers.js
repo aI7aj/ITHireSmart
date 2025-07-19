@@ -123,9 +123,9 @@ export async function register(req, res) {
 
     const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
-      await sendVerificationEmail(firstName, email, verificationURL);
+      await sendVerificationEmail(firstName, email, verificationURL, "user");
     } catch (mailErr) {
-      // حذف المستخدم والبروفايل لو فشل إرسال الإيميل
+ 
       await User.findByIdAndDelete(user._id);
       await Profile.deleteOne({ user: user._id });
       return res.status(500).json({
@@ -133,7 +133,6 @@ export async function register(req, res) {
       });
     }
 
-    // إنشاء JWT والرد معاه
     const payload = {
       user: {
         id: user.id,
