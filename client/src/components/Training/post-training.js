@@ -69,7 +69,7 @@ const PostTraining = () => {
       enableReinitialize
       initialValues={{
         trainingTitle: "",
-        instructorName: initialInstructor,
+        instructorName: "",
         companyName: initialCompany,
         location: "Online",
         trainingType: "Online",
@@ -195,7 +195,7 @@ const PostTraining = () => {
               helperText={touched.instructorName && errors.instructorName}
               fullWidth
               margin="normal"
-              disabled
+             
             />
 
             <TextField
