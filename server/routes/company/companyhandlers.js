@@ -67,7 +67,8 @@ export async function companyRegister(req, res) {
 
     await company.save();
 
-    const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmCompanyEmail?token=${verificationToken}`;
+    const verificationURL = `${process.env.FRONTEND_URL}/ConfirmCompanyEmail?token=${verificationToken}`;
+
 
     try {
       await sendVerificationEmail(companyName,companyEmail, verificationURL, "company");
