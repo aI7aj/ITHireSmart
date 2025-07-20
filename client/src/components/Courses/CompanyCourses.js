@@ -28,6 +28,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -71,7 +72,6 @@ const CompanyCourses = () => {
     try {
       if (dialogAction === "hide") {
         await hideCourse(selectedCourseId);
-        // حدث محلياً isHidden للكورس المختار لـ true
         setCourses((prevCourses) =>
           prevCourses.map((course) =>
             course._id === selectedCourseId
@@ -81,7 +81,6 @@ const CompanyCourses = () => {
         );
       } else if (dialogAction === "unhide") {
         await unhideCourse(selectedCourseId);
-        // حدث محلياً isHidden للكورس المختار لـ false
         setCourses((prevCourses) =>
           prevCourses.map((course) =>
             course._id === selectedCourseId
@@ -91,7 +90,6 @@ const CompanyCourses = () => {
         );
       } else if (dialogAction === "delete") {
         await deleteCourse(selectedCourseId);
-        // حذف الكورس من الحالة محلياً
         setCourses((prevCourses) =>
           prevCourses.filter((course) => course._id !== selectedCourseId)
         );
@@ -263,7 +261,6 @@ const CompanyCourses = () => {
                     </Typography>
                   </Box>
                 </Box>
-                {/* Active Courses (غير مخفية فقط) */}
                 <Box
                   sx={{
                     width: "fit-content",
@@ -451,6 +448,33 @@ const CompanyCourses = () => {
                           </Box>
 
                           {/* Applicants */}
+                          <Chip
+                            label="View Details"
+                            clickable
+                            size="small"
+                            onClick={() => navigate(`/course/${course._id}`)}
+                            icon={<VisibilityIcon sx={{ fontSize: 16 }} />}
+                            sx={{
+                              fontFamily: "Geist",
+                              fontWeight: 500,
+                              fontSize: "0.75rem",
+                              bgcolor: "#000",
+                              color: "#fff",
+                              borderRadius: "6px",
+                              px: 1,
+                              py: 0.5,
+                              "& .MuiChip-icon": {
+                                color: "#fff",
+                                fontSize: 16,
+                                ml: "0px",
+                                mr: "-4px",
+                              },
+                              "&:hover": {
+                                bgcolor: "#333",
+                              },
+                            }}
+                          />
+
                           <Box sx={{ display: "flex", alignItems: "center" }}>
                             <PeopleIcon
                               fontSize="small"

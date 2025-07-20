@@ -28,9 +28,13 @@ export const postCourse = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
+    const formattedErrors = {};
+    errors.array().forEach((err) => {
+      formattedErrors[err.param] = err.msg;
+    });
 
+    return res.status(400).json(formattedErrors);
+  }
   try {
     const course = new Course({
       user: req.user.id,
@@ -284,12 +288,10 @@ export const pendingStudent = async (req, res) => {
     const course = await Course.findById(courseId);
     if (!course) return res.status(404).json({ message: "Course not found" });
 
-    // لا تضيفه إذا موجود
     if (!course.students.includes(studentId)) {
       course.students.push(studentId);
     }
 
-    // شيله من المقبولين والمرفوضين
     course.acceptedStudents = course.acceptedStudents.filter(
       (id) => id.toString() !== studentId
     );
@@ -335,7 +337,7 @@ export const unhideCourse = async (req, res) => {
 export const getRecommendedCourses = async (req, res) => {
   try {
     // 1) جلب معلومات المستخدم وملفه الشخصي
-    const user    = await User.findById(req.user.id);
+    const user = await User.findById(req.user.id);
     const profile = await Profile.findOne({ user: req.user.id });
 
     if (!user || !profile) {
@@ -352,7 +354,9 @@ User Profile:
 - Name: ${user.firstName} ${user.lastName}
 - Skills: ${profile.skills?.join(", ") || "None"}
 - Education: ${profile.education?.join(", ") || "None"}
-- Experience: ${Array.isArray(profile.experience) ? profile.experience.length : 0} years
+- Experience: ${
+      Array.isArray(profile.experience) ? profile.experience.length : 0
+    } years
 - Languages: ${profile.languages?.join(", ") || "None"}
 - Training Courses: ${profile.trainingCourses?.join(", ") || "None"}
 
@@ -389,7 +393,7 @@ Return a JSON array of recommended courses like this:
     });
 
     const responseText = completion.choices?.[0]?.message?.content?.trim();
-    const jsonMatch    = responseText?.match(/\[.*\]/s);
+    const jsonMatch = responseText?.match(/\[.*\]/s);
 
     if (!jsonMatch) {
       return res.status(500).json({ message: "AI response format error" });
@@ -399,8 +403,8 @@ Return a JSON array of recommended courses like this:
     return res.json(parsed);
   } catch (err) {
     console.error("Error:", err.message);
-    return res.status(500).json({ message: "Server error", error: err.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: err.message });
   }
 };
-
-

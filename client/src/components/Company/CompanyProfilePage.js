@@ -1,7 +1,5 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
-import { getCompanyProfile } from "../../API/company"; // عدل المسار حسب مشروعك
+import { getCompanyProfile } from "../../API/company";
 import {
   Avatar,
   Box,
@@ -161,6 +159,7 @@ function CompanyPublicProfile() {
         setError(null);
         const res = await getCompanyProfile(companyId);
         setCompany(res.data);
+        console.log("Company data:", res.data);
       } catch (err) {
         setError(
           err.response?.data?.msg || "Failed to load company information."
@@ -212,10 +211,9 @@ function CompanyPublicProfile() {
           >
             <Avatar
               src={
-                company.profilepic?.url ||
-                "https://cdn.pixabay.com/photo/2023/02/18/11/00/icon-7797704_640.png"
+                company?.profilepic
               }
-              alt={company.companyName || "Company"}
+              alt={company?.companyName || "Company"}
               sx={{
                 width: 120,
                 height: 120,
@@ -225,6 +223,7 @@ function CompanyPublicProfile() {
                 border: `4px solid ${alpha("#fff", 0.2)}`,
               }}
             />
+
             <Typography variant="h3" fontWeight="bold" gutterBottom>
               {company.companyName || "Company Name"}
             </Typography>

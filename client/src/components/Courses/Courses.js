@@ -118,7 +118,14 @@ function Courses() {
           mb: { xs: 2, md: 4 },
         }}
       >
-        <Box sx={{ display: "flex", gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            alignItems: "center",
+            flexWrap: "wrap",
+          }}
+        >
           <Box
             sx={{
               display: "flex",
@@ -131,27 +138,41 @@ function Courses() {
             }}
           >
             <BoltIcon sx={{ fontSize: 21, color: "#F3C623" }} />
-            <Typography component="span" sx={{ ml: 0.5, fontSize: 18, fontWeight: 500 }}>
+            <Typography
+              component="span"
+              sx={{ ml: 0.5, fontSize: 18, fontWeight: 500 }}
+            >
               {courses.length}
             </Typography>
-            <Typography component="span" sx={{ ml: 1, fontSize: 20, fontWeight: 500 }}>
+            <Typography
+              component="span"
+              sx={{ ml: 1, fontSize: 20, fontWeight: 500 }}
+            >
               Courses Available
             </Typography>
           </Box>
 
-{userRole === "user" && (
-  <>
-    <Button variant="contained" onClick={fetchRecommendedCourses}>
-      AI Recommend Top 5
-    </Button>
-    <Button variant="outlined" color="secondary" onClick={loadSavedRecommendations}>
-      Show Saved
-    </Button>
-    <Button variant="outlined" color="error" onClick={clearSavedRecommendations}>
-      Clear Saved
-    </Button>
-  </>
-)}
+          {userRole === "user" && (
+            <>
+              <Button variant="contained" onClick={fetchRecommendedCourses}>
+                AI Recommend Top 5
+              </Button>
+              <Button
+                variant="outlined"
+                color="secondary"
+                onClick={loadSavedRecommendations}
+              >
+                Show Saved
+              </Button>
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={clearSavedRecommendations}
+              >
+                Clear Saved
+              </Button>
+            </>
+          )}
         </Box>
 
         {userRole === "company" && (
@@ -171,12 +192,21 @@ function Courses() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(2,1fr)", md: "repeat(3,1fr)" },
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2,1fr)",
+              md: "repeat(3,1fr)",
+            },
             gap: 2,
           }}
         >
           {Array.from({ length: 6 }).map((_, i) => (
-            <Skeleton key={i} variant="rectangular" height={320} sx={{ borderRadius: 2 }} />
+            <Skeleton
+              key={i}
+              variant="rectangular"
+              height={320}
+              sx={{ borderRadius: 2 }}
+            />
           ))}
         </Box>
       ) : error ? (
@@ -189,7 +219,11 @@ function Courses() {
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: { xs: "1fr", sm: "repeat(2,1fr)", md: "repeat(3,1fr)" },
+            gridTemplateColumns: {
+              xs: "1fr",
+              sm: "repeat(2,1fr)",
+              md: "repeat(3,1fr)",
+            },
             gap: 2,
           }}
         >
@@ -203,24 +237,41 @@ function Courses() {
                 "&:hover": { transform: "translateY(-3px)", boxShadow: 4 },
               }}
             >
-              <Box sx={{ background: "#F8F8F8", p: 2, borderBottom: "1px solid #E0E0E0" }}>
+              <Box
+                sx={{
+                  background: "#F8F8F8",
+                  p: 2,
+                  borderBottom: "1px solid #E0E0E0",
+                }}
+              >
                 <Stack direction="row" spacing={1.5} alignItems="center">
-<img
-  src="https://plus.unsplash.com/premium_photo-1720287601920-ee8c503af775?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNvbXB1dGVyfGVufDB8fDB8fHww
+                  <img
+                    src="https://plus.unsplash.com/premium_photo-1720287601920-ee8c503af775?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGNvbXB1dGVyfGVufDB8fDB8fHww
 "
-  alt="course"
-  style={{ width: 48, height: 48, borderRadius: "12px", objectFit: "cover" }}
-/>
+                    alt="course"
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "12px",
+                      objectFit: "cover",
+                    }}
+                  />
                   <Box>
-                    <Typography variant="subtitle2" sx={{ textTransform: "capitalize" }}>
-                      {c.companyName || "Unknown Company" }
+                    <Typography
+                      variant="subtitle2"
+                      sx={{ textTransform: "capitalize" }}
+                    >
+                      {c.companyName || "Unknown Company"}
                     </Typography>
                     <Typography variant="body2" color="#888">
                       {c.location || "Online"}
                     </Typography>
                   </Box>
                 </Stack>
-                <Typography variant="h6" sx={{ mt: 1, textTransform: "capitalize" }}>
+                <Typography
+                  variant="h6"
+                  sx={{ mt: 1, textTransform: "capitalize" }}
+                >
                   {c.courseTitle}
                 </Typography>
                 <Stack direction="row" spacing={0.8} flexWrap="wrap" mt={1}>
@@ -229,22 +280,22 @@ function Courses() {
                   ))}
                 </Stack>
               </Box>
-<Box sx={{ p: 2, mt: "auto" }}>
-  <Button
-    fullWidth
-    variant="contained"
-    onClick={() => navigate(`/course/${c._id}`)}
-    sx={{
-      bgcolor: "#000000",
-      color: "#FFFFFF",
-      "&:hover": {
-        bgcolor: "#333333"
-      }
-    }}
-  >
-    View Details
-  </Button>
-</Box>
+              <Box sx={{ p: 2, mt: "auto" }}>
+                <Button
+                  fullWidth
+                  variant="contained"
+                  onClick={() => navigate(`/course/${c._id}`)}
+                  sx={{
+                    bgcolor: "#000000",
+                    color: "#FFFFFF",
+                    "&:hover": {
+                      bgcolor: "#333333",
+                    },
+                  }}
+                >
+                  View Details
+                </Button>
+              </Box>
             </Card>
           ))}
         </Box>
@@ -252,7 +303,11 @@ function Courses() {
 
       {/* Pagination */}
       <Box sx={{ display: "flex", justifyContent: "center", mt: 4 }}>
-        <Pagination count={totalPages} page={page} onChange={handlePageChange} />
+        <Pagination
+          count={totalPages}
+          page={page}
+          onChange={handlePageChange}
+        />
       </Box>
 
       {/* Drawer – Recommended */}
@@ -280,11 +335,19 @@ function Courses() {
                   }
                   secondary={
                     <>
-                      <Typography component="span" variant="body2" color="text.secondary">
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.secondary"
+                      >
                         Match Score: {rec.match_score ?? "N/A"}
                       </Typography>
                       <br />
-                      <Typography component="span" variant="body2" color="text.secondary">
+                      <Typography
+                        component="span"
+                        variant="body2"
+                        color="text.secondary"
+                      >
                         {rec.justification}
                       </Typography>
                     </>

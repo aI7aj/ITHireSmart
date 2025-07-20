@@ -28,6 +28,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -354,6 +355,33 @@ const CompanyTrainings = () => {
                             {training.location || "Online"}
                           </Typography>
                         </Box>
+                        <Chip
+                          label="View Details"
+                          clickable
+                          size="small"
+                          onClick={() => navigate(`/training/${training._id}`)}
+                          icon={<VisibilityIcon sx={{ fontSize: 16 }} />}
+                          sx={{
+                            fontFamily: "Geist",
+                            fontWeight: 500,
+                            fontSize: "0.75rem",
+                            bgcolor: "#000",
+                            color: "#fff",
+                            borderRadius: "6px",
+                            px: 1,
+                            py: 0.5,
+                            "& .MuiChip-icon": {
+                              color: "#fff",
+                              fontSize: 16,
+                              ml: "0px",
+                              mr: "-4px",
+                            },
+                            "&:hover": {
+                              bgcolor: "#333",
+                            },
+                          }}
+                        />
+
                         <Box sx={{ display: "flex", alignItems: "center" }}>
                           <PeopleIcon fontSize="small" sx={{ mr: 0.5 }} />
                           <Typography variant="body2" component="span">

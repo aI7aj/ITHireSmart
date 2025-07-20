@@ -3,6 +3,7 @@ import * as handlers from "../company/companyhandlers.js";
 import auth from "../../middleware/auth.js";
 import checkRole from "../../middleware/checkRole.js";
 import { check } from "express-validator";
+import photoUpload from "../../middleware/photoUpload.js";
 
 const router = express.Router();
 
@@ -25,12 +26,12 @@ router.get("/verify-email", handlers.verifyCompanyEmail);
 router.put("/verify/:id", auth, checkRole("admin"), handlers.verifyCompany);
 
 // GET - All Companies
-router.get("/", auth, checkRole("admin"), handlers.getAllCompanies);
+router.get("/",  handlers.getAllCompanies);
 
 router.put(
   "/:companyId",
   auth,
-  checkRole("company"), 
+  photoUpload.single("profilepic"),
   handlers.editCompanyProfile
 );
 

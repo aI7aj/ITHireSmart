@@ -504,9 +504,41 @@ function CompanyJobs() {
                                 <Typography
                                   variant="body2"
                                   color="text.secondary"
+                                  sx={{ mr: 2 }}
                                 >
                                   {job.location}
                                 </Typography>
+
+                                <Tooltip title="View job details">
+                                  <Chip
+                                    label="View"
+                                    clickable 
+                                    size="small"
+                                    onClick={() => navigate(`/job/${job._id}`)}
+                                    icon={
+                                      <VisibilityIcon sx={{ fontSize: 16 }} />
+                                    }
+                                    sx={{
+                                      fontFamily: "Geist",
+                                      fontWeight: 500,
+                                      fontSize: "0.75rem",
+                                      bgcolor: "#000",
+                                      color: "#fff",
+                                      borderRadius: "6px",
+                                      px: 1,
+                                      py: 0.5,
+                                      "& .MuiChip-icon": {
+                                        color: "#fff",
+                                        fontSize: 16,
+                                        ml: "0px",
+                                        mr: "-4px",
+                                      },
+                                      "&:hover": {
+                                        bgcolor: "#333",
+                                      },
+                                    }}
+                                  />
+                                </Tooltip>
                               </Box>
                               <Box
                                 sx={{ display: "flex", alignItems: "center" }}
@@ -802,15 +834,32 @@ function CompanyJobs() {
                           </Typography>
                         </Box>
                         <Box sx={{ display: "flex", gap: 1 }}>
-                          <Tooltip title="Edit job">
-                            <Button
-                              size="small"
-                              startIcon={<EditIcon />}
-                              onClick={() => navigate(`/jobs/${job._id}/edit`)}
-                            >
-                              Edit
-                            </Button>
-                          </Tooltip>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              gap: 1.5,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Tooltip title="Edit job">
+                              <Button
+                                size="small"
+                                startIcon={<EditIcon />}
+                                onClick={() =>
+                                  navigate(`/jobs/${job._id}/edit`)
+                                }
+                                sx={{
+                                  fontFamily: "Geist",
+                                  textTransform: "none",
+                                  fontSize: "0.75rem",
+                                }}
+                              >
+                                Edit
+                              </Button>
+                            </Tooltip>
+                          </Box>
+
                           <Tooltip title="View applicants">
                             <Button
                               variant="outlined"

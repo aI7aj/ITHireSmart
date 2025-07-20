@@ -72,6 +72,7 @@ const AdminDashboard = () => {
         try {
             const res = await getAllCompanies();
             setCompanies(res.data);
+            console.log("Companies fetched:", res.data);
         } catch (error) {
             console.error("Failed to fetch companies:", error);
         }

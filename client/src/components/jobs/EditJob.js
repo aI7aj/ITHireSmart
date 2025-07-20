@@ -55,7 +55,15 @@ function EditJob() {
       try {
         setIsLoading(true);
         const response = await getJobById(id);
+
+        if (response.data && response.data.to) {
+          response.data.to = new Date(response.data.to)
+            .toISOString()
+            .split("T")[0];
+        }
         setJobData(response.data);
+
+        console.log("Job data fetched:", response.data);
       } catch (error) {
         console.error("Error fetching job:", error);
       } finally {
@@ -64,6 +72,8 @@ function EditJob() {
     };
     fetchJob();
   }, [id]);
+
+ 
 
   const salaryPeriods = [
     { value: "hourly", label: "Hourly" },
@@ -123,6 +133,21 @@ function EditJob() {
       </Box>
     );
   }
+
+
+   const fromDate = new Date("2025-07-20T00:00:00.000Z");
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const minDateObj = new Date(Math.max(fromDate, today));
+  const minDate = minDateObj.toISOString().split("T")[0];
+
+  const maxDateObj = new Date(minDateObj);
+  maxDateObj.setMonth(maxDateObj.getMonth() + 1);
+  const maxDate = maxDateObj.toISOString().split("T")[0];
+
+
+  
   return (
     <Formik
       initialValues={jobData}
@@ -180,7 +205,6 @@ function EditJob() {
                       helperText={<ErrorMessage name="jobTitle" />}
                     />
                   </Box>
-
                   {/* Location */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -194,7 +218,6 @@ function EditJob() {
                       helperText={<ErrorMessage name="location" />}
                     />
                   </Box>
-
                   {/* Salary */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -209,7 +232,6 @@ function EditJob() {
                       helperText={<ErrorMessage name="salary" />}
                     />
                   </Box>
-
                   {/* Salary Period */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -231,7 +253,6 @@ function EditJob() {
                       ))}
                     </Field>
                   </Box>
-
                   {/* Job Type */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -251,7 +272,6 @@ function EditJob() {
                       ))}
                     </Field>
                   </Box>
-
                   {/* Experience Level */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -274,7 +294,6 @@ function EditJob() {
                       ))}
                     </Field>
                   </Box>
-
                   {/* Work Type */}
                   <Box sx={{ flex: "1 1 45%", minWidth: 250 }}>
                     <Field
@@ -295,11 +314,28 @@ function EditJob() {
                     </Field>
                   </Box>
 
+                  <Field
+                    as={TextField}
+                    fullWidth
+                    label="Application Deadline"
+                    name="to"
+                    type="date"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    inputProps={{
+                      min: minDate,
+                      max: maxDate,
+                    }}
+                    required
+                    error={touched.to && Boolean(errors.to)}
+                    helperText={<ErrorMessage name="to" />}
+                  />
+
                   {/* Divider full width */}
                   <Box sx={{ flexBasis: "100%" }}>
                     <Divider sx={{ my: 2 }} />
                   </Box>
-
                   {/* Job Description */}
                   <Box sx={{ flexBasis: "100%" }}>
                     <Field
@@ -317,7 +353,6 @@ function EditJob() {
                       helperText={<ErrorMessage name="jobDescription" />}
                     />
                   </Box>
-
                   {/* Responsibilities */}
                   <Box sx={{ flexBasis: "100%" }}>
                     <Field
@@ -336,7 +371,6 @@ function EditJob() {
                       helperText={<ErrorMessage name="Responsibilities" />}
                     />
                   </Box>
-
                   {/* Requirements */}
                   <Box sx={{ flexBasis: "100%" }}>
                     <Field

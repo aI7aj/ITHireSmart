@@ -10,6 +10,9 @@ import {
 } from "../../nodemailer/sendEmail.js";
 import { validationResult } from "express-validator";
 
+import fs from "fs";
+import { cloudinaryUpload } from "../../utils/cloudinary.js";
+
 export async function companyRegister(req, res) {
   try {
     let {
@@ -70,7 +73,12 @@ export async function companyRegister(req, res) {
     const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmCompanyEmail?token=${verificationToken}`;
 
     try {
-      await sendVerificationEmail(companyName,companyEmail, verificationURL, "company");
+      await sendVerificationEmail(
+        companyName,
+        companyEmail,
+        verificationURL,
+        "company"
+      );
     } catch (mailErr) {
       return res.status(500).json({
         errors: [
@@ -157,7 +165,7 @@ export const getCompanyProfile = async (req, res) => {
     }
 
     const company = await Company.findById(companyId).select(
-      "companyName companyDescription companyField companyEmail companyNumbers location companyWebsite contactName contactPosition contactPhoneNumber status isVerified dateOfcreation"
+      "companyName companyDescription companyField companyEmail companyNumbers location companyWebsite contactName contactPosition contactPhoneNumber status isVerified dateOfcreation profilepic"
     );
 
     if (!company) {
@@ -260,10 +268,29 @@ export const editCompanyProfile = async (req, res) => {
   }
 
   try {
+    const updateData = { ...req.body };
+
+    if (req.file) {
+      const filePath = req.file.path;
+
+      const uploaded = await cloudinaryUpload(filePath);
+
+      if (uploaded?.secure_url) {
+        updateData.profilepic = uploaded.secure_url;
+      }
+
+      fs.unlink(filePath, (err) => {
+        if (err) console.error("Error deleting temp file:", err);
+      });
+    }
+
     const updatedCompany = await Company.findByIdAndUpdate(
       companyId,
-      req.body,
-      { new: true, runValidators: true }
+      updateData,
+      {
+        new: true,
+        runValidators: true,
+      }
     );
 
     if (!updatedCompany) {
@@ -276,4 +303,3 @@ export const editCompanyProfile = async (req, res) => {
     res.status(500).json({ msg: "Server error" });
   }
 };
-

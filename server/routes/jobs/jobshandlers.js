@@ -2,17 +2,26 @@ import { validationResult } from "express-validator";
 import Job from "../../models/Job.js";
 import openai from "../../utils/openaiClient.js";
 import Profile from "../../models/Profile.js";
-
+import Company from "../../models/Company.js";
 
 export async function postjob(req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
+  const companyId = req.user.id;
+  const companyProfile = await Company.findById(companyId);
+  if (!companyProfile) {
+    return res.status(404).json({ msg: "Company profile not found." });
+  }
+
   try {
     let job = new Job({
       user: req.user.id,
       jobTitle: req.body.jobTitle,
+
+      company: companyId,
+      companyName: companyProfile.companyName,
 
       location: req.body.location,
       from: req.body.from,
@@ -46,8 +55,8 @@ export async function showalljobs(req, res) {
 
     const visibleJobs = await Job.find({ isHidden: false })
       .sort({ date: -1 })
-      .populate("user", "profilepic firstName lastName");
-
+      .populate("user", "profilepic firstName lastName")
+      .populate("company");
     res.json(visibleJobs);
   } catch (error) {
     console.error(error.message);
@@ -125,6 +134,7 @@ export async function editjobbyid(req, res) {
     job.experienceLevel = req.body.experienceLevel;
     job.salary = req.body.salary;
     job.workType = req.body.workType;
+    job.to = req.body.to;
     await job.save();
     res.json(job);
   } catch (error) {
@@ -233,7 +243,8 @@ export async function getRecommendedApplicants(req, res) {
     }
 
     const requirements = job.Requirements?.join(", ") || "None specified";
-    const responsibilities = job.Responsibilities?.join(", ") || "None specified";
+    const responsibilities =
+      job.Responsibilities?.join(", ") || "None specified";
     const experienceLevel = job.experienceLevel || "Not specified";
 
     const applicantsData = await Promise.all(
@@ -244,13 +255,19 @@ export async function getRecommendedApplicants(req, res) {
         if (!profile) return null;
 
         return {
-          name: `${user.firstName || ""} ${user.lastName || ""}`.trim() || "Unknown",
+          name:
+            `${user.firstName || ""} ${user.lastName || ""}`.trim() ||
+            "Unknown",
           skills: Array.isArray(profile.skills) ? profile.skills : [],
           education: Array.isArray(profile.education) ? profile.education : [],
-          experience: Array.isArray(profile.experience) ? profile.experience.length : 0,
+          experience: Array.isArray(profile.experience)
+            ? profile.experience.length
+            : 0,
           email: user.email || "",
           languages: Array.isArray(profile.languages) ? profile.languages : [],
-          trainingCourses: Array.isArray(profile.trainingCourses) ? profile.trainingCourses : []
+          trainingCourses: Array.isArray(profile.trainingCourses)
+            ? profile.trainingCourses
+            : [],
         };
       })
     );
@@ -299,14 +316,14 @@ Use this structure:
 
     const jsonMatch = responseText.match(/\[.*\]/s);
     if (!jsonMatch) {
-      return res.status(500).json({ message: "Could not extract JSON array from AI response." });
+      return res
+        .status(500)
+        .json({ message: "Could not extract JSON array from AI response." });
     }
 
     let aiResponse;
     try {
       aiResponse = JSON.parse(jsonMatch[0]);
-      
-
     } catch (error) {
       console.error("JSON parse error:", error);
       return res.status(500).json({ message: "Failed to parse AI response" });
@@ -316,9 +333,8 @@ Use this structure:
     return res.json(aiResponse);
   } catch (error) {
     console.error("Error fetching recommendations:", error);
-    return res.status(500).json({ message: "Server error", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Server error", error: error.message });
   }
 }
-
-
-

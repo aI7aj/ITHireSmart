@@ -58,6 +58,7 @@ const PostTraining = () => {
   });
 
   const minDate = dayjs().add(1, "day").format("YYYY-MM-DD");
+  const maxDate = dayjs().endOf("year").format("YYYY-MM-DD");
 
   return (
     <Formik
@@ -180,7 +181,6 @@ const PostTraining = () => {
               disabled
             />
 
-
             <TextField
               select
               label="Training Type"
@@ -200,7 +200,9 @@ const PostTraining = () => {
             <TextField
               label="Location"
               name="location"
-              value={values.courseType === "Online" ? "Online" : values.location}
+              value={
+                values.courseType === "Online" ? "Online" : values.location
+              }
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.location && Boolean(errors.location)}
@@ -220,6 +222,7 @@ const PostTraining = () => {
               onBlur={handleBlur}
               inputProps={{
                 min: minDate,
+                max: maxDate,
               }}
               error={touched.startAt && Boolean(errors.startAt)}
               helperText={touched.startAt && errors.startAt}
@@ -235,6 +238,7 @@ const PostTraining = () => {
               onBlur={handleBlur}
               inputProps={{
                 min: values.startAt || minDate,
+                max: maxDate,
               }}
               error={touched.endAt && Boolean(errors.endAt)}
               helperText={touched.endAt && errors.endAt}
@@ -292,7 +296,8 @@ const PostTraining = () => {
             fullWidth
             margin="normal"
             multiline
-            rows={3}
+            minRows={3}
+            maxRows={10}
           />
 
           <TextField
@@ -306,7 +311,8 @@ const PostTraining = () => {
             fullWidth
             margin="normal"
             multiline
-            rows={2}
+            minRows={2}
+            maxRows={10}
           />
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2 }}>
@@ -328,7 +334,8 @@ const PostTraining = () => {
             fullWidth
             margin="normal"
             multiline
-            rows={2}
+            minRows={2}
+            maxRows={10}
           />
 
           <Box sx={{ textAlign: "center", mt: 2 }}>

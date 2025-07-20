@@ -10,6 +10,7 @@ import postCourseValidators from "../../middleware/coursepostvalidater.js";
 router.use(auth);
 
 // @route GET /api/courses/getRecommendedcourses
+
 router.get(
   "/recommendations",
   auth,

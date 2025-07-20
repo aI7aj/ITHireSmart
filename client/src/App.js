@@ -45,6 +45,7 @@ import CompanyLogin from "./components/Company/CompanyLogin";
 import CompanyProfilePage from "./components/Company/CompanyProfilePage";
 import EditCompanyProfile from "./components/Company/EditCompanyProfile";
 import ResetPassword from "./components/auth/ResetPassword";
+import AdminDashboard from "./components/Admin/AdminDashboard";
 function App() {
   const location = useLocation();
 
@@ -164,6 +165,10 @@ function App() {
               path="/EditCompanyProfile"
               element={<EditCompanyProfile />}
             />
+          </Route>
+
+          <Route element={<ProtectedRoute allowedRole="admin" />}>
+            <Route path="/AdminDashboard" element={<AdminDashboard />} />
           </Route>
 
           {/* 404 Not Found */}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  Avatar,
   Box,
   Button,
   Card,
@@ -12,6 +13,7 @@ import {
   Alert,
   CircularProgress,
   Fade,
+  MenuItem,
 } from "@mui/material";
 import { getCompanyProfile, updateCompanyProfile } from "../../API/company";
 
@@ -21,6 +23,9 @@ function EditCompanyProfile() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
+
   const [formData, setFormData] = useState({
     companyName: "",
     companyField: "",
@@ -56,9 +61,11 @@ function EditCompanyProfile() {
           companyDescription: res.data.companyDescription || "",
           status: res.data.status || "",
         });
+        if (res.data.profilepic) {
+          setImagePreview(res.data.profilepic);
+        }
         localStorage.setItem("companyName", res.data.companyName || "");
       })
-
       .catch(() => setError("Failed to load company data."))
       .finally(() => setLoading(false));
   }, [companyId]);
@@ -67,14 +74,30 @@ function EditCompanyProfile() {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     setError(null);
     setSuccess(null);
 
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => {
+      data.append(key, value);
+    });
+    if (imageFile) {
+      data.append("profilepic", imageFile);
+    }
+
     try {
-      await updateCompanyProfile(companyId, formData);
+      await updateCompanyProfile(companyId, data);
       setSuccess("Company profile updated successfully!");
       localStorage.setItem("companyName", formData.companyName || "");
     } catch {
@@ -92,9 +115,9 @@ function EditCompanyProfile() {
     );
 
   return (
-    <Container maxWidth="sm" sx={{ py: 6 }}>
+    <Container maxWidth="md" sx={{ py: 6 }}>
       <Fade in timeout={600}>
-        <Card sx={{ borderRadius: 3, boxShadow: 6 }}>
+        <Card sx={{ borderRadius: 3, boxShadow: 6, p: 3 }}>
           <CardContent>
             <Typography variant="h4" gutterBottom>
               Edit Company Profile
@@ -110,114 +133,79 @@ function EditCompanyProfile() {
                 {success}
               </Alert>
             )}
-            <Box component="form" onSubmit={handleSubmit} noValidate>
-              <Grid container spacing={2}>
-                <Grid>
-                  <TextField
-                    label="Company Name"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    fullWidth
-                    required
+
+            <Box
+              component="form"
+              onSubmit={handleSubmit}
+              noValidate
+              encType="multipart/form-data"
+            >
+              <Grid container spacing={3}>
+                {/* Left: Image */}
+                <Grid item xs={12} md={4} textAlign="center">
+                  <Avatar
+                    src={imagePreview}
+                    alt="Company Logo"
+                    sx={{ width: 120, height: 120, mx: "auto", mb: 2 }}
                   />
+                  <Button variant="outlined" component="label">
+                    Upload Image
+                    <input
+                      type="file"
+                      hidden
+                      accept="image/*"
+                      onChange={handleImageChange}
+                    />
+                  </Button>
                 </Grid>
-                <Grid>
-                  <TextField
-                    label="Company Field"
-                    name="companyField"
-                    value={formData.companyField}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Location"
-                    name="location"
-                    value={formData.location}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Email"
-                    name="companyEmail"
-                    type="email"
-                    value={formData.companyEmail}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Phone Number"
-                    name="companyNumbers"
-                    value={formData.companyNumbers}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Website"
-                    name="companyWebsite"
-                    value={formData.companyWebsite}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Contact Person Name"
-                    name="contactName"
-                    value={formData.contactName}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Contact Person Position"
-                    name="contactPosition"
-                    value={formData.contactPosition}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Contact Phone Number"
-                    name="contactPhoneNumber"
-                    value={formData.contactPhoneNumber}
-                    onChange={handleChange}
-                    fullWidth
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Company Description"
-                    name="companyDescription"
-                    value={formData.companyDescription}
-                    onChange={handleChange}
-                    fullWidth
-                    multiline
-                    rows={4}
-                  />
-                </Grid>
-                <Grid>
-                  <TextField
-                    label="Status"
-                    name="status"
-                    value={formData.status}
-                    onChange={handleChange}
-                    fullWidth
-                  />
+
+                {/* Right: Form */}
+                <Grid item xs={12} md={8}>
+                  <Grid container spacing={2}>
+                    {[
+                      {
+                        label: "Company Name",
+                        name: "companyName",
+                        required: true,
+                      },
+                      { label: "Company Field", name: "companyField" },
+                      { label: "Location", name: "location" },
+                      { label: "Email", name: "companyEmail", type: "email" },
+                      { label: "Phone Number", name: "companyNumbers" },
+                      { label: "Website", name: "companyWebsite" },
+                      { label: "Contact Name", name: "contactName" },
+                      { label: "Contact Position", name: "contactPosition" },
+                      { label: "Contact Phone", name: "contactPhoneNumber" },
+                    ].map((field) => (
+                      <Grid item xs={12} sm={6} key={field.name}>
+                        <TextField
+                          label={field.label}
+                          name={field.name}
+                          type={field.type || "text"}
+                          value={formData[field.name]}
+                          onChange={handleChange}
+                          fullWidth
+                          required={field.required || false}
+                        />
+                      </Grid>
+                    ))}
+
+                    <Grid item xs={12}>
+                      <TextField
+                        label="Company Description"
+                        name="companyDescription"
+                        value={formData.companyDescription}
+                        onChange={handleChange}
+                        multiline
+                        minRows={3}
+                        maxRows={10}
+                      />
+                    </Grid>
+                  </Grid>
                 </Grid>
               </Grid>
 
-              <Box mt={3} textAlign="right">
+              <Box mt={4} textAlign="right">
                 <Button type="submit" variant="contained" disabled={saving}>
                   {saving ? "Saving..." : "Save Changes"}
                 </Button>

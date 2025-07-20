@@ -31,5 +31,11 @@ export const getCompanyById = (id) => API.get(`/${id}`);
 export const getCompanyProfile = (companyId) =>
   API.get(`/profile/${companyId}`);
 
+
+
 export const updateCompanyProfile = (companyId, data) =>
-  API.put(`/${companyId}`, data);
+  API.put(`/${companyId}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });

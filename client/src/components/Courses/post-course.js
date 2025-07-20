@@ -17,7 +17,7 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
-import { getCompanyProfile } from "../../API/company.js"; 
+import { getCompanyProfile } from "../../API/company.js";
 
 const PostCourse = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
@@ -58,6 +58,7 @@ const PostCourse = () => {
   });
 
   const minDate = dayjs().add(1, "day").format("YYYY-MM-DD");
+  const maxDate = dayjs().endOf("year").format("YYYY-MM-DD");
 
   return (
     <Formik
@@ -77,17 +78,14 @@ const PostCourse = () => {
         requirements: "",
       }}
       validationSchema={validationSchema}
-      onSubmit={async (values, { resetForm }) => {
+      onSubmit={async (values, { resetForm, setErrors }) => {
         setShowConfirm(true);
         setConfirmCallback(() => async () => {
           const courseData = {
             ...values,
             companyName: initialCompany,
             topics: values.topics.split(",").map((item) => item.trim()),
-            capacity:
-              values.capacity === ""
-                ? null
-                : Number(values.capacity),
+            capacity: values.capacity === "" ? null : Number(values.capacity),
             requirements: values.requirements
               .split(",")
               .map((item) => item.trim()),
@@ -105,6 +103,13 @@ const PostCourse = () => {
             }, 1500);
           } catch (error) {
             console.error(error);
+            if (
+              error.response &&
+              error.response.data &&
+              typeof error.response.data === "object"
+            ) {
+              setErrors(error.response.data);
+            }
             setSnackbarMessage("Failed to post course");
             setSnackbarSeverity("error");
             setOpenSnackbar(true);
@@ -191,7 +196,6 @@ const PostCourse = () => {
               helperText={touched.instructorName && errors.instructorName}
               fullWidth
               margin="normal"
-              
             />
             <TextField
               select
@@ -212,7 +216,9 @@ const PostCourse = () => {
             <TextField
               label="Location"
               name="location"
-              value={values.courseType === "Online" ? "Online" : values.location}
+              value={
+                values.courseType === "Online" ? "Online" : values.location
+              }
               onChange={handleChange}
               onBlur={handleBlur}
               error={touched.location && Boolean(errors.location)}
@@ -232,6 +238,7 @@ const PostCourse = () => {
               onBlur={handleBlur}
               inputProps={{
                 min: minDate,
+                max: maxDate,
               }}
               error={touched.startAt && Boolean(errors.startAt)}
               helperText={touched.startAt && errors.startAt}
@@ -247,6 +254,7 @@ const PostCourse = () => {
               onBlur={handleBlur}
               inputProps={{
                 min: values.startAt || minDate,
+                max: maxDate,
               }}
               error={touched.endAt && Boolean(errors.endAt)}
               helperText={touched.endAt && errors.endAt}
@@ -272,9 +280,7 @@ const PostCourse = () => {
               value={values.capacity}
               onChange={handleChange}
               onBlur={handleBlur}
-              error={
-                touched.capacity && Boolean(errors.capacity)
-              }
+              error={touched.capacity && Boolean(errors.capacity)}
               helperText={touched.capacity && errors.capacity}
               fullWidth
               margin="normal"
@@ -302,7 +308,8 @@ const PostCourse = () => {
             fullWidth
             margin="normal"
             multiline
-            rows={3}
+            minRows={3}
+            maxRows={10}
           />
 
           <TextField

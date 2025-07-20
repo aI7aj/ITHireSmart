@@ -15,7 +15,7 @@ import {
   useMediaQuery,
   patch,
 } from "@mui/material";
-import { getProfile,getMyProfile } from "../../API/API";
+import { getProfile, getMyProfile } from "../../API/API";
 import { getCompanyProfile } from "../../API/company";
 import { styled, useTheme } from "@mui/material/styles";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -104,6 +104,9 @@ const Navbar = () => {
     { name: "Trainings", path: "/Trainings" },
     ...(localStorage.getItem("role") === "company"
       ? [{ name: "Dashboard", path: "/CompanyDashboard" }]
+      : []),
+    ...(role === "admin"
+      ? [{ name: "Admin Dashboard", path: "/AdminDashboard" }]
       : []),
   ];
 
