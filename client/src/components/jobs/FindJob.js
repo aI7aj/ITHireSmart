@@ -54,7 +54,6 @@ function FindJob() {
       }
       setJobs(response.data);
       setFilteredJobs(visibleJobs);
-      console.log("Jobs fetched successfully:", response.data);
     } catch (error) {
       console.error("Error fetching jobs:", error);
       navigate("/404");
@@ -641,7 +640,6 @@ function FindJob() {
           >
             {paginatedJobs.map((job, idx) => {
               const randomColor = getRandomLightColor(idx);
-              console.log(job.company);
 
               return (
                 <Box
