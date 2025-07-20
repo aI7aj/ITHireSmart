@@ -322,16 +322,27 @@ const ApplicantsPage = () => {
           <Typography>No recommendations found.</Typography>
         ) : (
 <List>
-  {recommended.map((rec, index) => {
-    return (
-      <ListItem key={index} alignItems="flex-start" divider>
-        <ListItemText
-          primary={rec.name || "Unknown"}
-          secondary={rec.justification || ""}
-        />
-      </ListItem>
-    );
-  })}
+  {recommended.map((rec, index) => (
+    <ListItem key={index} alignItems="flex-start" divider>
+      <ListItemText
+        primary={
+          <>
+            <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+              {rec.name || "Unknown"} — Match Score: {rec.match_score ?? "N/A"}%
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              {rec.Email || "No email provided"}
+            </Typography>
+          </>
+        }
+        secondary={
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            {rec.justification || ""}
+          </Typography>
+        }
+      />
+    </ListItem>
+  ))}
 </List>
         )}
       </Drawer>

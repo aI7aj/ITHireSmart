@@ -336,7 +336,6 @@ export const unhideCourse = async (req, res) => {
 
 export const getRecommendedCourses = async (req, res) => {
   try {
-    // 1) جلب معلومات المستخدم وملفه الشخصي
     const user = await User.findById(req.user.id);
     const profile = await Profile.findOne({ user: req.user.id });
 
@@ -344,19 +343,49 @@ export const getRecommendedCourses = async (req, res) => {
       return res.status(404).json({ message: "User or profile not found" });
     }
 
-    // 2) جلب جميع الدورات
     const allCourses = await Course.find().populate("user");
 
-    // 3) بناء الـ prompt
-    const prompt = `You are a smart learning assistant. Your task is to recommend the best 5 courses for the following user based on their profile, experience, skills, and interests.
+const prompt = `You are an expert in machine learning and educational recommendation systems. I need your expertise to analyze the user's profile and recommend the most suitable training courses.
+
+Please follow the structured steps below to generate accurate and personalized course recommendations:
+
+1. Analyze the User Profile:
+• Identify the user’s current skills and detect potential knowledge gaps.
+• Assess their professional experience and relate it to the available courses.
+• Consider their educational background and the languages they speak.
+• Take into account previously completed training courses to avoid repetition.
+
+2. Evaluate the Available Courses:
+• Match the topics of each course with the user's skills and interests.
+
+3. Recommendation Logic:
+• Use a smart matching algorithm to calculate a match_score (0–100) for each course.
+• Provide a clear justification for each recommendation based on profile analysis.
+• Ensure diversity in course selection to cover multiple areas of interest or improvement.
+
+4. Output Format:
+Return the top recommended courses in a pure JSON array using the following structure:
+[
+  {
+    "id": "courseId",
+    "title": "Course Title",
+    "match_score": 0-100,
+    "justification": "Detailed explanation of why this course is a strong fit for the user."
+  }
+]
+
+5. Quality Standards:
+• Ensure that recommendations are realistic and achievable.
+• Support the user’s long-term career growth and skill development.
+• Maintain a balance between foundational and specialized course offerings.
+
+Rely on your expertise in recommendation systems and machine learning to deliver high-quality, tailored suggestions that reflect the user's current profile and future potential.
 
 User Profile:
 - Name: ${user.firstName} ${user.lastName}
 - Skills: ${profile.skills?.join(", ") || "None"}
 - Education: ${profile.education?.join(", ") || "None"}
-- Experience: ${
-      Array.isArray(profile.experience) ? profile.experience.length : 0
-    } years
+- Experience: ${Array.isArray(profile.experience) ? profile.experience.length : 0} years
 - Languages: ${profile.languages?.join(", ") || "None"}
 - Training Courses: ${profile.trainingCourses?.join(", ") || "None"}
 
@@ -372,26 +401,14 @@ ${JSON.stringify(
   null,
   2
 )}
+`;
 
-Return a JSON array of recommended courses like this:
-
-[
-  {
-    "id": "courseId",
-    "title": "Course Title",
-    "match_score": 0-100,
-    "justification": "Why this course is a good fit"
-  }
-]`;
-
-    // 4) استدعاء ChatGPT
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
       temperature: 0,
       max_tokens: 1000,
     });
-
     const responseText = completion.choices?.[0]?.message?.content?.trim();
     const jsonMatch = responseText?.match(/\[.*\]/s);
 
