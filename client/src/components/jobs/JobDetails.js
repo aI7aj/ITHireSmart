@@ -252,20 +252,26 @@ function JobDetails() {
                     fontSize: { xs: "1.75rem", sm: "2.125rem" },
                   }}
                 >
-                  {job.jobTitle}
+                  {job.jobTitle
+                    ? job.jobTitle
+                      .split(" ")
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ")
+                    : ""}
                 </Typography>
 
                 {job.companyName ? (
                   <Typography
                     variant="h6"
                     sx={{
-                      fontSize: "2rem",
                       color: "#666666",
                       fontWeight: 500,
                       mb: 2,
                     }}
                   >
-                    {job.companyName}
+                    <span style={{ fontWeight: "bold" }}>
+                      {job.companyName ? job.companyName.toUpperCase() : ""}
+                    </span>
                   </Typography>
                 ) : (
                   <Typography variant="h6" color="error" mb={2}>

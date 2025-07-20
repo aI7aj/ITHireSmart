@@ -243,7 +243,12 @@ const userRole = localStorage.getItem("role");
                     fontSize: { xs: "1.75rem", sm: "2.125rem" },
                   }}
                 >
-                  {course.courseTitle}
+                  {course.courseTitle
+                    ? course.courseTitle
+                      .split(" ")
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                      .join(" ")
+                    : ""}
                 </Typography>
                 <Typography
                   variant="h6"
