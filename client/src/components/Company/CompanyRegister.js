@@ -159,81 +159,115 @@ const CompanyRegister = () => {
               >
                 Company Register
               </Typography>
-
-              <Field
-                as={TextField}
-                name="companyName"
-                label="Company Name"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.companyName && Boolean(errors.companyName)}
-                helperText={<ErrorMessage name="companyName" />}
-              />
-              <Field
-                as={TextField}
-                name="companyEmail"
-                label="Email"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.companyEmail && Boolean(errors.companyEmail)}
-                helperText={<ErrorMessage name="companyEmail" />}
-              />
-              <Field
-                as={TextField}
-                name="location"
-                label="Location"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.location && Boolean(errors.location)}
-                helperText={<ErrorMessage name="location" />}
-              />
-              <Field
-                as={TextField}
-                name="companyDescription"
-                label="Company Description"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={
-                  touched.companyDescription &&
-                  Boolean(errors.companyDescription)
-                }
-                helperText={<ErrorMessage name="companyDescription" />}
-              />
-              <Field
-                as={TextField}
-                name="companyField"
-                label="Company Field"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.companyField && Boolean(errors.companyField)}
-                helperText={<ErrorMessage name="companyField" />}
-              />
-              <Field
-                as={TextField}
-                name="companyNumbers"
-                label="Company Phone Number"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.companyNumbers && Boolean(errors.companyNumbers)}
-                helperText={<ErrorMessage name="companyNumbers" />}
-              />
-              <Field
-                as={TextField}
-                name="companyWebsite"
-                label="Company Website"
-                fullWidth
-                variant="outlined"
-                sx={{ ...TextFieldStyle, mb: 2 }}
-                error={touched.companyWebsite && Boolean(errors.companyWebsite)}
-                helperText={<ErrorMessage name="companyWebsite" />}
-              />
-
+              <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+                <Box sx={{ flex: 1, minWidth: 250 }}>
+                  <Field
+                    as={TextField}
+                    name="companyName"
+                    label="Company Name"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.companyName && Boolean(errors.companyName)}
+                    helperText={<ErrorMessage name="companyName" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="companyEmail"
+                    label="Email"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.companyEmail && Boolean(errors.companyEmail)}
+                    helperText={<ErrorMessage name="companyEmail" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="location"
+                    label="Location"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.location && Boolean(errors.location)}
+                    helperText={<ErrorMessage name="location" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="companyDescription"
+                    label="Company Description"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={
+                      touched.companyDescription &&
+                      Boolean(errors.companyDescription)
+                    }
+                    helperText={<ErrorMessage name="companyDescription" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="companyField"
+                    label="Company Field"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.companyField && Boolean(errors.companyField)}
+                    helperText={<ErrorMessage name="companyField" />}
+                  />
+                </Box>
+                <Box sx={{ flex: 1, minWidth: 250 }}>
+                  <Field
+                    as={TextField}
+                    name="companyNumbers"
+                    label="Company Phone Number"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.companyNumbers && Boolean(errors.companyNumbers)}
+                    helperText={<ErrorMessage name="companyNumbers" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="companyWebsite"
+                    label="Company Website"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.companyWebsite && Boolean(errors.companyWebsite)}
+                    helperText={<ErrorMessage name="companyWebsite" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="contactName"
+                    label="Contact Name"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.contactName && Boolean(errors.contactName)}
+                    helperText={<ErrorMessage name="contactName" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="contactPosition"
+                    label="Contact Position"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.contactPosition && Boolean(errors.contactPosition)}
+                    helperText={<ErrorMessage name="contactPosition" />}
+                  />
+                  <Field
+                    as={TextField}
+                    name="contactPhoneNumber"
+                    label="Contact Phone Number"
+                    fullWidth
+                    variant="outlined"
+                    sx={{ ...TextFieldStyle, mb: 2 }}
+                    error={touched.contactPhoneNumber && Boolean(errors.contactPhoneNumber)}
+                    helperText={<ErrorMessage name="contactPhoneNumber" />}
+                  />
+                </Box>
+              </Box>
               <Field
                 as={TextField}
                 name="password"
