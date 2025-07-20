@@ -274,7 +274,7 @@ export async function getRecommendedApplicants(req, res) {
 
     const filteredApplicants = applicantsData.filter(Boolean);
 
-    const prompt = `You are an intelligent recruitment assistant. Your task is to recommend the top 5 applicants for the following job based on their skills, education, and experience.
+const prompt = `You are a seasoned recruitment expert with extensive experience in talent acquisition, CV analysis, and matching applicants to job requirements. I want to leverage your expertise to professionally evaluate the applicants for the following position.
 
 Job Details:
 - Title: ${job.jobTitle}
@@ -282,25 +282,47 @@ Job Details:
 - Requirements: ${requirements}
 - Responsibilities: ${responsibilities}
 - Experience Level: ${experienceLevel}
+- Job Description: ${job.jobDescription}
 
 Below is a list of applicants:
 
 ${JSON.stringify(applicantsData, null, 2)}
 
-Please evaluate each applicant carefully and rank them based on how well they match the job.
+Please proceed with the task as follows:
 
-Return a pure JSON array of the top applicants (up to 5), sorted from best to worst. Only include applicants who have some relevant qualifications. Do not include placeholders.
+1. Evaluation Methodology:
+• Conduct a comprehensive analysis of each applicant based on their skills, education, and work experience.
+• Perform a precise comparison between the applicant’s qualifications and the core job requirements.
+• Assess how well the applicant’s experience aligns with the listed responsibilities.
 
-Use this structure:
+2. Scoring Criteria:
+• Assign a match_score from 0 to 100, reflecting how well the applicant fits the job.
+• Prioritize applicants who meet all essential requirements.
+• Take into account the required experience level.
 
+3. Output Format:
+• Return a pure JSON array of the top 5 applicants only.
+• Sort the list from highest to lowest match_score.
+• Exclude any applicant who does not meet the essential qualifications.
+
+4. JSON Structure:
 [
   {
     "name": "Applicant Name",
     "match_score": 0-100,
-    "justification": "Why this applicant is a good fit"
-  },
-  ...
-]`;
+    "Email": "applicant@example.com",
+    "justification": "Detailed explanation of why this applicant is a strong match, highlighting key strengths."
+  }
+]
+
+5. Quality Expectations:
+• Ensure precise and accurate evaluation
+• Maintain objectivity and fairness
+• Provide clear justification for each recommendation
+• Strictly return no more than 5 applicants
+
+Rely on your deep understanding of competency analysis and qualification assessment to provide accurate recommendations that reflect a full understanding of the job’s needs. Focus on quality over quantity.`;
+
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o",
