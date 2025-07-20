@@ -120,7 +120,7 @@ export async function register(req, res) {
 
     await profile.save();
 
-    const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
+    const verificationURL = `${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
       await sendVerificationEmail(firstName, email, verificationURL, "user");
     } catch (mailErr) {
