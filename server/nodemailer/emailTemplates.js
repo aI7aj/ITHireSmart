@@ -12,7 +12,7 @@ export const VERIFICATION_EMAIL_TEMPLATE = `
     <h2 style="color: #fff;">Verify Your Email</h2>
   </div>
   <div style="padding: 20px; background-color: #111; border-radius: 10px; max-width: 600px; margin: auto;">
-    <p>Hi %%FIRST_NAME%% 👋,</p>
+    <p>Hi {%%FIRST_NAME%%},</p>
     <p>We’re excited to have you on board at IT HireSmart!</p>
     <p>Before you can start exploring opportunities, please verify your email by clicking the button below:</p>
     <div style="text-align: center; margin: 30px 0;">
@@ -48,7 +48,7 @@ export const PASSWORD_RESET_REQUEST_TEMPLATE = `
     <h2 style="color: #fff;">Password Reset</h2>
   </div>
   <div style="padding: 20px; background-color: #111; border-radius: 10px; max-width: 600px; margin: auto;">
-    <p>Hello,</p>
+    <p>Hello %%FIRST_NAME%%,</p>
     <p>Click the button below to reset your password:</p>
     <div style="text-align: center; margin: 30px 0;">
       <a href="%%RESET_URL%%"
@@ -84,7 +84,7 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
     <h2 style="color: #fff;">Password Reset Successful</h2>
   </div>
   <div style="padding: 20px; background-color: #111; border-radius: 10px; max-width: 600px; margin: auto;">
-    <p>Hello,</p>
+    <p>Hello %%FIRST_NAME%%,</p>
     <p>Your password has been successfully updated.</p>
     <div style="text-align: center; margin: 30px 0;">
       <div style="background-color: #fff; color: #000; width: 50px; height: 50px; line-height: 50px; border-radius: 50%; display: inline-block; font-size: 30px;">
@@ -92,6 +92,8 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = `
       </div>
     </div>
     <p>Need help? Contact our support.</p>
+    <p><a href="mailto:support@ithiresmart.xyz">support@ithiresmart.xyz</a></p>
+    <p>For security, we recommend:</p>
     <ul>
       <li>Use a strong, unique password</li>
       <li>Enable 2FA</li>
@@ -117,7 +119,7 @@ export const COMPANY_VERIFICATION_EMAIL_TEMPLATE = `
     <h2 style="color: #fff;">Verify Your Email</h2>
   </div>
   <div style="padding: 20px; background-color: #111; border-radius: 10px; max-width: 600px; margin: auto;">
-    <p>Hi %%FIRST_NAME%% 👋,</p>
+    <p>Hi %%FIRST_NAME%%👋,</p>
     <p>Thank you for registering your company with IT HireSmart.</p>
    <p>To activate your company account, please verify your company email by clicking the button below:</p>
     <div style="text-align: center; margin: 30px 0;">

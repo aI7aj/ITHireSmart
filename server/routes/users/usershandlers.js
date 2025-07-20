@@ -28,7 +28,7 @@ const __dirname = path.dirname(__filename);
 
 
 export async function resetPassword(req, res) {
-  const { token } = req.params;
+  const { token } = req.query;
   const { password } = req.body;
 
   try {
@@ -36,26 +36,25 @@ export async function resetPassword(req, res) {
       resetPasswordToken: token,
       resetPasswordExpiresAt: { $gt: Date.now() },
     });
-
     if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Invalid or expired reset token." });
+      return res.status(400).json({ message: "Invalid or expired reset token." });
     }
 
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
+    user.password = await bcrypt.hash(password, salt);
     user.resetPasswordToken = undefined;
     user.resetPasswordExpiresAt = undefined;
     await user.save();
 
-    await sendResetSuccessEmail(user.email);
+    // Send success email after password reset
+    await sendResetSuccessEmail(user.firstName, user.email);
+
     res.status(200).json({
       success: true,
-      message: "Password reset link sent to your email",
+      message: "Password has been reset successfully.",
     });
   } catch (error) {
-    console.log("Error in forgotPassword ", error);
+    console.log("Error in resetPassword ", error);
     res.status(400).json({ success: false, message: error.message });
   }
 }
@@ -125,7 +124,7 @@ export async function register(req, res) {
     try {
       await sendVerificationEmail(firstName, email, verificationURL, "user");
     } catch (mailErr) {
- 
+
       await User.findByIdAndDelete(user._id);
       await Profile.deleteOne({ user: user._id });
       return res.status(500).json({
@@ -280,8 +279,13 @@ export async function forgotPassword(req, res) {
 
     await user.save();
 
-    const resetURL = `${process.env.BASE_URL}/api/users/reset-password?token=${resetToken}`;
-    await sendPasswordResetEmail(email, resetURL);
+    // Use your nodemailer template for password reset
+    const resetURL = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
+    await sendPasswordResetEmail(user.firstName, email, resetURL);
+
+    res.json({
+      message: "If that email is registered, you’ll receive reset instructions.",
+    });
   } catch (error) {
     console.log("Error in forgotPassword ", error);
     res.status(400).json({ success: false, message: error.message });
@@ -532,9 +536,8 @@ export async function toggleUserStatus(req, res) {
     await user.save();
 
     res.status(200).json({
-      msg: `User account has been ${
-        user.role === "none" ? "disabled" : "enabled"
-      }`,
+      msg: `User account has been ${user.role === "none" ? "disabled" : "enabled"
+        }`,
       role: user.role,
     });
   } catch (error) {
@@ -626,30 +629,30 @@ Use this format:
     // Convert comma- or semicolon-separated strings to arrays
     const skills = extracted.Skills
       ? extracted.Skills.split(",")
-          .map((s) => s.trim())
-          .filter(Boolean)
+        .map((s) => s.trim())
+        .filter(Boolean)
       : [];
     const trainingCourses = extracted.TrainingCourses
       ? extracted.TrainingCourses.split(",")
-          .map((c) => c.trim())
-          .filter(Boolean)
+        .map((c) => c.trim())
+        .filter(Boolean)
       : [];
     const languages = extracted.Languages
       ? extracted.Languages.split(",")
-          .map((l) => l.trim())
-          .filter(Boolean)
+        .map((l) => l.trim())
+        .filter(Boolean)
       : [];
 
     // education & experience are separated by semicolons
     const education = extracted.Education
       ? extracted.Education.split(";")
-          .map((e) => e.trim())
-          .filter(Boolean)
+        .map((e) => e.trim())
+        .filter(Boolean)
       : [];
     const experience = extracted.Experience
       ? extracted.Experience.split(";")
-          .map((e) => e.trim())
-          .filter(Boolean)
+        .map((e) => e.trim())
+        .filter(Boolean)
       : [];
 
     const userId = req.body.userId;
@@ -662,25 +665,25 @@ Use this format:
         languages,
       },
     });
-    
-try {
-  await Profile.findOneAndUpdate(
-    { user: userId },
-    {
-      $set: {
-        skills,
-        education,
-        experience,
-        trainingCourses,
-        languages,
-      },
-    },
-    { new: true, upsert: true }
-  );
-  console.log("✅ Profile updated");
-} catch (err) {
-  console.error("❌ Failed to update profile:", err);
-}
+
+    try {
+      await Profile.findOneAndUpdate(
+        { user: userId },
+        {
+          $set: {
+            skills,
+            education,
+            experience,
+            trainingCourses,
+            languages,
+          },
+        },
+        { new: true, upsert: true }
+      );
+      console.log("✅ Profile updated");
+    } catch (err) {
+      console.error("❌ Failed to update profile:", err);
+    }
     return res
       .status(200)
       .json({ message: "CV uploaded and processed successfully" });
@@ -695,7 +698,7 @@ try {
 // -----------------------
 export async function viewJobApplications(req, res) {
   try {
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
     const jobs = await Job.find({ "applicants.user": userId }).select("jobTitle applicants");
 

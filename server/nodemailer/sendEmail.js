@@ -29,26 +29,33 @@ export const sendVerificationEmail = async (firstName,email, verificationURL,rol
     }
 };
 
-export const sendPasswordResetEmail = async (email, resetURL) => {
+export const sendPasswordResetEmail = async (firstName, email, resetURL) => {
     try {
+        const personalizedHTML = PASSWORD_RESET_REQUEST_TEMPLATE
+            .replace(/%%RESET_URL%%/g, resetURL)
+            .replace(/%%FIRST_NAME%%/g, firstName);
+
         await transporter.sendMail({
             from: sender,
             to: email,
             subject: "Reset your password",
-            html: PASSWORD_RESET_REQUEST_TEMPLATE.replace(/%%RESET_URL%%/g, resetURL),
+            html: personalizedHTML,
         });
     } catch (error) {
         console.error("failed to send password reset email:", error);
     }
 };
 
-export const sendResetSuccessEmail = async (email) => {
+export const sendResetSuccessEmail = async (firstName, email) => {
     try {
+        const personalizedHTML = PASSWORD_RESET_SUCCESS_TEMPLATE
+            .replace(/%%FIRST_NAME%%/g, firstName);
+
         await transporter.sendMail({
             from: sender,
             to: email,
             subject: "Password Reset Successful",
-            html: PASSWORD_RESET_SUCCESS_TEMPLATE,
+            html: personalizedHTML,
         });
     } catch (error) {
         console.error("failed to send password reset success email:", error);

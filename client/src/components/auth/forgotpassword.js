@@ -9,7 +9,7 @@ import {
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { useNavigate } from "react-router-dom";
-
+import { forgotPassword } from "../../API/API.js";
 const style = {
   display: "flex",
   justifyContent: "center",
@@ -48,7 +48,6 @@ const ButtonStyle = {
   borderRadius: "10px",
   fontFamily: "Geist",
 };
-
 const ForgotPassword = () => {
   const navigator = useNavigate();
 
@@ -58,17 +57,24 @@ const ForgotPassword = () => {
       .required("Email is required"),
   });
 
+const [successMessage, setSuccessMessage] = React.useState("");
+
   return (
     <Formik
       initialValues={{ email: "" }}
       validationSchema={validationSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        console.log("Reset email sent to:", values.email);
-        // send email logic here
-        setTimeout(() => {
+      onSubmit={async (values, { setSubmitting }) => {
+        try {
+          await forgotPassword(values.email);
+          setSuccessMessage("A reset link has been sent to your email.");
+          // setTimeout(() => {
+          //   navigator("/login");
+          // }, 2000);
+        } catch (error) {
+          console.error("Error sending reset email:", error.message);
+        } finally {
           setSubmitting(false);
-          navigator("/login");
-        }, 1500);
+        }
       }}
     >
       {({ errors, touched, handleChange, handleBlur }) => (
@@ -113,10 +119,24 @@ const ForgotPassword = () => {
                 )}
               </Box>
 
+              
+
               <Button type="submit" variant="contained" sx={ButtonStyle}>
                 Send Reset Link
               </Button>
-
+              {successMessage && (
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "lightgreen",
+                    textAlign: "center",
+                    mb: 2,
+                    fontFamily: "Geist",
+                  }}
+                >
+                  {successMessage}
+                </Typography>
+              )}
               <Button
                 onClick={() => navigator("/login")}
                 variant="text"

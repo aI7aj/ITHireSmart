@@ -16,6 +16,9 @@ export const loginUser = (values) => API.post("/users/login", values);
 export const changePassword = (values) =>
   API.post("/users/changepassword", values);
 
+export async function forgotPassword(email) {
+  return API.post("/users/forgot-password", { email });
+}
 export const getPhoto = () => API.get("/users/getphoto");
 export const uploadPhoto = (values) => API.post("/users/uploadphoto", values);
 
@@ -41,3 +44,4 @@ export const uploadCv = (formData) => {
 export const verifyEmail = (token) =>
   API.get(`/users/verify-email?token=${token}`).then((res) => res.data);
 
+export const resetPassword = (data) => API.post("/users/reset-password", data);

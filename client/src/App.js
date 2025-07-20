@@ -44,6 +44,7 @@ import ConfirmCompanyEmail from "./components/Company/ConfirmCompanyEmail";
 import CompanyLogin from "./components/Company/CompanyLogin";
 import CompanyProfilePage from "./components/Company/CompanyProfilePage";
 import EditCompanyProfile from "./components/Company/EditCompanyProfile";
+import ResetPassword from "./components/auth/ResetPassword";
 function App() {
   const location = useLocation();
 
@@ -128,6 +129,7 @@ function App() {
             path="/ConfirmCompanyEmail"
             element={<ConfirmCompanyEmail />}
           />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Protected Routes for company role */}
           <Route element={<ProtectedRoute allowedRole="company" />}>
