@@ -47,7 +47,7 @@ export async function resetPassword(req, res) {
     await user.save();
 
     // Send success email after password reset
-    await sendResetSuccessEmail(user.firstName, user.email);
+   await sendResetSuccessEmail(user.firstName, user.email);
 
     res.status(200).json({
       success: true,
