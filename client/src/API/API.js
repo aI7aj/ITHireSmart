@@ -44,4 +44,5 @@ export const uploadCv = (formData) => {
 export const verifyEmail = (token) =>
   API.get(`/users/verify-email?token=${token}`).then((res) => res.data);
 
-export const resetPassword = (data) => API.post("/users/reset-password", data);
+export const resetPassword = ({ token, password }) =>
+  API.post(`/users/reset-password?token=${token}`, { password });

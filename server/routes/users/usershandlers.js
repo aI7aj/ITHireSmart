@@ -47,7 +47,7 @@ export async function resetPassword(req, res) {
     await user.save();
 
     // Send success email after password reset
-    await sendResetSuccessEmail(user.firstName, user.email);
+   await sendResetSuccessEmail(user.firstName, user.email);
 
     res.status(200).json({
       success: true,
@@ -120,7 +120,7 @@ export async function register(req, res) {
 
     await profile.save();
 
-    const verificationURL = `http://${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
+    const verificationURL = `${process.env.FRONTEND_URL}/ConfirmEmail?token=${verificationToken}`;
     try {
       await sendVerificationEmail(firstName, email, verificationURL, "user");
     } catch (mailErr) {
